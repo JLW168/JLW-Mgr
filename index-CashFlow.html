@@ -254,15 +254,17 @@
             const combinedDate = new Date(year, month - 1, day, now.getHours(), now.getMinutes(), now.getSeconds());
             return window.Firebase.Timestamp.fromDate(combinedDate);
         };
-        const parseFormattedNumber = (val) => parseFloat(String(val).replace(/,/g, '')) || 0;
-        const formatCurrency = (val, currency = 'KHR') => {
-            const num = parseFormattedNumber(val);
-            const options = {
-                style: 'currency',
-                currency: currency,
-                minimumFractionDigits: currency === 'USD' ? 2 : 0,
-            };
-            return new Intl.NumberFormat('en-US', options).format(num);
+         const formatCurrency = (value, currency) => {
+            const number = parseFloat(String(value).replace(/,/g, '')) || 0;
+            const formattedNumber = number.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            if (currency === 'KHR') return `${formattedNumber} ៛`;
+            if (currency === 'USD') return `${formattedNumber} $`;
+            return formattedNumber;
+        
         };
         // #endregion
 
