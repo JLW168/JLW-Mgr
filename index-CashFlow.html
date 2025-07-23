@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CashFlow Management</title>
+    <title>App Dashboard</title>
     
     <meta name="theme-color" content="#4f46e5">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -227,20 +227,17 @@
         // =================================================================================
         const CONSTANTS = {
             NAV_ITEMS: [
-                { id: 'cashDrop', label: 'Cash Drop Report', icon: 'Droplets' },
+                { id: 'cashflowReport', label: 'CashFlow Report', icon: 'PieChart' },
                 { id: 'saleReport', label: 'Sale Report', icon: 'BarChart3' },
+                { id: 'cashDrop', label: 'Cash Drop Report', icon: 'Droplets' },
                 { id: 'purchaseOrder', label: 'Purchase Order', icon: 'ShoppingCart' },
                 { id: 'expenseReport', label: 'Expense Report', icon: 'CreditCard' },
-                { id: 'cashflowReport', label: 'CashFlow Report', icon: 'PieChart' },
                 { id: 'settings', label: 'Settings', icon: 'Settings' },
             ],
             ALL_PAGES: [
-                { id: 'cashDrop', label: 'Cash Drop Report' },
-                { id: 'saleReport', label: 'Sale Report' },
-                { id: 'purchaseOrder', label: 'Purchase Order' },
-                { id: 'expenseReport', label: 'Expense Report' },
-                { id: 'cashflowReport', label: 'CashFlow Report' },
-                { id: 'settings', label: 'Settings' },
+                { id: 'cashflowReport', label: 'CashFlow Report' }, { id: 'saleReport', label: 'Sale Report' },
+                { id: 'cashDrop', label: 'Cash Drop Report' }, { id: 'purchaseOrder', label: 'Purchase Order' },
+                { id: 'expenseReport', label: 'Expense Report' }, { id: 'settings', label: 'Settings' },
             ],
         };
 
@@ -254,17 +251,15 @@
             const combinedDate = new Date(year, month - 1, day, now.getHours(), now.getMinutes(), now.getSeconds());
             return window.Firebase.Timestamp.fromDate(combinedDate);
         };
-         const formatCurrency = (value, currency) => {
-            const number = parseFloat(String(value).replace(/,/g, '')) || 0;
-            const formattedNumber = number.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-
-            if (currency === 'KHR') return `${formattedNumber} ៛`;
-            if (currency === 'USD') return `${formattedNumber} $`;
-            return formattedNumber;
-        
+        const parseFormattedNumber = (val) => parseFloat(String(val).replace(/,/g, '')) || 0;
+        const formatCurrency = (val, currency = 'KHR') => {
+            const num = parseFormattedNumber(val);
+            const options = {
+                style: 'currency',
+                currency: currency,
+                minimumFractionDigits: currency === 'USD' ? 2 : 0,
+            };
+            return new Intl.NumberFormat('en-US', options).format(num);
         };
         // #endregion
 
