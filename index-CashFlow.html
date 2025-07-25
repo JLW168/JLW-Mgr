@@ -2099,21 +2099,29 @@
         // --- END: Purchase Order Page ---
 
         // --- START: Expense Report Page ---
-        const ExpenseReportPage = () => {
-            const { userData, businessExpenses, familyExpenses } = useData();
+         const ExpenseReportPage = () => {
+            const { userData } = useAuth();
+            const { businessExpenses, familyExpenses, shops } = useAppContext();
             const { showNotification } = useNotification();
-            const { doc, deleteDoc } = window.Firebase;
+            const { db } = useAuth();
             const [editingExpense, setEditingExpense] = useState(null);
             const [deletingExpense, setDeletingExpense] = useState(null);
+            const [viewingExpense, setViewingExpense] = useState(null);
             const [isDeleting, setIsDeleting] = useState(false);
+            const [filters, setFilters] = useState({ shop: 'all', month: '' });
             const isMounted = useRef(true);
 
             useEffect(() => {
                 isMounted.current = true;
                 return () => { isMounted.current = false; };
             }, []);
+            
+            const handleFilterChange = (e) => {
+                const { name, value } = e.target;
+                setFilters(prev => ({ ...prev, [name]: value }));
+            };
 
-            const allExpenses = useMemo(() => {
+            const filteredExpenses = useMemo(() => {
                 let combinedList = [];
                 if (businessExpenses) {
                     combinedList = combinedList.concat(businessExpenses.map(e => ({ ...e, type: 'Business' })));
@@ -2121,15 +2129,32 @@
                 if (userData?.role === 'Admin' && familyExpenses) {
                     combinedList = combinedList.concat(familyExpenses.map(e => ({ ...e, type: 'Family' })));
                 }
-                return combinedList.sort((a, b) => (b.date?.toDate()?.getTime() || 0) - (a.date?.toDate()?.getTime() || 0));
-            }, [businessExpenses, familyExpenses, userData]);
+
+                let filtered = combinedList;
+
+                if (filters.shop !== 'all') {
+                    filtered = filtered.filter(exp => exp.type !== 'Business' || exp.shop === filters.shop);
+                }
+
+                if (filters.month) {
+                    const [year, month] = filters.month.split('-');
+                    filtered = filtered.filter(exp => {
+                        if (!exp.date) return false;
+                        const expDate = exp.date.toDate();
+                        return expDate.getFullYear() === parseInt(year) && (expDate.getMonth() + 1) === parseInt(month);
+                    });
+                }
+
+                return filtered.sort((a, b) => (b.date?.toDate()?.getTime() || 0) - (a.date?.toDate()?.getTime() || 0));
+            }, [businessExpenses, familyExpenses, userData, filters]);
+
 
             const handleDelete = async () => {
                 if (!deletingExpense) return;
                 setIsDeleting(true);
                 const collectionName = deletingExpense.type === 'Business' ? 'businessExpenses' : 'familyExpenses';
                 try {
-                    await deleteDoc(doc(window.db, collectionName, deletingExpense.id));
+                    await window.firebase.deleteDoc(window.firebase.doc(db, collectionName, deletingExpense.id));
                     showNotification("Expense deleted.", "success");
                 } catch (error) {
                     showNotification("Failed to delete expense.", "error");
@@ -2147,12 +2172,14 @@
                     return;
                 }
 
-                const dataToExport = allExpenses.map(exp => ({
-                    "Date": formatInCambodiaDateOnly(exp.date),
+                const dataToExport = filteredExpenses.map(exp => ({
+                    "Date": formatDateDDMMYY(exp.date),
                     "Type": exp.type,
                     "Shop/Paid By": exp.shop || exp.paidBy || 'N/A',
                     "Category": exp.category,
-                    "Amount (KHR)": exp.amount,
+                    "Amount KHR": exp.amountKhr || 0,
+                    "Amount USD": exp.amountUsd || 0,
+                    "Total Amount (KHR)": exp.totalAmountKhr,
                     "Note": exp.note || ''
                 }));
 
@@ -2161,7 +2188,7 @@
                 window.XLSX.utils.book_append_sheet(wb, ws, "Expense Report");
                 window.XLSX.writeFile(wb, "Expense_Report.xlsx");
                 showNotification("Exported successfully!", "success");
-            }, [allExpenses, showNotification]);
+            }, [filteredExpenses, showNotification]);
 
             return (
                 <div className="space-y-6">
@@ -2173,25 +2200,42 @@
                             <h2 className="text-xl font-bold text-slate-700">Expense History</h2>
                             <Button onClick={handleExport} variant="secondary" icon="Download">Export to Excel</Button>
                         </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 bg-slate-50 rounded-lg">
+                            <FormSelect
+                                label="Filter by Shop"
+                                name="shop"
+                                value={filters.shop}
+                                onChange={handleFilterChange}
+                                options={[{ value: 'all', label: 'All Shops' }, ...shops.map(s => ({ value: s.name, label: s.name }))]}
+                            />
+                            <FormInput
+                                label="Filter by Month"
+                                type="month"
+                                name="month"
+                                value={filters.month}
+                                onChange={handleFilterChange}
+                            />
+                        </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-xs text-gray-700 uppercase">
                                     <tr>
                                         <th className="p-3">Date</th><th className="p-3">Type</th><th className="p-3">Shop/Paid By</th>
-                                        <th className="p-3">Category</th><th className="p-3 text-right">Amount (KHR)</th>
+                                        <th className="p-3">Category</th><th className="p-3 text-right">Total (KHR)</th>
                                         <th className="p-3">Note</th><th className="p-3 text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="text-sm text-gray-600">
-                                    {allExpenses.map(exp => (
+                                    {filteredExpenses.map(exp => (
                                         <tr key={exp.id} className="border-b hover:bg-gray-50">
-                                            <td className="p-3">{formatInCambodiaDateOnly(exp.date)}</td>
+                                            <td className="p-3">{formatDateDDMMYY(exp.date)}</td>
                                             <td className="p-3"><span className={`px-2 py-1 text-xs rounded-full ${exp.type === 'Business' ? 'bg-sky-100 text-sky-800' : 'bg-purple-100 text-purple-800'}`}>{exp.type}</span></td>
                                             <td className="p-3">{exp.shop || exp.paidBy || 'N/A'}</td>
                                             <td className="p-3">{exp.category}</td>
-                                            <td className="p-3 text-right font-mono">{exp.amount?.toLocaleString()}</td>
+                                            <td className="p-3 text-right font-mono">{exp.totalAmountKhr?.toLocaleString()}</td>
                                             <td className="p-3 truncate max-w-xs">{exp.note}</td>
                                             <td className="p-3 flex gap-1 justify-center">
+                                                <Button variant="ghost" onClick={() => setViewingExpense(exp)}><Icon name="Eye"/></Button>
                                                 <Button variant="ghost" onClick={() => setEditingExpense(exp)}><Icon name="PenSquare"/></Button>
                                                 <Button variant="ghost" onClick={() => setDeletingExpense(exp)} className="text-red-500 hover:bg-red-100"><Icon name="Trash2"/></Button>
                                             </td>
@@ -2201,138 +2245,9 @@
                             </table>
                         </div>
                     </Card>
-                    {deletingExpense && <DeleteConfirmationModal title="Delete Expense" message="Are you sure you want to delete this expense record?" onConfirm={handleDelete} onClose={() => setDeletingExpense(null)} isDeleting={isDeleting} />}
+                    {deletingExpense && <ConfirmationModal title="Delete Expense" message="Are you sure you want to delete this expense record?" onConfirm={handleDelete} onClose={() => setDeletingExpense(null)} isSubmitting={isDeleting} isOpen={!!deletingExpense} confirmText="Delete" cancelText="Cancel" confirmColor="red" />}
+                    {viewingExpense && <ExpenseViewModal expense={viewingExpense} onClose={() => setViewingExpense(null)} onEdit={() => { setEditingExpense(viewingExpense); setViewingExpense(null); }} />}
                 </div>
-            );
-        };
-
-        const ExpenseForm = ({ expense, onClear }) => {
-            const { userData, shops, businessCategories, familyCategories } = useData();
-            const { showNotification } = useNotification();
-            const { doc, updateDoc, addDoc, collection } = window.Firebase;
-            const [isSubmitting, setIsSubmitting] = useState(false);
-            const isMounted = useRef(true);
-
-            const shareholders = useMemo(() => {
-                const allShareholders = shops.flatMap(s => (s.shareholders || []).map(sh => sh.name));
-                return [...new Set(allShareholders)];
-            }, [shops]);
-
-            useEffect(() => {
-                isMounted.current = true;
-                return () => { isMounted.current = false; };
-            }, []);
-            
-            const getInitialState = useCallback(() => ({
-                expenseType: 'Business',
-                date: getCambodiaISODate(),
-                shop: shops[0]?.name || '',
-                category: '',
-                amount: '',
-                note: '',
-                paidBy: shareholders[0] || ''
-            }), [shops, shareholders]);
-            
-            const [formData, setFormData] = useState(getInitialState());
-
-            useEffect(() => {
-                if (expense) {
-                    setFormData({
-                        id: expense.id,
-                        expenseType: expense.type,
-                        date: formatInCambodiaDateOnly(expense.date),
-                        shop: expense.shop || '',
-                        category: expense.category,
-                        amount: String(expense.amount),
-                        note: expense.note || '',
-                        paidBy: expense.paidBy || (shareholders[0] || '')
-                    });
-                } else {
-                    setFormData(getInitialState());
-                }
-            }, [expense, getInitialState, shareholders]);
-
-            const handleChange = (e) => {
-                const { name, value } = e.target;
-                setFormData(prev => ({ ...prev, [name]: value }));
-            };
-
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-                setIsSubmitting(true);
-                const collectionName = formData.expenseType === 'Business' ? 'businessExpenses' : 'familyExpenses';
-                const dataToSave = {
-                    date: createTimestampFromDate(formData.date),
-                    category: formData.category,
-                    amount: parseFormattedNumber(formData.amount),
-                    note: formData.note,
-                    submittedBy: userData.uid,
-                };
-
-                if (formData.expenseType === 'Business') {
-                    dataToSave.shop = formData.shop;
-                } else {
-                    dataToSave.paidBy = formData.paidBy;
-                }
-
-                try {
-                    if (expense?.id) {
-                        await updateDoc(doc(window.db, collectionName, expense.id), dataToSave);
-                        showNotification("Expense updated successfully!", "success");
-                    } else {
-                        await addDoc(collection(window.db, collectionName), dataToSave);
-                        showNotification("Expense added successfully!", "success");
-                    }
-                    if (isMounted.current) {
-                      setFormData(getInitialState());
-                      onClear();
-                    }
-                } catch (error) {
-                    console.error("Error saving expense:", error);
-                    showNotification("Failed to save expense.", "error");
-                } finally {
-                    if (isMounted.current) {
-                      setIsSubmitting(false);
-                    }
-                }
-            };
-
-            const expenseTypeOptions = useMemo(() => {
-                const options = [{ value: 'Business', label: 'Business Expense' }];
-                if (userData?.role === 'Admin') {
-                    options.push({ value: 'Family', label: 'Family Expense' });
-                }
-                return options;
-            }, [userData]);
-
-            const categoryOptions = formData.expenseType === 'Business' ? businessCategories : familyCategories;
-
-            return (
-                <Card>
-                    <h2 className="text-xl font-bold mb-4">{expense ? 'Edit' : 'Add New'} Expense</h2>
-                    <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <FormSelect label="Expense Type" name="expenseType" value={formData.expenseType} onChange={handleChange} options={expenseTypeOptions} />
-                        <FormInput label="Date" type="date" name="date" value={formData.date} onChange={handleChange} />
-                        
-                        {formData.expenseType === 'Business' ? (
-                            <FormSelect label="Shop" name="shop" value={formData.shop} onChange={handleChange} options={shops.map(s => ({value: s.name, label: s.name}))} />
-                        ) : (
-                            <FormSelect label="Paid By Shareholder" name="paidBy" value={formData.paidBy} onChange={handleChange} options={shareholders.map(s => ({value: s, label: s}))} />
-                        )}
-
-                        <FormSelect label="Category" name="category" value={formData.category} onChange={handleChange} options={[{value: '', label: 'Select Category'}, ...categoryOptions.map(c => ({value: c.name, label: c.name}))]} />
-                        <LiveFormatInput label="Amount (KHR)" name="amount" value={formData.amount} onChange={handleChange} />
-                        <div className="md:col-span-2 lg:col-span-3">
-                            <FormTextarea label="Note" name="note" value={formData.note} onChange={handleChange} />
-                        </div>
-                        <div className="lg:col-span-3 flex justify-end gap-4">
-                             {expense && <Button type="button" onClick={onClear} variant="secondary">Cancel Edit</Button>}
-                            <Button type="submit" disabled={isSubmitting} icon={isSubmitting ? "LoaderCircle" : null}>
-                                {isSubmitting ? 'Saving...' : (expense ? 'Update Expense' : 'Save Expense')}
-                            </Button>
-                        </div>
-                    </form>
-                </Card>
             );
         };
         // --- END: Expense Report Page ---
