@@ -2106,192 +2106,11 @@
         // --- END: Purchase Order Page ---
 
         // --- START: Expense Report Page ---
-        const ExpenseViewModal = ({ expense, onClose, onEdit }) => {
-            if (!expense) return null;
-
-            const details = [
-                { label: "Date", value: formatInCambodiaDateOnly(expense.date) },
-                { label: "Type", value: expense.type },
-                { label: expense.type === 'Business' ? "Shop" : "Paid By", value: expense.shop || expense.paidBy || 'N/A' },
-                { label: "Category", value: expense.category },
-                { label: "Amount (KHR)", value: formatCurrency(expense.amountKhr || 0, 'KHR'), isAmount: true },
-                { label: "Amount (USD)", value: formatCurrency(expense.amountUsd || 0, 'USD'), isAmount: true },
-                { label: "Total Amount", value: formatCurrency(expense.totalAmountKhr || 0, 'KHR'), isAmount: true, isTotal: true },
-                { label: "Note", value: expense.note || 'No note provided.', isNote: true },
-            ];
-
-            return (
-                <Modal title="Expense Details" onClose={onClose} size="lg">
-                    <div className="space-y-4">
-                        {details.map(detail => (
-                            <div key={detail.label} className={`flex flex-col sm:flex-row sm:items-center ${detail.isNote ? 'items-start' : ''}`}>
-                                <p className="w-full sm:w-1/3 text-sm font-semibold text-gray-600">{detail.label}</p>
-                                <p className={`w-full sm:w-2/3 text-gray-800 ${detail.isAmount ? 'font-mono' : ''} ${detail.isTotal ? 'font-bold text-lg text-red-600' : ''} ${detail.isNote ? 'whitespace-pre-wrap bg-gray-100 p-2 rounded-md mt-1 sm:mt-0' : ''}`}>
-                                    {detail.value}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="flex justify-end gap-4 pt-6 mt-6 border-t">
-                        <Button type="button" onClick={onClose} variant="secondary">Close</Button>
-                        <Button type="button" onClick={onEdit} icon="PenSquare">Edit</Button>
-                    </div>
-                </Modal>
-            );
-        };
-
-        const ExpenseForm = ({ expense, onClear }) => {
-            const { userData, shops, businessCategories, familyCategories, appSettings } = useData();
-            const { showNotification } = useNotification();
-            const { doc, updateDoc, addDoc, collection } = window.Firebase;
-            const [isSubmitting, setIsSubmitting] = useState(false);
-            const isMounted = useRef(true);
-
-            const shareholders = useMemo(() => {
-                const allShareholders = shops.flatMap(s => (s.shareholders || []).map(sh => sh.name));
-                return [...new Set(allShareholders)];
-            }, [shops]);
-
-            useEffect(() => {
-                isMounted.current = true;
-                return () => { isMounted.current = false; };
-            }, []);
-            
-            const getInitialState = useCallback(() => ({
-                expenseType: 'Business',
-                date: getCambodiaISODate(),
-                shop: shops[0]?.name || '',
-                category: '',
-                amountKhr: '',
-                amountUsd: '',
-                note: '',
-                paidBy: shareholders[0] || ''
-            }), [shops, shareholders]);
-            
-            const [formData, setFormData] = useState(getInitialState);
-
-            useEffect(() => {
-                if (expense) {
-                    setFormData({
-                        id: expense.id,
-                        expenseType: expense.type,
-                        date: getCambodiaISODate(expense.date.toDate()),
-                        shop: expense.shop || '',
-                        category: expense.category,
-                        amountKhr: String(expense.amountKhr || ''),
-                        amountUsd: String(expense.amountUsd || ''),
-                        note: expense.note || '',
-                        paidBy: expense.paidBy || (shareholders[0] || '')
-                    });
-                } else {
-                    setFormData(getInitialState());
-                }
-            }, [expense, getInitialState, shareholders]);
-
-            const subTotalKhr = useMemo(() => {
-                const khr = parseFormattedNumber(formData.amountKhr);
-                const usd = parseFormattedNumber(formData.amountUsd);
-                return (usd * (appSettings.exchangeRate || 4100)) + khr;
-            }, [formData.amountKhr, formData.amountUsd, appSettings.exchangeRate]);
-
-            const handleChange = (e) => {
-                const { name, value } = e.target;
-                setFormData(prev => ({ ...prev, [name]: value }));
-            };
-
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-                setIsSubmitting(true);
-                const collectionName = formData.expenseType === 'Business' ? 'businessExpenses' : 'familyExpenses';
-                const dataToSave = {
-                    date: createTimestampFromDate(formData.date),
-                    category: formData.category,
-                    amountKhr: parseFormattedNumber(formData.amountKhr),
-                    amountUsd: parseFormattedNumber(formData.amountUsd),
-                    totalAmountKhr: subTotalKhr,
-                    note: formData.note,
-                    submittedBy: userData.uid,
-                };
-
-                if (formData.expenseType === 'Business') {
-                    dataToSave.shop = formData.shop;
-                } else {
-                    dataToSave.paidBy = formData.paidBy;
-                }
-
-                try {
-                    if (expense?.id) {
-                        await updateDoc(doc(db, collectionName, expense.id), dataToSave);
-                        showNotification("Expense updated successfully!", "success");
-                    } else {
-                        await addDoc(collection(db, collectionName), dataToSave);
-                        showNotification("Expense added successfully!", "success");
-                    }
-                    if (isMounted.current) {
-                      setFormData(getInitialState());
-                      onClear();
-                    }
-                } catch (error) {
-                    console.error("Error saving expense:", error);
-                    showNotification("Failed to save expense.", "error");
-                } finally {
-                    if (isMounted.current) {
-                        setIsSubmitting(false);
-                    }
-                }
-            };
-
-            const expenseTypeOptions = useMemo(() => {
-                const options = [{ value: 'Business', label: 'Business Expense' }];
-                if (userData?.role === 'Admin') {
-                    options.push({ value: 'Family', label: 'Family Expense' });
-                }
-                return options;
-            }, [userData]);
-
-            const categoryOptions = formData.expenseType === 'Business' ? businessCategories : familyCategories;
-
-            return (
-                <Card>
-                    <h2 className="text-xl font-bold mb-4">{expense ? 'Edit' : 'Add New'} Expense</h2>
-                    <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                        <FormSelect label="Expense Type" name="expenseType" value={formData.expenseType} onChange={handleChange} options={expenseTypeOptions} />
-                        <FormInput label="Date" type="date" name="date" value={formData.date} onChange={handleChange} />
-                        
-                        {formData.expenseType === 'Business' ? (
-                            <FormSelect label="Shop" name="shop" value={formData.shop} onChange={handleChange} options={shops.map(s => ({value: s.name, label: s.name}))} />
-                        ) : (
-                            <FormSelect label="Paid By Shareholder" name="paidBy" value={formData.paidBy} onChange={handleChange} options={shareholders.map(s => ({value: s, label: s}))} />
-                        )}
-
-                        <FormSelect label="Category" name="category" value={formData.category} onChange={handleChange} options={[{value: '', label: 'Select Category'}, ...categoryOptions.map(c => ({value: c.name, label: c.name}))]} />
-                        
-                        <LiveFormatInput label="Amount (KHR)" name="amountKhr" value={formData.amountKhr} onChange={handleChange} />
-                        <LiveFormatInput label="Amount (USD)" name="amountUsd" value={formData.amountUsd} onChange={handleChange} />
-                        
-                        <div className="p-2 bg-slate-100 rounded-md">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Sub-Total (KHR)</label>
-                            <p className="font-bold text-lg text-red-600">{formatCurrency(subTotalKhr, 'KHR')}</p>
-                        </div>
-                        
-                        <div className="lg:col-span-4">
-                            <FormInput label="Note" name="note" value={formData.note} onChange={handleChange} />
-                        </div>
-                        <div className="lg:col-span-4 flex justify-end gap-4">
-                             {expense && <Button type="button" onClick={onClear} variant="secondary">Cancel Edit</Button>}
-                            <Button type="submit" disabled={isSubmitting} icon={isSubmitting ? "LoaderCircle" : null}>
-                                {isSubmitting ? 'Saving...' : (expense ? 'Update Expense' : 'Save Expense')}
-                            </Button>
-                        </div>
-                    </form>
-                </Card>
-            );
-        };
-
         const ExpenseReportPage = () => {
-            const { userData, businessExpenses, familyExpenses, shops } = useData();
+            const { userData, businessExpenses, familyExpenses, shops, businessCategories, familyCategories, appSettings } = useData();
             const { showNotification } = useNotification();
-            const { doc, deleteDoc } = window.Firebase;
+            const { doc, deleteDoc, updateDoc, addDoc, collection } = window.Firebase;
+
             const [editingExpense, setEditingExpense] = useState(null);
             const [deletingExpense, setDeletingExpense] = useState(null);
             const [viewingExpense, setViewingExpense] = useState(null);
@@ -2303,42 +2122,33 @@
                 isMounted.current = true;
                 return () => { isMounted.current = false; };
             }, []);
-            
+
             const handleFilterChange = (e) => {
                 const { name, value } = e.target;
                 setFilters(prev => ({ ...prev, [name]: value }));
             };
 
             const filteredExpenses = useMemo(() => {
-                let combinedList = [];
-                if (businessExpenses) {
-                    combinedList = combinedList.concat(businessExpenses.map(e => ({ ...e, type: 'Business' })));
-                }
-                if (userData?.role === 'Admin' && familyExpenses) {
-                    combinedList = combinedList.concat(familyExpenses.map(e => ({ ...e, type: 'Family' })));
-                }
+                let combinedList = [
+                    ...businessExpenses.map(e => ({ ...e, type: 'Business' })),
+                    ...(userData?.role === 'Admin' ? familyExpenses.map(e => ({ ...e, type: 'Family' })) : [])
+                ];
 
-                let filtered = combinedList;
-
-                if (filters.shop !== 'all') {
-                    filtered = filtered.filter(exp => exp.type !== 'Business' || exp.shop === filters.shop);
-                }
-
-                if (filters.month) {
+                return combinedList.filter(exp => {
+                    const shopMatch = filters.shop === 'all' || exp.type !== 'Business' || exp.shop === filters.shop;
+                    if (!filters.month) return shopMatch;
+                    
+                    if (!exp.date) return false;
                     const [year, month] = filters.month.split('-');
-                    filtered = filtered.filter(exp => {
-                        if (!exp.date) return false;
-                        const expDate = exp.date.toDate();
-                        return expDate.getFullYear() === parseInt(year) && (expDate.getMonth() + 1) === parseInt(month);
-                    });
-                }
-
-                return filtered.sort((a, b) => (b.date?.toDate()?.getTime() || 0) - (a.date?.toDate()?.getTime() || 0));
+                    const expDate = exp.date.toDate();
+                    const monthMatch = expDate.getFullYear() === parseInt(year) && (expDate.getMonth() + 1) === parseInt(month);
+                    
+                    return shopMatch && monthMatch;
+                }).sort((a, b) => (b.date?.toDate()?.getTime() || 0) - (a.date?.toDate()?.getTime() || 0));
             }, [businessExpenses, familyExpenses, userData, filters]);
 
-
             const handleDelete = async () => {
-                if (!deletingExpense) return;
+                if (!deletingExpense || !isMounted.current) return;
                 setIsDeleting(true);
                 const collectionName = deletingExpense.type === 'Business' ? 'businessExpenses' : 'familyExpenses';
                 try {
@@ -2359,7 +2169,6 @@
                     showNotification("Excel library not loaded yet.", "error");
                     return;
                 }
-
                 const dataToExport = filteredExpenses.map(exp => ({
                     "Date": formatInCambodiaDateOnly(exp.date),
                     "Type": exp.type,
@@ -2370,13 +2179,152 @@
                     "Total Amount (KHR)": exp.totalAmountKhr,
                     "Note": exp.note || ''
                 }));
-
                 const ws = window.XLSX.utils.json_to_sheet(dataToExport);
                 const wb = window.XLSX.utils.book_new();
                 window.XLSX.utils.book_append_sheet(wb, ws, "Expense Report");
                 window.XLSX.writeFile(wb, "Expense_Report.xlsx");
                 showNotification("Exported successfully!", "success");
             }, [filteredExpenses, showNotification]);
+
+            const ExpenseViewModal = ({ expense, onClose, onEdit }) => {
+                if (!expense) return null;
+                const details = [
+                    { label: "Date", value: formatInCambodiaDateOnly(expense.date) },
+                    { label: "Type", value: expense.type },
+                    { label: expense.type === 'Business' ? "Shop" : "Paid By", value: expense.shop || expense.paidBy || 'N/A' },
+                    { label: "Category", value: expense.category },
+                    { label: "Amount (KHR)", value: formatCurrency(expense.amountKhr || 0, 'KHR'), isAmount: true },
+                    { label: "Amount (USD)", value: formatCurrency(expense.amountUsd || 0, 'USD'), isAmount: true },
+                    { label: "Total Amount", value: formatCurrency(expense.totalAmountKhr || 0, 'KHR'), isAmount: true, isTotal: true },
+                    { label: "Note", value: expense.note || 'No note provided.', isNote: true },
+                ];
+
+                return (
+                    <Modal title="Expense Details" onClose={onClose} size="lg">
+                        <div className="space-y-4">
+                            {details.map(detail => (
+                                <div key={detail.label} className={`flex flex-col sm:flex-row sm:items-center ${detail.isNote ? 'items-start' : ''}`}>
+                                    <p className="w-full sm:w-1/3 text-sm font-semibold text-gray-600">{detail.label}</p>
+                                    <p className={`w-full sm:w-2/3 text-gray-800 ${detail.isAmount ? 'font-mono' : ''} ${detail.isTotal ? 'font-bold text-lg text-red-600' : ''} ${detail.isNote ? 'whitespace-pre-wrap bg-gray-100 p-2 rounded-md mt-1 sm:mt-0' : ''}`}>
+                                        {detail.value}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex justify-end gap-4 pt-6 mt-6 border-t">
+                            <Button type="button" onClick={onClose} variant="secondary">Close</Button>
+                            <Button type="button" onClick={onEdit} icon="PenSquare">Edit</Button>
+                        </div>
+                    </Modal>
+                );
+            };
+
+            const ExpenseForm = ({ expense, onClear }) => {
+                const [isSubmitting, setIsSubmitting] = useState(false);
+                const shareholders = useMemo(() => [...new Set(shops.flatMap(s => (s.shareholders || []).map(sh => sh.name)))], [shops]);
+
+                const getInitialState = useCallback(() => ({
+                    expenseType: 'Business', date: getCambodiaISODate(), shop: shops[0]?.name || '',
+                    category: '', amountKhr: '', amountUsd: '', note: '', paidBy: shareholders[0] || ''
+                }), [shops, shareholders]);
+                
+                const [formData, setFormData] = useState(getInitialState);
+
+                useEffect(() => {
+                    if (expense) {
+                        setFormData({
+                            id: expense.id, expenseType: expense.type, date: getCambodiaISODate(expense.date.toDate()),
+                            shop: expense.shop || '', category: expense.category, amountKhr: String(expense.amountKhr || ''),
+                            amountUsd: String(expense.amountUsd || ''), note: expense.note || '',
+                            paidBy: expense.paidBy || (shareholders[0] || '')
+                        });
+                    } else {
+                        setFormData(getInitialState());
+                    }
+                }, [expense, getInitialState, shareholders]);
+
+                const subTotalKhr = useMemo(() => {
+                    const khr = parseFormattedNumber(formData.amountKhr);
+                    const usd = parseFormattedNumber(formData.amountUsd);
+                    return (usd * (appSettings.exchangeRate || 4100)) + khr;
+                }, [formData.amountKhr, formData.amountUsd, appSettings.exchangeRate]);
+
+                const handleChange = (e) => {
+                    const { name, value } = e.target;
+                    setFormData(prev => ({ ...prev, [name]: value }));
+                };
+
+                const handleSubmit = async (e) => {
+                    e.preventDefault();
+                    if (!isMounted.current) return;
+                    setIsSubmitting(true);
+                    const collectionName = formData.expenseType === 'Business' ? 'businessExpenses' : 'familyExpenses';
+                    const dataToSave = {
+                        date: createTimestampFromDate(formData.date), category: formData.category,
+                        amountKhr: parseFormattedNumber(formData.amountKhr), amountUsd: parseFormattedNumber(formData.amountUsd),
+                        totalAmountKhr: subTotalKhr, note: formData.note, submittedBy: userData.uid,
+                        ...(formData.expenseType === 'Business' ? { shop: formData.shop } : { paidBy: formData.paidBy })
+                    };
+
+                    try {
+                        if (expense?.id) {
+                            await updateDoc(doc(db, collectionName, expense.id), dataToSave);
+                            showNotification("Expense updated successfully!", "success");
+                        } else {
+                            await addDoc(collection(db, collectionName), dataToSave);
+                            showNotification("Expense added successfully!", "success");
+                        }
+                        if (isMounted.current) { onClear(); }
+                    } catch (error) {
+                        showNotification("Failed to save expense.", "error");
+                    } finally {
+                        if (isMounted.current) { setIsSubmitting(false); }
+                    }
+                };
+
+                const expenseTypeOptions = useMemo(() => [
+                    { value: 'Business', label: 'Business Expense' },
+                    ...(userData?.role === 'Admin' ? [{ value: 'Family', label: 'Family Expense' }] : [])
+                ], [userData]);
+
+                const categoryOptions = formData.expenseType === 'Business' ? businessCategories : familyCategories;
+
+                return (
+                    <Card>
+                        <h2 className="text-xl font-bold mb-4">{expense ? 'Edit' : 'Add New'} Expense</h2>
+                        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                            <FormSelect label="Expense Type" name="expenseType" value={formData.expenseType} onChange={handleChange} options={expenseTypeOptions} />
+                            <FormInput label="Date" type="date" name="date" value={formData.date} onChange={handleChange} />
+                            
+                            {formData.expenseType === 'Business' ? (
+                                <FormSelect label="Shop" name="shop" value={formData.shop} onChange={handleChange} options={shops.map(s => ({value: s.name, label: s.name}))} />
+                            ) : (
+                                <FormSelect label="Paid By Shareholder" name="paidBy" value={formData.paidBy} onChange={handleChange} options={shareholders.map(s => ({value: s, label: s}))} />
+                            )}
+
+                            <FormSelect label="Category" name="category" value={formData.category} onChange={handleChange} options={[{value: '', label: 'Select Category'}, ...categoryOptions.map(c => ({value: c.name, label: c.name}))]} />
+                            
+                            <LiveFormatInput label="Amount (KHR)" name="amountKhr" value={formData.amountKhr} onChange={handleChange} />
+                            <LiveFormatInput label="Amount (USD)" name="amountUsd" value={formData.amountUsd} onChange={handleChange} />
+                            
+                            <div className="p-2 bg-slate-100 rounded-md">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Sub-Total (KHR)</label>
+                                <p className="font-bold text-lg text-red-600">{formatCurrency(subTotalKhr, 'KHR')}</p>
+                            </div>
+                            
+                            <div className="lg:col-span-4">
+                                <FormInput label="Note" name="note" value={formData.note} onChange={handleChange} />
+                            </div>
+                            <div className="lg:col-span-4 flex justify-end gap-4">
+                                {expense && <Button type="button" onClick={onClear} variant="secondary">Cancel Edit</Button>}
+                                <Button type="submit" disabled={isSubmitting} icon={isSubmitting ? "LoaderCircle" : null}>
+                                    {isSubmitting ? 'Saving...' : (expense ? 'Update Expense' : 'Save Expense')}
+                                </Button>
+                            </div>
+                        </form>
+                    </Card>
+                );
+            };
 
             return (
                 <div className="space-y-6">
@@ -2389,20 +2337,8 @@
                             <Button onClick={handleExport} variant="secondary" icon="Download">Export to Excel</Button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 bg-slate-50 rounded-lg">
-                            <FormSelect
-                                label="Filter by Shop"
-                                name="shop"
-                                value={filters.shop}
-                                onChange={handleFilterChange}
-                                options={[{ value: 'all', label: 'All Shops' }, ...shops.map(s => ({ value: s.name, label: s.name }))]}
-                            />
-                            <FormInput
-                                label="Filter by Month"
-                                type="month"
-                                name="month"
-                                value={filters.month}
-                                onChange={handleFilterChange}
-                            />
+                            <FormSelect label="Filter by Shop" name="shop" value={filters.shop} onChange={handleFilterChange} options={[{ value: 'all', label: 'All Shops' }, ...shops.map(s => ({ value: s.name, label: s.name }))]} />
+                            <FormInput label="Filter by Month" type="month" name="month" value={filters.month} onChange={handleFilterChange} />
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm text-left">
@@ -2439,169 +2375,23 @@
             );
         };
         // --- END: Expense Report Page ---
+
         // --- START: CashFlow Report Page ---
         const CashFlowReportPage = () => {
-            const { reports, businessExpenses, familyExpenses, shops, purchaseOrders, internalTransfers, appSettings } = useData();
-            const [filters, setFilters] = useState({
-                month: new Date().toISOString().slice(0, 7) // YYYY-MM format
-            });
+            const [activeTab, setActiveTab] = useState('shareholderNet');
+            const [filters, setFilters] = useState({ month: new Date().toISOString().slice(0, 7) });
             const printRef = useRef();
             const { showNotification } = useNotification();
             const [isCapturing, setIsCapturing] = useState(false);
             const isMounted = useRef(true);
-            const [activeTab, setActiveTab] = useState('shareholderNet');
-
-            const TabButton = ({ tabName, label, isActive, onClick }) => (
-                <button onClick={() => onClick(tabName)} className={`px-4 py-2 text-sm font-semibold rounded-t-lg ${isActive ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-slate-500 hover:bg-slate-100'}`}>
-                    {label}
-                </button>
-            );
 
             useEffect(() => {
                 isMounted.current = true;
                 return () => { isMounted.current = false; };
             }, []);
 
-            const handleFilterChange = (e) => {
-                setFilters(prev => ({ ...prev, [e.target.name]: e.target.value }));
-            };
-
-            const dataForMonth = useMemo(() => {
-                const [year, month] = filters.month.split('-').map(Number);
-                const startDate = new Date(year, month - 1, 1);
-                const endDate = new Date(year, month, 0, 23, 59, 59, 999);
-                const exchangeRate = appSettings.exchangeRate || 4100;
-
-                const filterByDate = (item) => {
-                    if (!item.date && !item.createdAt) return false;
-                    const itemDate = item.createdAt?.toDate() || item.date?.toDate();
-                    return itemDate >= startDate && itemDate <= endDate;
-                };
-
-                const filteredReports = reports.filter(filterByDate);
-                const filteredBusinessExpenses = businessExpenses.filter(filterByDate);
-                const filteredFamilyExpenses = familyExpenses.filter(filterByDate);
-                const filteredInternalTransfers = internalTransfers.filter(filterByDate);
-                const filteredPurchaseOrders = purchaseOrders.filter(filterByDate);
-                
-                const shopCalculations = shops.map(shop => {
-                    const openingGCA = shop.gca || 0;
-                    const saleMargin = shop.saleMargin || 0;
-                    
-                    const netSale_AllTime = reports.filter(cd => cd.shop === shop.name).reduce((sum, cd) => sum + (cd.grandTotalKhr || 0), 0);
-                    const salesContribution_AllTime = netSale_AllTime * (1 - (saleMargin / 100));
-                    const totalPOs_AllTime = purchaseOrders.filter(po => po.shop === shop.name).reduce((sum, po) => sum + ((po.amountKhr || 0) + (po.amountUsd || 0) * exchangeRate), 0);
-                    const transfersIn_AllTime = internalTransfers.filter(it => it.toShop === shop.name).reduce((sum, it) => sum + (it.amountKhr || 0) + ((it.amountUsd || 0) * exchangeRate), 0);
-                    const transfersOut_AllTime = internalTransfers.filter(it => it.fromShop === shop.name).reduce((sum, it) => sum + (it.amountKhr || 0) + ((it.amountUsd || 0) * exchangeRate), 0);
-                    
-                    const currentGCA = openingGCA + salesContribution_AllTime - totalPOs_AllTime - transfersIn_AllTime + transfersOut_AllTime;
-
-                    const netSaleForMonth = filteredReports.filter(cd => cd.shop === shop.name).reduce((sum, cd) => sum + (cd.grandTotalKhr || 0), 0);
-                    const bizExpenseForMonth = filteredBusinessExpenses.filter(e => e.shop === shop.name).reduce((sum, e) => sum + (e.amount || 0), 0);
-                    const netProfitForMonth = netSaleForMonth * (saleMargin / 100);
-                    const totalNetIncomeForMonth = netProfitForMonth - bizExpenseForMonth;
-                    const totalPOForMonth = filteredPurchaseOrders.filter(po => po.shop === shop.name).reduce((sum, po) => sum + ((po.amountKhr || 0) + (po.amountUsd || 0) * exchangeRate), 0);
-                    const totalTransInForMonth = filteredInternalTransfers.filter(it => it.toShop === shop.name).reduce((sum, it) => sum + (it.amountKhr || 0) + ((it.amountUsd || 0) * exchangeRate), 0);
-                    const totalTransOutForMonth = filteredInternalTransfers.filter(it => it.fromShop === shop.name).reduce((sum, it) => sum + (it.amountKhr || 0) + ((it.amountUsd || 0) * exchangeRate), 0);
-
-                    return {
-                        name: shop.name,
-                        currentGCA,
-                        netSale: netSaleForMonth,
-                        netProfit: netProfitForMonth,
-                        totalPO: totalPOForMonth,
-                        totalTransIn: totalTransInForMonth,
-                        totalTransOut: totalTransOutForMonth,
-                        totalBizExpense: bizExpenseForMonth,
-                        totalNetIncome: totalNetIncomeForMonth,
-                    };
-                });
-                
-                const shareholderData = {};
-                const allShareholders = [...new Set(shops.flatMap(s => (s.shareholders || []).map(sh => sh.name)))];
-                allShareholders.forEach(name => {
-                    shareholderData[name] = {
-                        totalGCA: 0,
-                        totalNetIncome: 0,
-                        familyExpense: 0,
-                        finalNetIncome: 0,
-                        totalCOH: 0,
-                    };
-                });
-
-                shops.forEach(shop => {
-                    const shopCalc = shopCalculations.find(c => c.name === shop.name);
-                    const shopProfit = shopCalc ? shopCalc.netProfit : 0;
-                    
-                    (shop.shareholders || []).forEach(sh => {
-                        if(shareholderData[sh.name]) {
-                            shareholderData[sh.name].totalGCA += (shopCalc?.currentGCA || 0) * (sh.percentage / 100);
-                            shareholderData[sh.name].totalNetIncome += shopProfit * (sh.percentage / 100);
-                        }
-                    });
-                });
-
-                filteredFamilyExpenses.forEach(expense => {
-                    if (shareholderData[expense.paidBy]) {
-                        shareholderData[expense.paidBy].familyExpense += expense.amount || 0;
-                    }
-                });
-                
-                Object.keys(shareholderData).forEach(name => {
-                    const data = shareholderData[name];
-                    data.finalNetIncome = data.totalNetIncome - data.familyExpense;
-                    data.totalCOH = data.finalNetIncome + data.totalGCA;
-                });
-
-                const iitPaymentData = filteredInternalTransfers.reduce((acc, transfer) => {
-                    const payee = transfer.toShop;
-                    const receiver = transfer.fromShop;
-                    const key = `${payee}-${receiver}`;
-
-                    if (!acc[key]) {
-                        acc[key] = {
-                            payee,
-                            receiver,
-                            totalAmount: 0,
-                        };
-                    }
-
-                    acc[key].totalAmount += transfer.totalAmount || 0;
-                    return acc;
-                }, {});
-
-
-                return { shareholderData, shopCalculations, iitPaymentData: Object.values(iitPaymentData), filterByDate };
-            }, [filters.month, reports, businessExpenses, familyExpenses, shops, purchaseOrders, internalTransfers, appSettings]);
-            
-            const shareholderFooterTotals = useMemo(() => {
-                return Object.values(dataForMonth.shareholderData).reduce((acc, data) => {
-                    acc.totalGCA += data.totalGCA;
-                    acc.totalNetIncome += data.totalNetIncome;
-                    acc.familyExpense += data.familyExpense;
-                    acc.finalNetIncome += data.finalNetIncome;
-                    acc.totalCOH += data.totalCOH;
-                    return acc;
-                }, { totalGCA: 0, totalNetIncome: 0, familyExpense: 0, finalNetIncome: 0, totalCOH: 0 });
-            }, [dataForMonth.shareholderData]);
-
-            const historyFooterTotals = useMemo(() => {
-                 return dataForMonth.shopCalculations.reduce((acc, shop) => {
-                    acc.currentGCA += shop.currentGCA;
-                    acc.netSale += shop.netSale;
-                    acc.netProfit += shop.netProfit;
-                    acc.totalPO += shop.totalPO;
-                    acc.totalTransIn += shop.totalTransIn;
-                    acc.totalTransOut += shop.totalTransOut;
-                    acc.totalBizExpense += shop.totalBizExpense;
-                    acc.totalNetIncome += shop.totalNetIncome;
-                    return acc;
-                }, { currentGCA: 0, netSale: 0, netProfit: 0, totalPO: 0, totalTransIn: 0, totalTransOut: 0, totalBizExpense: 0, totalNetIncome: 0 });
-            }, [dataForMonth.shopCalculations]);
-
             const handleDownloadImage = useCallback(async () => {
-                if (!printRef.current) return;
-                if(!isMounted.current) return;
+                if (!printRef.current || !isMounted.current) return;
                 setIsCapturing(true);
                 try {
                     const canvas = await html2canvas(printRef.current, { useCORS: true, scale: 2 });
@@ -2618,17 +2408,18 @@
                 } finally {
                     if(isMounted.current) setIsCapturing(false);
                 }
-            }, [filters.month]);
-            
+            }, [filters.month, showNotification]);
+
+            const TabButton = ({ tabName, label, isActive, onClick }) => (
+                <button onClick={() => onClick(tabName)} className={`px-4 py-2 text-sm font-semibold rounded-t-lg ${isActive ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-slate-500 hover:bg-slate-100'}`}>
+                    {label}
+                </button>
+            );
+
             return (
                 <div>
                     <PageHeader title="CashFlow Report" subtitle="Monthly financial overview.">
-                         <Button 
-                            onClick={handleDownloadImage}
-                            disabled={isCapturing}
-                            variant="secondary"
-                            icon={isCapturing ? 'LoaderCircle' : 'Download'}
-                        >
+                         <Button onClick={handleDownloadImage} disabled={isCapturing} variant="secondary" icon={isCapturing ? 'LoaderCircle' : 'Download'}>
                             {isCapturing ? 'Capturing...' : 'Download as Image'}
                         </Button>
                     </PageHeader>
@@ -2639,137 +2430,262 @@
                         <TabButton tabName="personalCashflow" label="Personal CashFlow" isActive={activeTab === 'personalCashflow'} onClick={setActiveTab} />
                     </div>
                     <Card className="mt-6">
-                        <FormInput label="Select Month" type="month" name="month" value={filters.month} onChange={handleFilterChange} />
+                        <FormInput label="Select Month" type="month" name="month" value={filters.month} onChange={(e) => setFilters({ month: e.target.value })} />
                     </Card>
                     
                     <div ref={printRef} className="bg-white p-4 rounded-lg space-y-8">
-                        <div className={activeTab === 'shareholderNet' ? '' : 'hidden'}>
-                            <Card>
-                                <h3 className="text-lg font-bold mb-4">Shareholder NET</h3>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-sm">
-                                        <thead className="bg-gray-100">
-                                            <tr>
-                                                <th className="p-2 text-left">No.</th>
-                                                <th className="p-2 text-left">Shareholder</th>
-                                                <th className="p-2 text-right">Total GCA</th>
-                                                <th className="p-2 text-right">Total Net-Income</th>
-                                                <th className="p-2 text-right">Family Expense</th>
-                                                <th className="p-2 text-right">Final Net-Income</th>
-                                                <th className="p-2 text-right">Total COH</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {Object.entries(dataForMonth.shareholderData).map(([name, data], index) => (
-                                                <tr key={name} className="border-b">
-                                                    <td className="p-2">{index + 1}</td>
-                                                    <td className="p-2 font-semibold">{name}</td>
-                                                    <td className="p-2 text-right font-mono">{data.totalGCA.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                                    <td className="p-2 text-right font-mono">{data.totalNetIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                                    <td className="p-2 text-right font-mono text-red-600">{data.familyExpense.toLocaleString()}</td>
-                                                    <td className="p-2 text-right font-mono font-bold">{data.finalNetIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                                    <td className="p-2 text-right font-mono font-bold text-indigo-600">{data.totalCOH.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                        <tfoot className="bg-gray-200 font-bold">
-                                            <tr>
-                                                <td colSpan="2" className="p-2 text-right">Sub-Total (KHR)</td>
-                                                <td className="p-2 text-right font-mono">{shareholderFooterTotals.totalGCA.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                                <td className="p-2 text-right font-mono">{shareholderFooterTotals.totalNetIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                                <td className="p-2 text-right font-mono">{shareholderFooterTotals.familyExpense.toLocaleString()}</td>
-                                                <td className="p-2 text-right font-mono">{shareholderFooterTotals.finalNetIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                                <td className="p-2 text-right font-mono">{shareholderFooterTotals.totalCOH.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            </Card>
-                        </div>
-                        <div className={activeTab === 'cashflowHistory' ? '' : 'hidden'}>
-                        <Card>
-                             <h3 className="text-lg font-bold mb-4">CashFlow History</h3>
-                             <div className="overflow-x-auto">
-                                <table className="w-full text-sm">
-                                     <thead className="bg-gray-100">
-                                        <tr>
-                                            <th className="p-2 text-left">No.</th>
-                                            <th className="p-2 text-left">Shop</th>
-                                            <th className="p-2 text-right">Current GCA (៛)</th>
-                                            <th className="p-2 text-right">Net Sale</th>
-                                            <th className="p-2 text-right">Net Profit</th>
-                                            <th className="p-2 text-right">Total PO</th>
-                                            <th className="p-2 text-right">Total Tran-IN</th>
-                                            <th className="p-2 text-right">Total-Trans-OUT</th>
-                                            <th className="p-2 text-right">Total Biz Expense</th>
-                                            <th className="p-2 text-right">Total Net Income</th>
-                                        </tr>
-                                     </thead>
-                                     <tbody>
-                                        {dataForMonth.shopCalculations.map((shop, index) => (
-                                            <tr key={shop.name} className="border-b">
-                                                <td className="p-2">{index+1}</td>
-                                                <td className="p-2 font-semibold">{shop.name}</td>
-                                                <td className="p-2 text-right font-mono">{shop.currentGCA.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                                <td className="p-2 text-right font-mono">{shop.netSale.toLocaleString()}</td>
-                                                <td className="p-2 text-right font-mono">{shop.netProfit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                                <td className="p-2 text-right font-mono">{shop.totalPO.toLocaleString()}</td>
-                                                <td className="p-2 text-right font-mono">{shop.totalTransIn.toLocaleString()}</td>
-                                                <td className="p-2 text-right font-mono">{shop.totalTransOut.toLocaleString()}</td>
-                                                <td className="p-2 text-right font-mono">{shop.totalBizExpense.toLocaleString()}</td>
-                                                <td className="p-2 text-right font-mono font-bold">{shop.totalNetIncome.toLocaleString()}</td>
-                                            </tr>
-                                        ))}
-                                     </tbody>
-                                     <tfoot className="bg-gray-200 font-bold">
-                                        <tr>
-                                            <td colSpan="2" className="p-2 text-right">Sub-Totals</td>
-                                            <td className="p-2 text-right font-mono">{historyFooterTotals.currentGCA.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                            <td className="p-2 text-right font-mono">{historyFooterTotals.netSale.toLocaleString()}</td>
-                                            <td className="p-2 text-right font-mono">{historyFooterTotals.netProfit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                            <td className="p-2 text-right font-mono">{historyFooterTotals.totalPO.toLocaleString()}</td>
-                                            <td className="p-2 text-right font-mono">{historyFooterTotals.totalTransIn.toLocaleString()}</td>
-                                            <td className="p-2 text-right font-mono">{historyFooterTotals.totalTransOut.toLocaleString()}</td>
-                                            <td className="p-2 text-right font-mono">{historyFooterTotals.totalBizExpense.toLocaleString()}</td>
-                                            <td className="p-2 text-right font-mono">{historyFooterTotals.totalNetIncome.toLocaleString()}</td>
-                                        </tr>
-                                     </tfoot>
-                                </table>
-                             </div>
-                        </Card>
-                        </div>
-                         <div className={activeTab === 'iitPayment' ? '' : 'hidden'}>
-                         <Card>
-                            <h3 className="text-lg font-bold mb-4">IIT Payment Report</h3>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-sm">
-                                    <thead className="bg-gray-100">
-                                        <tr>
-                                            <th className="p-2 text-left">No.</th>
-                                            <th className="p-2 text-left">Shop Payee</th>
-                                            <th className="p-2 text-left">Shop Receiver</th>
-                                            <th className="p-2 text-right">Total Amount (៛)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {dataForMonth.iitPaymentData.map((t, index) => (
-                                            <tr key={index} className="border-b">
-                                                <td className="p-2">{index + 1}</td>
-                                                <td className="p-2">{t.payee}</td>
-                                                <td className="p-2">{t.receiver}</td>
-                                                <td className="p-2 text-right font-mono">{(t.totalAmount || 0).toLocaleString()}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </Card>
-                        </div>
-                        <div className={activeTab === 'personalCashflow' ? '' : 'hidden'}><PersonalCashFlowManagement /></div>
+                        {activeTab === 'shareholderNet' && <ShareholderNetTab filters={filters} />}
+                        {activeTab === 'cashflowHistory' && <CashflowHistoryTab filters={filters} />}
+                        {activeTab === 'iitPayment' && <IitPaymentTab filters={filters} />}
+                        {activeTab === 'personalCashflow' && <PersonalCashFlowManagement />}
                     </div>
                 </div>
-            )
-        }
+            );
+        };
+
+        const useMonthlyData = (filters) => {
+            const { reports, businessExpenses, familyExpenses, shops, purchaseOrders, internalTransfers, appSettings } = useData();
+            
+            return useMemo(() => {
+                const [year, month] = filters.month.split('-').map(Number);
+                const startDate = new Date(year, month - 1, 1);
+                const endDate = new Date(year, month, 0, 23, 59, 59, 999);
+                const exchangeRate = appSettings.exchangeRate || 4100;
+
+                const filterByDate = (item) => {
+                    const itemDate = item.createdAt?.toDate() || item.date?.toDate();
+                    return itemDate && itemDate >= startDate && itemDate <= endDate;
+                };
+                
+                const filteredReports = reports.filter(filterByDate);
+                const filteredBusinessExpenses = businessExpenses.filter(filterByDate);
+                const filteredFamilyExpenses = familyExpenses.filter(filterByDate);
+                const filteredInternalTransfers = internalTransfers.filter(filterByDate);
+                const filteredPurchaseOrders = purchaseOrders.filter(filterByDate);
+
+                return { exchangeRate, shops, filteredReports, filteredBusinessExpenses, filteredFamilyExpenses, filteredInternalTransfers, filteredPurchaseOrders, allPOs: purchaseOrders, allReports: reports, allTransfers: internalTransfers };
+            }, [filters.month, reports, businessExpenses, familyExpenses, shops, purchaseOrders, internalTransfers, appSettings]);
+        };
+
+        const ShareholderNetTab = ({ filters }) => {
+            const data = useMonthlyData(filters);
+
+            const { shareholderData, totals } = useMemo(() => {
+                const shareholderData = {};
+                const allShareholders = [...new Set(data.shops.flatMap(s => (s.shareholders || []).map(sh => sh.name)))];
+                allShareholders.forEach(name => {
+                    shareholderData[name] = { totalGCA: 0, totalNetIncome: 0, familyExpense: 0, finalNetIncome: 0, totalCOH: 0 };
+                });
+
+                data.shops.forEach(shop => {
+                    const openingGCA = shop.gca || 0;
+                    const saleMargin = shop.saleMargin || 0;
+                    
+                    const netSaleAllTime = data.allReports.filter(cd => cd.shop === shop.name).reduce((sum, cd) => sum + (cd.grandTotalKhr || 0), 0);
+                    const salesContributionAllTime = netSaleAllTime * (1 - (saleMargin / 100));
+                    const totalPOsAllTime = data.allPOs.filter(po => po.shop === shop.name).reduce((sum, po) => sum + ((po.amountKhr || 0) + (po.amountUsd || 0) * data.exchangeRate), 0);
+                    const transfersInAllTime = data.allTransfers.filter(it => it.toShop === shop.name).reduce((sum, it) => sum + (it.amountKhr || 0) + ((it.amountUsd || 0) * data.exchangeRate), 0);
+                    const transfersOutAllTime = data.allTransfers.filter(it => it.fromShop === shop.name).reduce((sum, it) => sum + (it.amountKhr || 0) + ((it.amountUsd || 0) * data.exchangeRate), 0);
+                    const currentGCA = openingGCA + salesContributionAllTime - totalPOsAllTime - transfersInAllTime + transfersOutAllTime;
+
+                    const netSaleForMonth = data.filteredReports.filter(cd => cd.shop === shop.name).reduce((sum, cd) => sum + (cd.grandTotalKhr || 0), 0);
+                    const netProfitForMonth = netSaleForMonth * (saleMargin / 100);
+                    
+                    (shop.shareholders || []).forEach(sh => {
+                        if(shareholderData[sh.name]) {
+                            shareholderData[sh.name].totalGCA += currentGCA * (sh.percentage / 100);
+                            shareholderData[sh.name].totalNetIncome += netProfitForMonth * (sh.percentage / 100);
+                        }
+                    });
+                });
+
+                data.filteredFamilyExpenses.forEach(expense => {
+                    if (shareholderData[expense.paidBy]) {
+                        shareholderData[expense.paidBy].familyExpense += (expense.totalAmountKhr || 0);
+                    }
+                });
+
+                Object.keys(shareholderData).forEach(name => {
+                    const d = shareholderData[name];
+                    d.finalNetIncome = d.totalNetIncome - d.familyExpense;
+                    d.totalCOH = d.finalNetIncome + d.totalGCA;
+                });
+                
+                const totals = Object.values(shareholderData).reduce((acc, d) => {
+                    acc.totalGCA += d.totalGCA;
+                    acc.totalNetIncome += d.totalNetIncome;
+                    acc.familyExpense += d.familyExpense;
+                    acc.finalNetIncome += d.finalNetIncome;
+                    acc.totalCOH += d.totalCOH;
+                    return acc;
+                }, { totalGCA: 0, totalNetIncome: 0, familyExpense: 0, finalNetIncome: 0, totalCOH: 0 });
+
+                return { shareholderData, totals };
+            }, [data]);
+
+            return (
+                <Card>
+                    <h3 className="text-lg font-bold mb-4">Shareholder NET</h3>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead className="bg-gray-100">
+                                <tr>
+                                    <th className="p-2 text-left">No.</th><th className="p-2 text-left">Shareholder</th>
+                                    <th className="p-2 text-right">Total GCA</th><th className="p-2 text-right">Total Net-Income</th>
+                                    <th className="p-2 text-right">Family Expense</th><th className="p-2 text-right">Final Net-Income</th>
+                                    <th className="p-2 text-right">Total COH</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Object.entries(shareholderData).map(([name, d], index) => (
+                                    <tr key={name} className="border-b">
+                                        <td className="p-2">{index + 1}</td><td className="p-2 font-semibold">{name}</td>
+                                        <td className="p-2 text-right font-mono">{d.totalGCA.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                        <td className="p-2 text-right font-mono">{d.totalNetIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                        <td className="p-2 text-right font-mono text-red-600">{d.familyExpense.toLocaleString()}</td>
+                                        <td className="p-2 text-right font-mono font-bold">{d.finalNetIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                        <td className="p-2 text-right font-mono font-bold text-indigo-600">{d.totalCOH.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                            <tfoot className="bg-gray-200 font-bold">
+                                <tr>
+                                    <td colSpan="2" className="p-2 text-right">Sub-Total (KHR)</td>
+                                    <td className="p-2 text-right font-mono">{totals.totalGCA.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    <td className="p-2 text-right font-mono">{totals.totalNetIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    <td className="p-2 text-right font-mono">{totals.familyExpense.toLocaleString()}</td>
+                                    <td className="p-2 text-right font-mono">{totals.finalNetIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    <td className="p-2 text-right font-mono">{totals.totalCOH.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </Card>
+            );
+        };
+
+        const CashflowHistoryTab = ({ filters }) => {
+            const data = useMonthlyData(filters);
+
+            const { shopCalculations, totals } = useMemo(() => {
+                const shopCalculations = data.shops.map(shop => {
+                    const openingGCA = shop.gca || 0;
+                    const saleMargin = shop.saleMargin || 0;
+                    
+                    const netSaleAllTime = data.allReports.filter(cd => cd.shop === shop.name).reduce((sum, cd) => sum + (cd.grandTotalKhr || 0), 0);
+                    const salesContributionAllTime = netSaleAllTime * (1 - (saleMargin / 100));
+                    const totalPOsAllTime = data.allPOs.filter(po => po.shop === shop.name).reduce((sum, po) => sum + ((po.amountKhr || 0) + (po.amountUsd || 0) * data.exchangeRate), 0);
+                    const transfersInAllTime = data.allTransfers.filter(it => it.toShop === shop.name).reduce((sum, it) => sum + (it.amountKhr || 0) + ((it.amountUsd || 0) * data.exchangeRate), 0);
+                    const transfersOutAllTime = data.allTransfers.filter(it => it.fromShop === shop.name).reduce((sum, it) => sum + (it.amountKhr || 0) + ((it.amountUsd || 0) * data.exchangeRate), 0);
+                    const currentGCA = openingGCA + salesContributionAllTime - totalPOsAllTime - transfersInAllTime + transfersOutAllTime;
+
+                    const netSaleForMonth = data.filteredReports.filter(cd => cd.shop === shop.name).reduce((sum, cd) => sum + (cd.grandTotalKhr || 0), 0);
+                    const bizExpenseForMonth = data.filteredBusinessExpenses.filter(e => e.shop === shop.name).reduce((sum, e) => sum + (e.totalAmountKhr || 0), 0);
+                    const netProfitForMonth = netSaleForMonth * (saleMargin / 100);
+                    const totalNetIncomeForMonth = netProfitForMonth - bizExpenseForMonth;
+                    const totalPOForMonth = data.filteredPurchaseOrders.filter(po => po.shop === shop.name).reduce((sum, po) => sum + ((po.amountKhr || 0) + (po.amountUsd || 0) * data.exchangeRate), 0);
+                    const totalTransInForMonth = data.filteredInternalTransfers.filter(it => it.toShop === shop.name).reduce((sum, it) => sum + (it.amountKhr || 0) + ((it.amountUsd || 0) * data.exchangeRate), 0);
+                    const totalTransOutForMonth = data.filteredInternalTransfers.filter(it => it.fromShop === shop.name).reduce((sum, it) => sum + (it.amountKhr || 0) + ((it.amountUsd || 0) * data.exchangeRate), 0);
+
+                    return { name: shop.name, currentGCA, netSale: netSaleForMonth, netProfit: netProfitForMonth, totalPO: totalPOForMonth, totalTransIn: totalTransInForMonth, totalTransOut: totalTransOutForMonth, totalBizExpense: bizExpenseForMonth, totalNetIncome: totalNetIncomeForMonth };
+                });
+
+                const totals = shopCalculations.reduce((acc, shop) => {
+                    Object.keys(shop).forEach(key => {
+                        if (key !== 'name') acc[key] = (acc[key] || 0) + shop[key];
+                    });
+                    return acc;
+                }, {});
+
+                return { shopCalculations, totals };
+            }, [data]);
+
+            return (
+                <Card>
+                    <h3 className="text-lg font-bold mb-4">CashFlow History</h3>
+                    <div className="overflow-x-auto">
+                       <table className="w-full text-sm">
+                             <thead className="bg-gray-100">
+                                <tr>
+                                    <th className="p-2 text-left">No.</th><th className="p-2 text-left">Shop</th>
+                                    <th className="p-2 text-right">Current GCA (៛)</th><th className="p-2 text-right">Net Sale</th>
+                                    <th className="p-2 text-right">Net Profit</th><th className="p-2 text-right">Total PO</th>
+                                    <th className="p-2 text-right">Total Tran-IN</th><th className="p-2 text-right">Total-Trans-OUT</th>
+                                    <th className="p-2 text-right">Total Biz Expense</th><th className="p-2 text-right">Total Net Income</th>
+                                </tr>
+                             </thead>
+                             <tbody>
+                                {shopCalculations.map((shop, index) => (
+                                    <tr key={shop.name} className="border-b">
+                                        <td className="p-2">{index+1}</td><td className="p-2 font-semibold">{shop.name}</td>
+                                        <td className="p-2 text-right font-mono">{shop.currentGCA.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                        <td className="p-2 text-right font-mono">{shop.netSale.toLocaleString()}</td>
+                                        <td className="p-2 text-right font-mono">{shop.netProfit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                        <td className="p-2 text-right font-mono">{shop.totalPO.toLocaleString()}</td>
+                                        <td className="p-2 text-right font-mono">{shop.totalTransIn.toLocaleString()}</td>
+                                        <td className="p-2 text-right font-mono">{shop.totalTransOut.toLocaleString()}</td>
+                                        <td className="p-2 text-right font-mono">{shop.totalBizExpense.toLocaleString()}</td>
+                                        <td className="p-2 text-right font-mono font-bold">{shop.totalNetIncome.toLocaleString()}</td>
+                                    </tr>
+                                ))}
+                             </tbody>
+                             <tfoot className="bg-gray-200 font-bold">
+                                <tr>
+                                    <td colSpan="2" className="p-2 text-right">Sub-Totals</td>
+                                    <td className="p-2 text-right font-mono">{totals.currentGCA?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    <td className="p-2 text-right font-mono">{totals.netSale?.toLocaleString()}</td>
+                                    <td className="p-2 text-right font-mono">{totals.netProfit?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    <td className="p-2 text-right font-mono">{totals.totalPO?.toLocaleString()}</td>
+                                    <td className="p-2 text-right font-mono">{totals.totalTransIn?.toLocaleString()}</td>
+                                    <td className="p-2 text-right font-mono">{totals.totalTransOut?.toLocaleString()}</td>
+                                    <td className="p-2 text-right font-mono">{totals.totalBizExpense?.toLocaleString()}</td>
+                                    <td className="p-2 text-right font-mono">{totals.totalNetIncome?.toLocaleString()}</td>
+                                </tr>
+                             </tfoot>
+                        </table>
+                    </div>
+                </Card>
+            );
+        };
+
+        const IitPaymentTab = ({ filters }) => {
+            const data = useMonthlyData(filters);
+
+            const iitPaymentData = useMemo(() => {
+                return Object.values(data.filteredInternalTransfers.reduce((acc, transfer) => {
+                    const key = `${transfer.toShop}-${transfer.fromShop}`;
+                    if (!acc[key]) {
+                        acc[key] = { payee: transfer.toShop, receiver: transfer.fromShop, totalAmount: 0 };
+                    }
+                    acc[key].totalAmount += transfer.totalAmount || 0;
+                    return acc;
+                }, {}));
+            }, [data]);
+
+            return (
+                <Card>
+                    <h3 className="text-lg font-bold mb-4">IIT Payment Report</h3>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead className="bg-gray-100">
+                                <tr>
+                                    <th className="p-2 text-left">No.</th><th className="p-2 text-left">Shop Payee</th>
+                                    <th className="p-2 text-left">Shop Receiver</th><th className="p-2 text-right">Total Amount (៛)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {iitPaymentData.map((t, index) => (
+                                    <tr key={index} className="border-b">
+                                        <td className="p-2">{index + 1}</td><td className="p-2">{t.payee}</td>
+                                        <td className="p-2">{t.receiver}</td><td className="p-2 text-right font-mono">{(t.totalAmount || 0).toLocaleString()}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </Card>
+            );
+        };
         // --- END: CashFlow Report Page ---
 
         // --- START: Personal CashFlow Management ---
