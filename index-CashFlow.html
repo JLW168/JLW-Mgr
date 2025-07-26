@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JLW Management</title>
+    <title>App Dashboard</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#4f46e5">
@@ -234,20 +234,17 @@
         // =================================================================================
         const CONSTANTS = {
             NAV_ITEMS: [
-                { id: 'cashDrop', label: 'Cash Drop Report', icon: 'Droplets' },
+                { id: 'cashflowReport', label: 'CashFlow Report', icon: 'PieChart' },
                 { id: 'saleReport', label: 'Sale Report', icon: 'BarChart3' },
+                { id: 'cashDrop', label: 'Cash Drop Report', icon: 'Droplets' },
                 { id: 'purchaseOrder', label: 'Purchase Order', icon: 'ShoppingCart' },
                 { id: 'expenseReport', label: 'Expense Report', icon: 'CreditCard' },
-                { id: 'cashflowReport', label: 'CashFlow Report', icon: 'PieChart' },
                 { id: 'settings', label: 'Settings', icon: 'Settings' },
             ],
             ALL_PAGES: [
-                { id: 'cashDrop', label: 'Cash Drop Report' }, 
-                { id: 'saleReport', label: 'Sale Report' },
-                { id: 'purchaseOrder', label: 'Purchase Order' },
-                { id: 'expenseReport', label: 'Expense Report' },
-                { id: 'cashflowReport', label: 'CashFlow Report' },
-                { id: 'settings', label: 'Settings' },
+                { id: 'cashflowReport', label: 'CashFlow Report' }, { id: 'saleReport', label: 'Sale Report' },
+                { id: 'cashDrop', label: 'Cash Drop Report' }, { id: 'purchaseOrder', label: 'Purchase Order' },
+                { id: 'expenseReport', label: 'Expense Report' }, { id: 'settings', label: 'Settings' },
             ],
             MAKE_WEBHOOK_URL: 'https://hook.eu2.make.com/zdwmgoi1rnj2n5u1c74uzw93zhx4mvxe'
         };
@@ -602,13 +599,13 @@
                                 <div className="flex justify-between items-center"><span className="text-slate-600">Bank KHR</span><span className="font-mono font-semibold text-slate-800">{formatCurrency(formData.bankKhr, 'KHR')}</span></div>
                                 <div className="flex justify-between items-center"><span className="text-slate-600">Bank USD</span><span className="font-mono font-semibold text-slate-800">{formatCurrency(formData.bankUsd, 'USD')}</span></div>
                             </div>
-                              <div className="border-t border-slate-200 !my-4"></div>
-                                <div className="flex justify-between items-center">
-                                <span className="font-bold text-slate-800 text-lg">Grand Total :</span>
-                                <span className="font-extrabold text-red-600 text-2xl">{formatCurrency(grandTotal, 'KHR')}</span>
+                            <div className="border-t border-slate-200 !my-4"></div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-bold text-slate-800 text-lg">Grand Total</span>
+                                <span className="font-extrabold text-indigo-600 text-2xl">{formatCurrency(grandTotal, 'KHR')}</span>
                             </div>
-                                <button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center !mt-6 disabled:bg-blue-300 disabled:cursor-not-allowed">
-                            {isSubmitting ? <Icon name="loader" /> : 'Submit Report'}
+                            <Button type="submit" disabled={isSubmitting} className="w-full !mt-6" icon={isSubmitting ? "LoaderCircle" : null}>
+                                {isSubmitting ? 'Submitting...' : 'Submit Report'}
                             </Button>
                         </Card>
                     </form>
