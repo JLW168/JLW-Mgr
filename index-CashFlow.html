@@ -1792,7 +1792,7 @@
                                             <td className="p-3">{t.status}{t.status === 'Paid' && t.paidAt ? ` (${formatInCambodiaTime(t.paidAt)})` : ''}</td>
                                             <td className="p-3 flex gap-1 justify-center">
                                                 {(userData.role === 'Admin' || userData.role === 'Management') && t.status !== 'Paid' && <Button variant="ghost" size="sm" onClick={() => handleMarkPaid(t.id)}><Icon name="CheckCircle"/></Button>}
-                                                {(userData.role === 'Admin' || userData.role === 'Management') && <Button variant="ghost" size="sm" onClick={() => { /* Implement edit modal logic */ }}><Icon name="PenSquare"/></Button>}
+                                                {(userData.role === 'Admin' || userData.role === 'Management') && <Button variant="ghost" size="sm" onClick={() => setEditingTransfer(t)}><Icon name="PenSquare"/></Button>}
                                                 {(userData.role === 'Admin' || (userData.role === 'Management' && t.status !== 'Paid')) && <Button variant="ghost" onClick={() => setDeletingTransfer(t)} className="text-red-500 hover:bg-red-100"><Icon name="Trash2"/></Button>}
                                             </td>
                                         </tr>
@@ -1811,7 +1811,92 @@
                         </div>
                     </Card>
                     {deletingTransfer && <ConfirmationModal title="Delete Transfer" message="Are you sure?" onConfirm={handleDelete} onClose={() => setDeletingTransfer(null)} isSubmitting={isDeleting} confirmVariant="danger" confirmText="Delete" />}
+                    {editingTransfer && <InternalTransferEditModal transfer={editingTransfer} onClose={() => setEditingTransfer(null)} />}
                 </div>
+            );
+        };
+
+        const InternalTransferEditModal = ({ transfer, onClose }) => {
+            const { shops, appSettings, userData } = useData();
+            const { showNotification } = useNotification();
+            const { updateDoc, doc } = window.Firebase;
+            const isMounted = useRef(true);
+            
+            const [formData, setFormData] = useState({
+                ...transfer,
+                date: formatInCambodiaDateOnly(transfer.date),
+            });
+            const [isSubmitting, setIsSubmitting] = useState(false);
+
+            useEffect(() => {
+                isMounted.current = true;
+                return () => { isMounted.current = false; };
+            }, []);
+
+            const handleChange = useCallback((e) => {
+                const { name, value } = e.target;
+                setFormData(prev => ({ ...prev, [name]: value }));
+            }, []);
+
+            const totalAmount = useMemo(() => {
+                const khr = parseFormattedNumber(formData.amountKhr);
+                const usd = parseFormattedNumber(formData.amountUsd);
+                return (usd * (appSettings.exchangeRate || 4100)) + khr;
+            }, [formData.amountKhr, formData.amountUsd, appSettings.exchangeRate]);
+            
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                if (formData.fromShop === formData.toShop) {
+                    showNotification("Cannot transfer to the same shop.", "error");
+                    return;
+                }
+                if (!isMounted.current) return;
+                setIsSubmitting(true);
+                try {
+                    const updatedData = {
+                        fromShop: formData.fromShop,
+                        toShop: formData.toShop,
+                        poNo: formData.poNo,
+                        status: formData.status,
+                        amountUsd: parseFormattedNumber(formData.amountUsd),
+                        amountKhr: parseFormattedNumber(formData.amountKhr),
+                        totalAmount: totalAmount,
+                        note: formData.note,
+                        date: createTimestampFromDateAndCurrentTime(formData.date),
+                    };
+                    await updateDoc(doc(window.db, "internalTransfers", transfer.id), updatedData);
+                    showNotification("Transfer updated successfully!", "success");
+                    if (isMounted.current) onClose();
+                } catch (error) {
+                    showNotification("Failed to update transfer.", "error");
+                } finally {
+                    if (isMounted.current) setIsSubmitting(false);
+                }
+            };
+
+            return (
+                <Modal title="Edit Internal Transfer" onClose={onClose} size="2xl">
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <FormInput label="Date" type="date" name="date" value={formData.date} onChange={handleChange} />
+                            <FormSelect label="From Shop" name="fromShop" value={formData.fromShop} onChange={handleChange} options={shops.map(s => ({value: s.name, label: s.name}))} required />
+                            <FormSelect label="To Shop" name="toShop" value={formData.toShop} onChange={handleChange} options={shops.map(s => ({value: s.name, label: s.name}))} required />
+                            <FormInput label="PO No." name="poNo" value={formData.poNo} onChange={handleChange} />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <LiveFormatInput label="Amount (USD)" name="amountUsd" value={formData.amountUsd} onChange={handleChange} />
+                            <LiveFormatInput label="Amount (KHR)" name="amountKhr" value={formData.amountKhr} onChange={handleChange} />
+                            <FormInput label="Total Amount (៛)" value={totalAmount.toLocaleString()} disabled readOnly />
+                        </div>
+                        <FormTextarea label="Note" name="note" value={formData.note} onChange={handleChange} />
+                        <div className="flex justify-end gap-4 pt-4 border-t">
+                            <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+                            <Button type="submit" disabled={isSubmitting} icon={isSubmitting ? "LoaderCircle" : null}>
+                                {isSubmitting ? 'Saving...' : 'Save Changes'}
+                            </Button>
+                        </div>
+                    </form>
+                </Modal>
             );
         };
 
