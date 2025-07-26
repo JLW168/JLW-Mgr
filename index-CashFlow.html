@@ -503,7 +503,7 @@
                 }
             }, [shops, userData]);
 
-            const [formData, setFormData] = useState(getInitialState());
+            const [formData, setFormData] = useState(getInitialState);
             const [isSubmitting, setIsSubmitting] = useState(false);
             const [isConfirming, setIsConfirming] = useState(false);
 
@@ -1622,7 +1622,7 @@
                 amountUsd: '', amountKhr: '', note: '', poNo: '', status: 'Unpaid'
             }), [availableShops]);
 
-            const [formData, setFormData] = useState(getInitialState());
+            const [formData, setFormData] = useState(getInitialState);
 
             const totalAmount = useMemo(() => {
                 const khr = parseFormattedNumber(formData.amountKhr);
@@ -2373,8 +2373,20 @@
                             <Button onClick={handleExport} variant="secondary" icon="Download">Export to Excel</Button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 bg-slate-50 rounded-lg">
-                            <FormSelect label="Filter by Shop" name="shop" value={filters.shop} onChange={handleFilterChange} options={[{ value: 'all', label: 'All Shops' }, ...shops.map(s => ({ value: s.name, label: s.name }))]} />
-                            <FormInput label="Filter by Month" type="month" name="month" value={filters.month} onChange={handleFilterChange} />
+                            <FormSelect
+                                label="Filter by Shop"
+                                name="shop"
+                                value={filters.shop}
+                                onChange={handleFilterChange}
+                                options={[{ value: 'all', label: 'All Shops' }, ...shops.map(s => ({ value: s.name, label: s.name }))]}
+                            />
+                            <FormInput
+                                label="Filter by Month"
+                                type="month"
+                                name="month"
+                                value={filters.month}
+                                onChange={handleFilterChange}
+                            />
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm text-left">
