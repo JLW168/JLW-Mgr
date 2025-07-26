@@ -1331,7 +1331,7 @@
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <FormTextarea label="Note" name="note" value={activeFormData.note} onChange={handleFormChange} />
-                                <p className="font-bold text-lg text-red-600 bg-red-50"> <FormInput label="Sub-Total POs (៛)" value={subTotalPOs.toLocaleString()} disabled readOnly />
+                               <FormInput label="Sub-Total POs (៛)" value={subTotalPOs.toLocaleString()} disabled readOnly />
                             </div>
                             <div className="flex justify-end gap-2">
                                 {editingPO && <Button type="button" variant="secondary" onClick={handleCancelEdit}>Cancel</Button>}
