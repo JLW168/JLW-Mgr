@@ -68,7 +68,7 @@
         // Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, Timestamp, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, setPersistence, browserSessionPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA4upjtl0UFToWSfRZEiEQvwz9ieFLfqhI",
@@ -100,7 +100,10 @@
             updateDoc,
             deleteDoc,
             setDoc,
-            getDoc
+            getDoc,
+            setPersistence,
+            browserSessionPersistence,
+            browserLocalPersistence
         };
     </script>
     
@@ -3077,7 +3080,7 @@
                     </SettingsSection>
                     
                     {isModalOpen && <ShopEditModal shop={editingShop} onClose={() => setIsModalOpen(false)} />}
-                    {deletingShop && <DeleteConfirmationModal title="Delete Shop" message={`Delete ${deletingShop.name}?`} onConfirm={handleDeleteShop} onClose={() => setDeletingShop(null)} isDeleting={isDeleting} />}
+                    {deletingShop && <ConfirmationModal title="Delete Shop" message={`Delete ${deletingShop.name}?`} onConfirm={handleDeleteShop} onClose={() => setDeletingShop(null)} isSubmitting={isDeleting} confirmVariant="danger" confirmText="Delete" />}
                 </div>
             );
         };
@@ -3231,7 +3234,7 @@
                         </table>
                      </div>
                      {isFormOpen && <EmployeeFormModal employee={editingEmployee} onClose={() => setIsFormOpen(false)} />}
-                     {deletingEmployee && <DeleteConfirmationModal title="Delete Employee" message={`Delete ${deletingEmployee.name}?`} onConfirm={handleDelete} onClose={() => setDeletingEmployee(null)} isDeleting={isDeleting} />}
+                     {deletingEmployee && <ConfirmationModal title="Delete Employee" message={`Delete ${deletingEmployee.name}?`} onConfirm={handleDelete} onClose={() => setDeletingEmployee(null)} isSubmitting={isDeleting} confirmVariant="danger" confirmText="Delete" />}
                 </Card>
             );
         };
@@ -3380,7 +3383,7 @@
                             </div>
                         ))}
                     </div>
-                     {deletingCategory && <DeleteConfirmationModal title="Delete Category" message={`Delete "${deletingCategory.name}"?`} onConfirm={handleDeleteCategory} onClose={() => setDeletingCategory(null)} isDeleting={isDeleting} />}
+                     {deletingCategory && <ConfirmationModal title="Delete Category" message={`Delete "${deletingCategory.name}"?`} onConfirm={handleDeleteCategory} onClose={() => setDeletingCategory(null)} isSubmitting={isDeleting} confirmVariant="danger" confirmText="Delete" />}
                 </Card>
             );
         };
@@ -3405,7 +3408,7 @@
         };
 
          const LoginPage = () => {
-            const { signInWithEmailAndPassword } = window.Firebase;
+            const { signInWithEmailAndPassword, setPersistence, browserSessionPersistence, browserLocalPersistence } = window.Firebase;
             const { showNotification } = useNotification();
             const [email, setEmail] = useState('');
             const [password, setPassword] = useState('');
@@ -3423,6 +3426,11 @@
                 e.preventDefault();
                 setIsLoading(true);
                 try {
+                    // Set persistence based on the "Remember me" checkbox
+                    const persistence = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+                    await setPersistence(window.auth, persistence);
+                    
+                    // Proceed with sign-in
                     await signInWithEmailAndPassword(window.auth, email, password);
                 } catch (err) {
                     showNotification('Login failed. Please check your credentials.', 'error');
@@ -3535,7 +3543,7 @@
                     <div className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out`}>
                         <div className="flex items-center justify-center p-4 h-16 border-b">
                              <Icon name="Landmark" className="mx-auto h-12 w-auto text-indigo-600" />
-                             <h2 className="ml-2 text-xl font-bold text-gray-800">Cash Flow Mgr</h2>
+                             <h2 className="ml-2 text-xl font-bold text-gray-800">JLW Management</h2>
                         </div>
                         <nav className="flex-grow p-4 space-y-1">
                             {CONSTANTS.NAV_ITEMS.map(item => <NavLink key={item.id} item={item} isActive={activePage === item.id} />)}
