@@ -612,7 +612,7 @@
                             <div className="border-t border-slate-200 !my-4"></div>
                             <div className="flex justify-between items-center">
                                 <span className="font-bold text-slate-800 text-lg">Grand Total: </span>
-                                <span className="font-extrabold text-indigo-600 text-2xl">{formatCurrency(grandTotal, 'KHR')}</span>
+                                <span className="font-extrabold text-red-600 text-2xl">{formatCurrency(grandTotal, 'KHR')}</span>
                             </div>
                             <Button type="submit" disabled={isSubmitting} className="w-full !mt-6" icon={isSubmitting ? "LoaderCircle" : null}>
                                 {isSubmitting ? 'Submitting...' : 'Submit Report'}
@@ -621,11 +621,11 @@
                     </form>
                     {isConfirming && <ConfirmationModal 
                         title="Confirm Report Submission"
-                        message="Please review the details before submitting. Is everything correct?"
+                        message="សូមពិនិត្យមើលព័ត៌មានលម្អិតមុនពេលបញ្ជូន។ តើគ្រប់យ៉ាងត្រឹមត្រូវទេ?"
                         onConfirm={handleConfirmSubmit} 
                         onClose={() => setIsConfirming(false)} 
                         isSubmitting={isSubmitting}
-                        confirmText="Yes, Submit"
+                        confirmText="បាទ/ចាស៎​ !"
                     />}
                 </>
             );
@@ -3450,7 +3450,7 @@
                     <div className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out`}>
                         <div className="flex items-center justify-center p-4 h-16 border-b">
                              <Icon name="Landmark" className="mx-auto h-12 w-auto text-indigo-600" />
-                             <h2 className="ml-2 text-xl font-bold text-gray-800">CashFlow</h2>
+                             <h2 className="ml-2 text-xl font-bold text-gray-800">Cash Flow Mgr</h2>
                         </div>
                         <nav className="flex-grow p-4 space-y-1">
                             {CONSTANTS.NAV_ITEMS.map(item => <NavLink key={item.id} item={item} isActive={activePage === item.id} />)}
