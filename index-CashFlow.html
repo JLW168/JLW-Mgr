@@ -541,9 +541,9 @@
                         body: JSON.stringify({
                             dateTime: new Date().toLocaleString('en-GB', { timeZone: 'Asia/Phnom_Penh' }),
                             shop: formData.shop, staff: formData.staff,
-                            cashUsd: formatCurrency(formData.cashUsd, 'USD'), cashKhr: formatCurrency(formData.cashKhr, 'KHR'),
-                            bankUsd: formatCurrency(formData.bankUsd, 'USD'), bankKhr: formatCurrency(formData.bankKhr, 'KHR'),
-                            total: formatCurrency(grandTotal, 'KHR'), note: formData.note
+                            cashUsd: formatCurrency(formData.cashUsd, 'USD'), cashKhr: formatCurrency(formData.cashKhr, '៛'),
+                            bankUsd: formatCurrency(formData.bankUsd, 'USD'), bankKhr: formatCurrency(formData.bankKhr, '៛'),
+                            total: formatCurrency(grandTotal, '៛'), note: formData.note
                         })
                     }).catch(err => console.error("Webhook notification failed:", err));
 
@@ -582,14 +582,14 @@
                                 <div>
                                     <h3 className="text-md font-semibold text-slate-600">By Cash</h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                                        <LiveFormatInput label="KHR (៛)" name="cashKhr" value={formData.cashKhr} onChange={handleChange} />
+                                        <LiveFormatInput label="(៛)" name="cashKhr" value={formData.cashKhr} onChange={handleChange} />
                                         <LiveFormatInput label="USD ($)" name="cashUsd" value={formData.cashUsd} onChange={handleChange} />
                                     </div>
                                 </div>
                                 <div>
                                     <h3 className="text-md font-semibold text-slate-600">By Bank</h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                                        <LiveFormatInput label="KHR (៛)" name="bankKhr" value={formData.bankKhr} onChange={handleChange} />
+                                        <LiveFormatInput label="(៛)" name="bankKhr" value={formData.bankKhr} onChange={handleChange} />
                                         <LiveFormatInput label="USD ($)" name="bankUsd" value={formData.bankUsd} onChange={handleChange} />
                                     </div>
                                 </div>
@@ -599,15 +599,15 @@
                         <Card className="lg:col-span-1 space-y-4 sticky top-24">
                             <h3 className="text-xl font-bold text-slate-800">Summary</h3>
                             <div className="space-y-3 text-md">
-                                <div className="flex justify-between items-center"><span className="text-slate-600">Cash KHR:</span><span className="font-mono font-semibold text-slate-800">{formatCurrency(formData.cashKhr, 'KHR')}</span></div>
+                                <div className="flex justify-between items-center"><span className="text-slate-600">Cash KHR:</span><span className="font-mono font-semibold text-slate-800">{formatCurrency(formData.cashKhr, '៛')}</span></div>
                                 <div className="flex justify-between items-center"><span className="text-slate-600">Cash USD:</span><span className="font-mono font-semibold text-slate-800">{formatCurrency(formData.cashUsd, 'USD')}</span></div>
-                                <div className="flex justify-between items-center"><span className="text-slate-600">Bank KHR:</span><span className="font-mono font-semibold text-slate-800">{formatCurrency(formData.bankKhr, 'KHR')}</span></div>
+                                <div className="flex justify-between items-center"><span className="text-slate-600">Bank KHR:</span><span className="font-mono font-semibold text-slate-800">{formatCurrency(formData.bankKhr, '៛')}</span></div>
                                 <div className="flex justify-between items-center"><span className="text-slate-600">Bank USD:</span><span className="font-mono font-semibold text-slate-800">{formatCurrency(formData.bankUsd, 'USD')}</span></div>
                             </div>
                             <div className="border-t border-slate-200 !my-4"></div>
                             <div className="flex justify-between items-center">
                                 <span className="font-bold text-slate-800 text-lg">Grand Total: </span>
-                                <span className="font-extrabold text-indigo-600 text-2xl">{formatCurrency(grandTotal, 'KHR')}</span>
+                                <span className="font-extrabold text-indigo-600 text-2xl">{formatCurrency(grandTotal, '៛')}</span>
                             </div>
                             <Button type="submit" disabled={isSubmitting} className="w-full !mt-6" icon={isSubmitting ? "LoaderCircle" : null}>
                                 {isSubmitting ? 'Submitting...' : 'Submit Report'}
@@ -861,7 +861,7 @@
                             <div>
                                 <h3 className="text-md font-semibold text-slate-600">By Cash</h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                                    <LiveFormatInput label="KHR (៛)" name="cashKhr" value={formData.cashKhr} onChange={handleChange} />
+                                    <LiveFormatInput label="(៛)" name="cashKhr" value={formData.cashKhr} onChange={handleChange} />
                                     <LiveFormatInput label="USD ($)" name="cashUsd" value={formData.cashUsd} onChange={handleChange} />
                                 </div>
                             </div>
