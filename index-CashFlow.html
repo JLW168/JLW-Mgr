@@ -1600,7 +1600,7 @@
                             </tfoot>
                         </table>
                     </div>
-                    {deletingPO && <DeleteConfirmationModal title="Delete Purchase Order" message="Are you sure?" onConfirm={handleDelete} onClose={() => setDeletingPO(null)} isDeleting={isDeleting} />}
+                    {deletingPO && <ConfirmationModal title="Delete Purchase Order" message="Are you sure?" onConfirm={handleDelete} onClose={() => setDeletingPO(null)} isSubmitting={isDeleting} confirmVariant="danger" confirmText="Delete" />}
                 </Card>
             );
         };
@@ -1810,7 +1810,7 @@
                             </table>
                         </div>
                     </Card>
-                    {deletingTransfer && <DeleteConfirmationModal title="Delete Transfer" message="Are you sure?" onConfirm={handleDelete} onClose={() => setDeletingTransfer(null)} isDeleting={isDeleting} />}
+                    {deletingTransfer && <ConfirmationModal title="Delete Transfer" message="Are you sure?" onConfirm={handleDelete} onClose={() => setDeletingTransfer(null)} isSubmitting={isDeleting} confirmVariant="danger" confirmText="Delete" />}
                 </div>
             );
         };
@@ -2082,7 +2082,7 @@
                         </table>
                     </div>
                     {isModalOpen && <VendorEditModal vendor={editingVendor} onClose={() => setIsModalOpen(false)} />}
-                    {deletingVendor && <DeleteConfirmationModal title="Delete Vendor" message={`Delete ${deletingVendor.name}?`} onConfirm={handleDelete} onClose={() => setDeletingVendor(null)} isDeleting={isDeleting} />}
+                    {deletingVendor && <ConfirmationModal title="Delete Vendor" message={`Delete ${deletingVendor.name}?`} onConfirm={handleDelete} onClose={() => setDeletingVendor(null)} isSubmitting={isDeleting} confirmVariant="danger" confirmText="Delete" />}
                 </Card>
             );
         };
@@ -2410,7 +2410,7 @@
                             </table>
                         </div>
                     </Card>
-                    {deletingExpense && <DeleteConfirmationModal title="Delete Expense" message="Are you sure you want to delete this expense record?" onConfirm={handleDelete} onClose={() => setDeletingExpense(null)} isDeleting={isDeleting} />}
+                    {deletingExpense && <ConfirmationModal title="Delete Expense" message="Are you sure you want to delete this expense record?" onConfirm={handleDelete} onClose={() => setDeletingExpense(null)} isSubmitting={isDeleting} confirmVariant="danger" confirmText="Delete" />}
                     {viewingExpense && <ExpenseViewModal expense={viewingExpense} onClose={() => setViewingExpense(null)} onEdit={() => { setEditingExpense(viewingExpense); setViewingExpense(null); }} />}
                 </div>
             );
@@ -2865,7 +2865,6 @@
             )
         }
         // --- END: Personal CashFlow Management ---
-
         // --- START: Settings Page ---
         const SettingsPage = () => {
             const [activeTab, setActiveTab] = useState('shops');
