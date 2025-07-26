@@ -267,10 +267,15 @@
         const parseFormattedNumber = (val) => parseFloat(String(val).replace(/,/g, '')) || 0;
         const formatCurrency = (val, currency = 'KHR') => {
             const num = parseFormattedNumber(val);
+            if (currency === 'KHR') {
+                // Format to 2 decimal places with comma separators and the Riel symbol
+                return `${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}៛`;
+            }
+            // Original USD formatting
             const options = {
                 style: 'currency',
-                currency: currency,
-                minimumFractionDigits: currency === 'USD' ? 2 : 0,
+                currency: 'USD',
+                minimumFractionDigits: 2,
             };
             return new Intl.NumberFormat('en-US', options).format(num);
         };
@@ -737,11 +742,11 @@
                                     <tr key={r.id} className={`border-b hover:bg-gray-100 ${getShopColor(r.shop)}`}>
                                         <td className="p-3">{formatInCambodiaTime(r.createdAt)}</td>
                                         <td className="p-3">{r.shop}</td><td className="p-3">{r.staff}</td>
-                                        <td className="p-3 text-right font-mono">{r.cashUsd?.toLocaleString()}</td>
-                                        <td className="p-3 text-right font-mono">{r.cashKhr?.toLocaleString()}</td>
-                                        <td className="p-3 text-right font-mono">{r.bankUsd?.toLocaleString()}</td>
-                                        <td className="p-3 text-right font-mono">{r.bankKhr?.toLocaleString()}</td>
-                                        <td className="p-3 text-right font-bold text-indigo-600">{r.grandTotalKhr?.toLocaleString()}</td>
+                                        <td className="p-3 text-right font-mono">{formatCurrency(r.cashUsd, 'USD')}</td>
+                                        <td className="p-3 text-right font-mono">{formatCurrency(r.cashKhr, 'KHR')}</td>
+                                        <td className="p-3 text-right font-mono">{formatCurrency(r.bankUsd, 'USD')}</td>
+                                        <td className="p-3 text-right font-mono">{formatCurrency(r.bankKhr, 'KHR')}</td>
+                                        <td className="p-3 text-right font-bold text-indigo-600">{formatCurrency(r.grandTotalKhr, 'KHR')}</td>
                                         <td className="p-3 text-center">
                                             <Button variant="ghost" size="sm" onClick={() => setViewingNote(r.note)} disabled={!r.note}><Icon name="FileText" size={16}/></Button>
                                         </td>
@@ -776,11 +781,11 @@
                                 </tr>
                                 <tr>
                                     <td colSpan={3} className="p-3 text-right">Totals</td>
-                                    <td className="p-3 text-right font-mono">{totals.cashUsd.toLocaleString()}</td>
-                                    <td className="p-3 text-right font-mono">{totals.cashKhr.toLocaleString()}</td>
-                                    <td className="p-3 text-right font-mono">{totals.bankUsd.toLocaleString()}</td>
-                                    <td className="p-3 text-right font-mono">{totals.bankKhr.toLocaleString()}</td>
-                                    <td className="p-3 text-right font-mono">{totals.netSale.toLocaleString()}</td>
+                                    <td className="p-3 text-right font-mono">{formatCurrency(totals.cashUsd, 'USD')}</td>
+                                    <td className="p-3 text-right font-mono">{formatCurrency(totals.cashKhr, 'KHR')}</td>
+                                    <td className="p-3 text-right font-mono">{formatCurrency(totals.bankUsd, 'USD')}</td>
+                                    <td className="p-3 text-right font-mono">{formatCurrency(totals.bankKhr, 'KHR')}</td>
+                                    <td className="p-3 text-right font-mono">{formatCurrency(totals.netSale, 'KHR')}</td>
                                     <td colSpan={2}></td>
                                 </tr>
                             </tfoot>
@@ -875,7 +880,7 @@
                         </div>
                         <div className="border-t pt-4 flex justify-between items-center">
                             <span className="font-bold text-slate-800 text-lg">Sub-Total</span>
-                            <span className="font-extrabold text-indigo-600 text-2xl">{grandTotal.toLocaleString('en-US', {minimumFractionDigits: 0})} ៛</span>
+                            <span className="font-extrabold text-indigo-600 text-2xl">{formatCurrency(grandTotal, 'KHR')}</span>
                         </div>
                         <FormTextarea label="Note" name="note" value={formData.note} onChange={handleChange} />
                         <div className="flex justify-end gap-4 pt-4 border-t">
