@@ -44,6 +44,58 @@
             color: #4f46e5;
         }
         
+        /* Styles for the hidden PDF template */
+        #pdf-template-area {
+            box-sizing: border-box;
+        }
+        #pdf-template-area * {
+            box-sizing: border-box;
+        }
+        #pdf-template-area table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        #pdf-template-area th, #pdf-template-area td {
+            border: 1px solid black;
+            padding: 8px; /* Increased padding for better spacing */
+            text-align: left;
+            vertical-align: middle; /* Vertically center text */
+        }
+        #pdf-template-area th {
+            text-align: center; /* Center header text */
+        }
+
+        /* Mobile-first responsive table styles */
+        @media (max-width: 768px) {
+            .responsive-table thead {
+                display: none; /* Hide table headers on mobile */
+            }
+            .responsive-table tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid #e5e7eb;
+                border-radius: 0.5rem;
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+                padding: 1rem;
+            }
+            .responsive-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid #f3f4f6;
+            }
+            .responsive-table td:last-child {
+                border-bottom: none;
+            }
+            .responsive-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                margin-right: 1rem;
+                color: #4b5563;
+            }
+        }
+
         @media print {
             @page {
                 size: A4 landscape;
@@ -74,33 +126,33 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+    <div class="container mx-auto p-2 sm:p-4 lg:p-8">
         <div class="bg-white rounded-2xl shadow-lg">
 
             <!-- Tabs Navigation -->
             <div class="border-b border-gray-200 no-print">
-                <nav class="-mb-px flex space-x-8 px-6 md:px-8" aria-label="Tabs">
+                <nav class="-mb-px flex space-x-4 sm:space-x-8 px-4 sm:px-6 md:px-8" aria-label="Tabs">
                     <button class="tab active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="po-request-form">
-                        PO Request Form
+                        Request
                     </button>
                     <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="purchase-order">
                         Saved POs
                     </button>
                     <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="setting-page">
-                        Setting
+                        Settings
                     </button>
                 </nav>
             </div>
 
-            <div class="p-6 md:p-8">
+            <div class="p-4 sm:p-6 md:p-8">
                 <!-- PO Request Form Content -->
                 <div id="po-request-form" class="tab-content active">
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900 mb-6">Purchase Order Request</h1>
+                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Purchase Order Request</h1>
                         
-                        <div class="bg-gray-50 rounded-xl p-6 mb-6 border border-gray-200">
-                            <h2 class="text-xl font-semibold mb-4 text-gray-800">PO Request Data</h2>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6 border border-gray-200">
+                            <h2 class="text-lg sm:text-xl font-semibold mb-4 text-gray-800">PO Request Data</h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                                 <div>
                                     <label for="request-vendor" class="block text-sm font-medium text-gray-700">Vendor</label>
                                     <input type="text" id="request-vendor" readonly class="mt-1 block w-full bg-gray-200 border-gray-300 rounded-lg shadow-sm cursor-not-allowed">
@@ -117,15 +169,15 @@
                                     <label for="request-po-date" class="block text-sm font-medium text-gray-700">PO Date</label>
                                     <input type="text" id="request-po-date" readonly class="mt-1 block w-full bg-gray-200 border-gray-300 rounded-lg shadow-sm cursor-not-allowed">
                                 </div>
-                                <div class="md:col-span-2">
+                                <div class="sm:col-span-2">
                                     <label for="exchange-rate" class="block text-sm font-medium text-gray-700">Exchange Rate (KHR to 1 USD)</label>
                                     <input type="number" id="exchange-rate" value="4100" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-gray-50 rounded-xl p-6 mb-6 border border-gray-200 no-print">
-                            <h2 class="text-xl font-semibold mb-4 text-gray-800">Add Product to PO</h2>
+                        <div class="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6 border border-gray-200 no-print">
+                            <h2 class="text-lg sm:text-xl font-semibold mb-4 text-gray-800">Add Product to PO</h2>
                             <div id="lookup-form" style="display: none;">
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                                     <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -146,8 +198,8 @@
                         </div>
 
                         <div class="overflow-x-auto">
-                            <table class="min-w-full bg-white rounded-lg shadow-sm border border-gray-100">
-                                <thead class="bg-gray-50">
+                            <table class="min-w-full bg-white responsive-table">
+                                <thead>
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">No.</th>
                                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Product Code</th>
@@ -161,11 +213,11 @@
                                         <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider no-print">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="po-table-body" class="bg-white divide-y divide-gray-100"></tbody>
+                                <tbody id="po-table-body" class="bg-white"></tbody>
                             </table>
                         </div>
                     </div>
-                     <div class="mt-6 flex justify-end space-x-4 no-print">
+                     <div class="mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 no-print">
                         <button id="request-save-pdf-btn" class="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Save as PDF</button>
                         <button id="create-po-btn" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save Purchase Order</button>
                     </div>
@@ -174,10 +226,10 @@
                 <!-- Saved Purchase Orders Content -->
                 <div id="purchase-order" class="tab-content">
                     <div id="po-list-view">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-6">Purchase Order Center</h1>
+                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Purchase Order Center</h1>
                         <div class="overflow-x-auto">
-                            <table class="min-w-full bg-white rounded-lg shadow-sm border border-gray-100">
-                                <thead class="bg-gray-50">
+                            <table class="min-w-full bg-white responsive-table">
+                                <thead>
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">No.</th>
                                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">PO Number</th>
@@ -187,41 +239,43 @@
                                         <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="po-list-body" class="bg-white divide-y divide-gray-100"></tbody>
+                                <tbody id="po-list-body" class="bg-white"></tbody>
                             </table>
                         </div>
                     </div>
 
                     <div id="po-detail-view" class="hidden">
                         <button id="back-to-list-btn" class="mb-6 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">&larr; Back to PO List</button>
-                        <div id="po-print-area" class="border border-gray-200 p-6 rounded-lg">
-                            <h2 class="text-2xl font-bold text-gray-800 mb-4" id="po-number-display"></h2>
-                            <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div id="po-print-area" class="border border-gray-200 p-4 sm:p-6 rounded-lg">
+                            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4" id="po-number-display"></h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                                 <div>
                                     <p><strong>Vendor:</strong> <span id="print-vendor-name"></span></p>
                                     <p><strong>Request by:</strong> <span id="print-shop-name"></span></p>
                                 </div>
-                                <div class="text-right">
+                                <div class="text-left sm:text-right">
                                     <p><strong>PO Number:</strong> <span id="print-po-number"></span></p>
                                     <p><strong>Date:</strong> <span id="print-date"></span></p>
                                 </div>
                             </div>
-                            <table class="min-w-full bg-white">
-                                <thead class="bg-gray-100">
-                                    <tr>
-                                        <th class="border-b p-3 text-left text-sm font-semibold">No.</th>
-                                        <th class="border-b p-3 text-left text-sm font-semibold">Product Name</th>
-                                        <th class="border-b p-3 text-center text-sm font-semibold">Qty</th>
-                                        <th class="border-b p-3 text-right text-sm font-semibold">Total Cost (KHR)</th>
-                                        <th class="border-b p-3 text-right text-sm font-semibold">Total Cost (USD)</th>
-                                        <th class="border-b p-3 text-right text-sm font-semibold">Cost/Unit (KHR)</th>
-                                        <th class="border-b p-3 text-right text-sm font-semibold">CheckUp</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="print-table-body" class="divide-y divide-gray-100"></tbody>
-                            </table>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="p-3 text-left text-sm font-semibold">No.</th>
+                                            <th class="p-3 text-left text-sm font-semibold">Product Name</th>
+                                            <th class="p-3 text-center text-sm font-semibold">Qty</th>
+                                            <th class="p-3 text-right text-sm font-semibold">Total Cost (KHR)</th>
+                                            <th class="p-3 text-right text-sm font-semibold">Total Cost (USD)</th>
+                                            <th class="p-3 text-right text-sm font-semibold">Cost/Unit (KHR)</th>
+                                            <th class="p-3 text-right text-sm font-semibold">CheckUp</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="print-table-body" class="divide-y divide-gray-100"></tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="mt-6 flex justify-end space-x-4 no-print">
+                        <div class="mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 no-print">
                             <button id="update-goods-btn" class="bg-yellow-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-yellow-600 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">Update Manually</button>
                             <button id="save-updates-btn" class="bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hidden shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Save Updates</button>
                             <button id="detail-save-pdf-btn" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save as PDF</button>
@@ -232,7 +286,7 @@
                 
                 <!-- Setting Page Content -->
                 <div id="setting-page" class="tab-content">
-                     <h1 class="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
+                     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Settings</h1>
                      <div class="border-b border-gray-200 mb-4">
                         <nav class="-mb-px flex space-x-8" aria-label="Tabs">
                             <button class="setting-tab active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="product-upload">Product Data</button>
@@ -305,31 +359,31 @@
     </div>
     
     <!-- Hidden PDF Template for PO Request -->
-    <div id="pdf-template-area" class="w-[1123px] p-8 bg-white text-black fixed -left-[9999px] top-0 ang-daunkeo" style="font-size: 12px;">
-        <h1 class="text-center text-2xl font-bold mb-4">Purchase Order</h1>
-        <div class="flex justify-between mb-4">
+    <div id="pdf-template-area" class="w-[1123px] p-8 bg-white text-black fixed -left-[9999px] top-0 ang-daunkeo" style="font-size: 12px; opacity: 0; z-index: -10;">
+        <h1 style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 24px;">Purchase Order</h1>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 24px;">
             <div>
                 <p><strong>Vendor:</strong> <span id="pdf-vendor"></span></p>
                 <p><strong>Shop:</strong> <span id="pdf-shop"></span></p>
                 <p><strong>Address:</strong> <span id="pdf-address"></span></p>
             </div>
-            <div class="text-right">
+            <div style="text-align: right;">
                 <p><strong>PO NO.:</strong> <span id="pdf-po-no"></span></p>
                 <p><strong>PO Date:</strong> <span id="pdf-po-date"></span></p>
                 <p><strong>Contact:</strong> <span id="pdf-contact"></span></p>
             </div>
         </div>
-        <table class="w-full border-collapse border border-black text-xs">
+        <table>
             <thead>
-                <tr class="bg-gray-200">
-                    <th class="border border-black p-1 w-[5%] text-center align-middle">No.</th>
-                    <th class="border border-black p-1 w-[15%] text-center align-middle">Product Code</th>
-                    <th class="border border-black p-1 w-[15%] text-center align-middle">Barcode</th>
-                    <th class="border border-black p-1 w-[25%] text-center align-middle">Product Name</th>
-                    <th class="border border-black p-1 w-[8%] text-center align-middle">QTY</th>
-                    <th class="border border-black p-1 w-[10%] text-center align-middle">Cost-៛</th>
-                    <th class="border border-black p-1 w-[10%] text-center align-middle">Cost-$</th>
-                    <th class="border border-black p-1 w-[12%] text-center align-middle">CB4</th>
+                <tr style="background-color: #e5e7eb;">
+                    <th style="width: 5%;">No.</th>
+                    <th style="width: 15%;">Product Code</th>
+                    <th style="width: 15%;">Barcode</th>
+                    <th style="width: 25%;">Product Name</th>
+                    <th style="width: 8%;">QTY</th>
+                    <th style="width: 10%;">Cost-៛</th>
+                    <th style="width: 10%;">Cost-$</th>
+                    <th style="width: 12%;">CB4</th>
                 </tr>
             </thead>
             <tbody id="pdf-table-body">
@@ -337,26 +391,26 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4" class="border border-black p-1 text-right font-bold">Sub-Total</td>
-                    <td class="border border-black p-1"></td>
-                    <td class="border border-black p-1"></td>
-                    <td class="border border-black p-1"></td>
-                    <td class="border border-black p-1 font-bold">(Blank it)</td>
+                    <td colspan="4" style="text-align: right; font-weight: bold;">Sub-Total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </tfoot>
         </table>
-        <div class="flex justify-between mt-24">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 96px;">
             <div>
                 <p>Req. By :</p>
-                <p class="mt-12">...................................</p>
+                <p style="margin-top: 48px;">...................................</p>
             </div>
             <div>
                 <p>Received By.:</p>
-                <p class="mt-12">...................................</p>
+                <p style="margin-top: 48px;">...................................</p>
             </div>
             <div>
                 <p>PO Check By:</p>
-                <p class="mt-12">...................................</p>
+                <p style="margin-top: 48px;">...................................</p>
             </div>
         </div>
     </div>
@@ -483,10 +537,10 @@
                 shops.forEach(shop => {
                     const row = `
                         <tr data-id="${shop.id}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${shop.name || ''}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${shop.address || ''}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${shop.contact || ''}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                            <td data-label="Shop Name">${shop.name || ''}</td>
+                            <td data-label="Address">${shop.address || ''}</td>
+                            <td data-label="Contact">${shop.contact || ''}</td>
+                            <td data-label="Actions" class="text-center">
                                 <button class="delete-shop-btn text-red-600 hover:text-red-900">Delete</button>
                             </td>
                         </tr>
@@ -576,16 +630,16 @@
                     const subtotal = cost * qty;
                     const row = `
                         <tr data-index="${index}">
-                            <td class="px-4 py-2">${index + 1}</td>
-                            <td class="px-4 py-2">${item["Product Code"]}</td>
-                            <td class="px-4 py-2">${item.Barcode || ''}</td>
-                            <td class="px-4 py-2">${item.Name}</td>
-                            <td class="px-4 py-2 text-center">${qty}</td>
-                            <td class="px-4 py-2 text-right">${item.currency === 'KHR' ? cost.toFixed(2) : '-'}</td>
-                            <td class="px-4 py-2 text-right">${item.currency === 'USD' ? cost.toFixed(2) : '-'}</td>
-                            <td class="px-4 py-2 text-right">${subtotal.toFixed(2)} ${item.currency}</td>
-                            <td class="px-4 py-2 text-right">${cost.toFixed(2)}</td>
-                            <td class="px-4 py-2 text-center no-print">
+                            <td data-label="No.">${index + 1}</td>
+                            <td data-label="Product Code">${item["Product Code"]}</td>
+                            <td data-label="Barcode">${item.Barcode || ''}</td>
+                            <td data-label="Product Name">${item.Name}</td>
+                            <td data-label="Qty" class="text-right">${qty}</td>
+                            <td data-label="Cost (KHR)" class="text-right">${item.currency === 'KHR' ? cost.toFixed(2) : '-'}</td>
+                            <td data-label="Cost (USD)" class="text-right">${item.currency === 'USD' ? cost.toFixed(2) : '-'}</td>
+                            <td data-label="Sub-Total" class="text-right">${subtotal.toFixed(2)} ${item.currency}</td>
+                            <td data-label="CB4" class="text-right">${cost.toFixed(2)}</td>
+                            <td data-label="Actions" class="no-print text-right">
                                 <button class="delete-item text-red-600 hover:text-red-900">Del</button>
                             </td>
                         </tr>`;
@@ -637,13 +691,13 @@
                 pos.forEach((po, index) => {
                     const requestDate = po.createdAt ? po.createdAt.toDate().toLocaleDateString() : 'Pending...';
                     const row = `
-                        <tr data-id="${po.id}" class="hover:bg-gray-50">
-                            <td class="px-6 py-4">${index + 1}</td>
-                            <td class="px-6 py-4 font-medium text-indigo-600">${po.poNumber}</td>
-                            <td class="px-6 py-4">${requestDate}</td>
-                            <td class="px-6 py-4">${po.vendorName}</td>
-                            <td class="px-6 py-4">${po.shopName}</td>
-                            <td class="px-6 py-4 text-center whitespace-nowrap">
+                        <tr data-id="${po.id}">
+                            <td data-label="No.">${index + 1}</td>
+                            <td data-label="PO Number" class="font-medium text-indigo-600">${po.poNumber}</td>
+                            <td data-label="Date">${requestDate}</td>
+                            <td data-label="Vendor">${po.vendorName}</td>
+                            <td data-label="Shop">${po.shopName}</td>
+                            <td data-label="Actions" class="text-right">
                                 <button class="edit-po-btn text-indigo-600 hover:text-indigo-900 font-medium mr-4" data-id="${po.id}">Edit</button>
                                 <button class="delete-po-btn text-red-600 hover:text-red-900 font-medium" data-id="${po.id}">Delete</button>
                             </td>
@@ -673,13 +727,13 @@
 
                     const rowHtml = `
                         <tr data-index="${index}" data-code="${item["Product Code"]}">
-                            <td class="border-b border-gray-100 p-3">${index + 1}</td>
-                            <td class="border-b border-gray-100 p-3">${item.Name}</td>
-                            <td class="border-b border-gray-100 p-3 text-center" data-field="quantity">${item.quantity}</td>
-                            <td class="border-b border-gray-100 p-3 text-right" data-field="totalCostKhr">${totalCostKhr}</td>
-                            <td class="border-b border-gray-100 p-3 text-right" data-field="totalCostUsd">${totalCostUsd}</td>
-                            <td class="border-b border-gray-100 p-3 text-right" data-field="costPerUnit">0.00</td>
-                            <td class="border-b border-gray-100 p-3 text-right" data-field="checkup">N/A</td>
+                            <td class="p-3">${index + 1}</td>
+                            <td class="p-3">${item.Name}</td>
+                            <td class="p-3 text-center">${item.quantity}</td>
+                            <td class="p-3 text-right">${totalCostKhr}</td>
+                            <td class="p-3 text-right">${totalCostUsd}</td>
+                            <td class="p-3 text-right" data-field="costPerUnit">0.00</td>
+                            <td class="p-3 text-right" data-field="checkup">N/A</td>
                         </tr>`;
                     printTableBody.insertAdjacentHTML('beforeend', rowHtml);
                 });
@@ -1007,6 +1061,7 @@
             
             // PDF Buttons
             requestSavePdfBtn.addEventListener('click', () => {
+                const element = document.getElementById('pdf-template-area');
                 const selectedShopName = requestShopDropdown.value;
                 const selectedShop = shops.find(s => s.name === selectedShopName) || {};
 
@@ -1026,29 +1081,41 @@
                     const costUsdDisplay = item.currency === 'USD' ? cost.toFixed(2) : '&nbsp;';
                     const row = `
                         <tr>
-                            <td class="border border-black p-1 text-center align-middle">${index + 1}</td>
-                            <td class="border border-black p-1 align-middle">${item["Product Code"]}</td>
-                            <td class="border border-black p-1 align-middle">${item.Barcode || ''}</td>
-                            <td class="border border-black p-1 align-middle">${item.Name}</td>
-                            <td class="border border-black p-1 text-center align-middle">${item.quantity}</td>
-                            <td class="border border-black p-1 text-right align-middle">${costKhrDisplay}</td>
-                            <td class="border border-black p-1 text-right align-middle">${costUsdDisplay}</td>
-                            <td class="border border-black p-1 text-right align-middle">${cost.toFixed(2)}</td>
+                            <td style="text-align: center;">${index + 1}</td>
+                            <td>${item["Product Code"]}</td>
+                            <td>${item.Barcode || ''}</td>
+                            <td>${item.Name}</td>
+                            <td style="text-align: center;">${item.quantity}</td>
+                            <td style="text-align: right;">${costKhrDisplay}</td>
+                            <td style="text-align: right;">${costUsdDisplay}</td>
+                            <td style="text-align: right;">${cost.toFixed(2)}</td>
                         </tr>`;
                     pdfTableBody.insertAdjacentHTML('beforeend', row);
                 });
 
                 for(let i = poItems.length; i < totalRows; i++) {
                     const emptyRow = `<tr>
-                        <td class="border border-black p-1 h-6 align-middle"></td> <td class="border border-black p-1 align-middle"></td> <td class="border border-black p-1 align-middle"></td> <td class="border border-black p-1 align-middle"></td>
-                        <td class="border border-black p-1 align-middle"></td> <td class="border border-black p-1 align-middle"></td> <td class="border border-black p-1 align-middle"></td> <td class="border border-black p-1 align-middle"></td>
+                        <td style="height: 2.2em;"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                     </tr>`;
                      pdfTableBody.insertAdjacentHTML('beforeend', emptyRow);
                 }
+                
+                // Temporarily make the element visible for rendering
+                element.style.position = 'absolute';
+                element.style.left = '0px';
+                element.style.top = '0px';
+                element.style.opacity = '1';
+                element.style.zIndex = '1000';
+
 
                 const { jsPDF } = window.jspdf;
-                const element = document.getElementById('pdf-template-area');
-                html2canvas(element, { scale: 2 }).then(canvas => {
+                html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
+                    // Hide element again after capture
+                    element.style.position = 'fixed';
+                    element.style.left = '-9999px';
+                    element.style.opacity = '0';
+                    element.style.zIndex = '-10';
+
                     const imgData = canvas.toDataURL('image/png');
                     const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: 'a4' });
                     const pdfWidth = pdf.internal.pageSize.getWidth();
