@@ -865,6 +865,23 @@
                     console.error("Authentication failed.");
                     return;
                 }
+                
+                // Try to load from cache first for a fast startup
+                try {
+                    const cachedProductsJSON = localStorage.getItem('cachedProducts');
+                    if (cachedProductsJSON) {
+                        allProducts = JSON.parse(cachedProductsJSON);
+                        if (productTotalCountEl) {
+                           productTotalCountEl.textContent = `(${allProducts.length} items)`;
+                        }
+                        renderProductList(); // Render immediately with cached data
+                    }
+                } catch(e) {
+                    console.error("Could not parse cached products:", e);
+                    allProducts = []; // Start fresh if cache is corrupt
+                }
+
+
                 try {
                     db.collection(`products`).onSnapshot((querySnapshot) => {
                         allProducts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -878,6 +895,13 @@
                         // If the PO detail view is open, refresh its calculations now that we have product data
                         if (currentPoData && !poDetailView.classList.contains('hidden')) {
                            recalculateDetailView();
+                        }
+                        
+                        // Update the local storage cache with the fresh data
+                        try {
+                            localStorage.setItem('cachedProducts', JSON.stringify(allProducts));
+                        } catch (e) {
+                            console.error("Could not cache products to local storage:", e);
                         }
                     });
                     await loadVendorSettings();
