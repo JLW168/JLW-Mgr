@@ -21,7 +21,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f9fafb; /* bg-gray-50 */
+            background-color: #f1f5f9; /* bg-slate-100 */
         }
         .ang-daunkeo {
             font-family: 'Kantumruy Pro', sans-serif; /* Using Kantumruy as a close web-safe alternative to Ang DaunKeo */
@@ -73,7 +73,7 @@
             .responsive-table tr {
                 display: block;
                 margin-bottom: 1rem;
-                border: 1px solid #e5e7eb;
+                border: 1px solid #e2e8f0;
                 border-radius: 0.5rem;
                 box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
                 padding: 1rem;
@@ -83,7 +83,7 @@
                 justify-content: space-between;
                 align-items: center;
                 padding: 0.5rem 0;
-                border-bottom: 1px solid #f3f4f6;
+                border-bottom: 1px solid #f1f5f9;
             }
             .responsive-table td:last-child {
                 border-bottom: none;
@@ -92,7 +92,7 @@
                 content: attr(data-label);
                 font-weight: 600;
                 margin-right: 1rem;
-                color: #4b5563;
+                color: #475569;
             }
         }
 
@@ -124,27 +124,27 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-slate-100 text-slate-800">
 
-    <div class="container mx-auto p-2 sm:p-4 lg:p-8">
+    <div class="container mx-auto p-2 sm:p-4 lg:p-8 max-w-7xl">
         <div class="bg-white rounded-2xl shadow-lg">
 
             <!-- Tabs Navigation -->
-            <div class="border-b border-gray-200 no-print">
+            <div class="border-b border-slate-200 no-print">
                 <nav class="-mb-px flex space-x-4 sm:space-x-8 px-4 sm:px-6 md:px-8" aria-label="Tabs">
                     <button class="tab active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="po-request-form">
                         Purchase Order Page
                     </button>
-                    <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="drafts-page">
+                    <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-slate-500 hover:text-slate-700 hover:border-slate-300" data-tab="drafts-page">
                         Drafts
                     </button>
-                    <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="purchase-order">
+                    <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-slate-500 hover:text-slate-700 hover:border-slate-300" data-tab="purchase-order">
                         POs Center
                     </button>
-                    <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="product-data-page">
+                    <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-slate-500 hover:text-slate-700 hover:border-slate-300" data-tab="product-data-page">
                         Product Data
                     </button>
-                    <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="setting-page">
+                    <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-slate-500 hover:text-slate-700 hover:border-slate-300" data-tab="setting-page">
                         Settings
                     </button>
                 </nav>
@@ -154,49 +154,49 @@
                 <!-- PO Request Form Content -->
                 <div id="po-request-form" class="tab-content active">
                     <div>
-                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Purchase Order Request</h1>
+                        <h1 class="text-3xl font-bold text-slate-900 mb-6">Purchase Order Request</h1>
                         
-                        <div class="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6 border border-gray-200">
-                            <h2 class="text-lg sm:text-xl font-semibold mb-4 text-gray-800">PO Request Data</h2>
+                        <div class="bg-slate-50 rounded-xl p-4 sm:p-6 mb-6 border border-slate-200">
+                            <h2 class="text-xl font-semibold mb-4 text-slate-800">PO Request Data</h2>
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                                 <div>
-                                    <label for="request-vendor" class="block text-sm font-medium text-gray-700">Vendor</label>
-                                    <input type="text" id="request-vendor" readonly class="mt-1 block w-full bg-gray-200 border-gray-300 rounded-lg shadow-sm cursor-not-allowed">
+                                    <label for="request-vendor" class="block text-sm font-medium text-slate-700">Vendor</label>
+                                    <input type="text" id="request-vendor" readonly class="mt-1 block w-full bg-slate-200 border-slate-300 rounded-lg shadow-sm cursor-not-allowed">
                                 </div>
                                 <div>
-                                    <label for="request-shop-dropdown" class="block text-sm font-medium text-gray-700">Request By</label>
-                                    <select id="request-shop-dropdown" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
+                                    <label for="request-shop-dropdown" class="block text-sm font-medium text-slate-700">Request By</label>
+                                    <select id="request-shop-dropdown" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
                                 </div>
                                 <div>
-                                    <label for="request-po-no" class="block text-sm font-medium text-gray-700">PO No.</label>
-                                    <input type="text" id="request-po-no" readonly class="mt-1 block w-full bg-gray-200 border-gray-300 rounded-lg shadow-sm cursor-not-allowed">
+                                    <label for="request-po-no" class="block text-sm font-medium text-slate-700">PO No.</label>
+                                    <input type="text" id="request-po-no" readonly class="mt-1 block w-full bg-slate-200 border-slate-300 rounded-lg shadow-sm cursor-not-allowed">
                                 </div>
                                 <div>
-                                    <label for="request-po-date" class="block text-sm font-medium text-gray-700">PO Date</label>
-                                    <input type="text" id="request-po-date" readonly class="mt-1 block w-full bg-gray-200 border-gray-300 rounded-lg shadow-sm cursor-not-allowed">
+                                    <label for="request-po-date" class="block text-sm font-medium text-slate-700">PO Date</label>
+                                    <input type="text" id="request-po-date" readonly class="mt-1 block w-full bg-slate-200 border-slate-300 rounded-lg shadow-sm cursor-not-allowed">
                                 </div>
                             </div>
                             
-                            <div class="mt-8 pt-6 border-t border-gray-200 no-print">
-                                <h2 class="text-lg sm:text-xl font-semibold mb-4 text-gray-800">Add Product to PO</h2>
+                            <div class="mt-8 pt-6 border-t border-slate-200 no-print">
+                                <h2 class="text-xl font-semibold mb-4 text-slate-800">Add Product to PO</h2>
                                 <div id="lookup-form">
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
                                         <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div class="relative">
-                                                <label for="product-code" class="block text-sm font-medium text-gray-700 mb-1">Product Code/Barcode</label>
-                                                <input type="text" id="product-code" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter code...">
-                                                <div id="product-preview" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg p-3">
+                                                <label for="product-code" class="block text-sm font-medium text-slate-700 mb-1">Product Code/Barcode</label>
+                                                <input type="text" id="product-code" class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter code...">
+                                                <div id="product-preview" class="hidden absolute z-10 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-lg p-3">
                                                     <!-- Live preview content goes here -->
                                                 </div>
                                             </div>
                                             <div>
-                                                <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
-                                                <input type="number" id="quantity" value="1" min="1" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                                                <label for="quantity" class="block text-sm font-medium text-slate-700 mb-1">Quantity</label>
+                                                <input type="number" id="quantity" value="1" min="1" class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
                                             </div>
                                         </div>
                                         <div class="flex items-center space-x-2 mt-7">
                                             <button id="add-to-po" class="w-full bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700 h-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add</button>
-                                            <button id="cancel-add-product" type="button" class="w-full bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-lg hover:bg-gray-300 h-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">Cancel</button>
+                                            <button id="cancel-add-product" type="button" class="w-full bg-slate-200 text-slate-800 font-semibold py-2 px-6 rounded-lg hover:bg-slate-300 h-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400">Cancel</button>
                                         </div>
                                     </div>
                                     <p id="error-message" class="text-red-500 text-sm mt-2 hidden"></p>
@@ -206,28 +206,28 @@
 
                         <div class="overflow-x-auto">
                             <table class="min-w-full bg-white responsive-table">
-                                <thead>
+                                <thead class="bg-slate-100">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">No.</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Product Code</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Barcode</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Product Name</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Vendor</th>
-                                        <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Qty</th>
-                                        <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Cost (KHR)</th>
-                                        <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Cost (USD)</th>
-                                        <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Sub-Total</th>
-                                        <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">CB4</th>
-                                        <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider no-print">Actions</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">No.</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Product Code</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Barcode</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Product Name</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Vendor</th>
+                                        <th class="p-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider">Qty</th>
+                                        <th class="p-3 text-right text-xs font-semibold text-slate-700 uppercase tracking-wider">Cost (KHR)</th>
+                                        <th class="p-3 text-right text-xs font-semibold text-slate-700 uppercase tracking-wider">Cost (USD)</th>
+                                        <th class="p-3 text-right text-xs font-semibold text-slate-700 uppercase tracking-wider">Sub-Total</th>
+                                        <th class="p-3 text-right text-xs font-semibold text-slate-700 uppercase tracking-wider">CB4</th>
+                                        <th class="p-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider no-print">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="po-table-body" class="bg-white"></tbody>
+                                <tbody id="po-table-body" class="bg-white divide-y divide-slate-200"></tbody>
                             </table>
                         </div>
                     </div>
                      <div id="submission-status" class="text-right mt-4 h-6"></div>
                      <div class="mt-2 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 no-print">
-                        <button id="save-draft-btn" class="bg-gray-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-600 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Save as Draft</button>
+                        <button id="save-draft-btn" class="bg-slate-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-slate-600 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500">Save as Draft</button>
                         <button id="submit-pr-btn" class="bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Submit PR</button>
                         <button id="cancel-po-request-btn" type="button" class="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Cancel Request</button>
                     </div>
@@ -235,19 +235,19 @@
                 
                 <!-- Drafts Page Content -->
                 <div id="drafts-page" class="tab-content">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Saved Drafts</h1>
+                    <h1 class="text-3xl font-bold text-slate-900 mb-6">Saved Drafts</h1>
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-white responsive-table">
-                            <thead>
+                            <thead class="bg-slate-100">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">No.</th>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Shop</th>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">PO No.</th>
-                                    <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">No.</th>
+                                    <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Date</th>
+                                    <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Shop</th>
+                                    <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">PO No.</th>
+                                    <th class="p-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="drafts-list-body" class="bg-white"></tbody>
+                            <tbody id="drafts-list-body" class="bg-white divide-y divide-slate-200"></tbody>
                         </table>
                     </div>
                 </div>
@@ -256,50 +256,50 @@
                 <!-- POs Center Content -->
                 <div id="purchase-order" class="tab-content">
                     <div id="po-list-view">
-                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Purchase Order Center</h1>
+                        <h1 class="text-3xl font-bold text-slate-900 mb-6">Purchase Order Center</h1>
                         
                         <!-- Filter Controls -->
-                        <div class="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6 border border-gray-200">
+                        <div class="bg-slate-50 rounded-xl p-4 sm:p-6 mb-6 border border-slate-200">
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                                 <div>
-                                    <label for="filter-shop" class="block text-sm font-medium text-gray-700">Shop</label>
-                                    <select id="filter-shop" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
+                                    <label for="filter-shop" class="block text-sm font-medium text-slate-700">Shop</label>
+                                    <select id="filter-shop" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
                                 </div>
                                 <div>
-                                    <label for="filter-date" class="block text-sm font-medium text-gray-700">Req. Date</label>
-                                    <input type="date" id="filter-date" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                    <label for="filter-date" class="block text-sm font-medium text-slate-700">Req. Date</label>
+                                    <input type="date" id="filter-date" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                 </div>
                                 <div>
-                                    <label for="filter-vendor" class="block text-sm font-medium text-gray-700">Vendor</label>
-                                    <input type="text" id="filter-vendor" placeholder="Enter vendor name..." class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                    <label for="filter-vendor" class="block text-sm font-medium text-slate-700">Vendor</label>
+                                    <input type="text" id="filter-vendor" placeholder="Enter vendor name..." class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                 </div>
                                 <div>
-                                    <button id="clear-filters-btn" class="w-full bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300">Clear Filters</button>
+                                    <button id="clear-filters-btn" class="w-full bg-slate-200 text-slate-800 font-semibold py-2 px-4 rounded-lg hover:bg-slate-300">Clear Filters</button>
                                 </div>
                             </div>
                         </div>
 
                         <div class="overflow-x-auto">
                             <table class="min-w-full bg-white responsive-table">
-                                <thead>
+                                <thead class="bg-slate-100">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">No.</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">PO Number</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Request Date</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Vendor</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Shop</th>
-                                        <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">No.</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">PO Number</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Request Date</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Vendor</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Shop</th>
+                                        <th class="p-3 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="po-list-body" class="bg-white"></tbody>
+                                <tbody id="po-list-body" class="bg-white divide-y divide-slate-200"></tbody>
                             </table>
                         </div>
                     </div>
 
                     <div id="po-detail-view" class="hidden">
-                        <button id="back-to-list-btn" class="mb-6 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">&larr; Back to PO List</button>
-                        <div id="po-print-area" class="border border-gray-200 p-4 sm:p-6 rounded-lg">
-                            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4" id="po-number-display"></h2>
+                        <button id="back-to-list-btn" class="mb-6 bg-slate-200 text-slate-800 font-semibold py-2 px-4 rounded-lg hover:bg-slate-300 transition-colors">&larr; Back to PO List</button>
+                        <div id="po-print-area" class="border border-slate-200 p-4 sm:p-6 rounded-lg">
+                            <h2 class="text-2xl font-bold text-slate-800 mb-4" id="po-number-display"></h2>
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                                 <div>
                                     <p><strong>Vendor:</strong> <span id="print-vendor-name"></span></p>
@@ -311,14 +311,14 @@
                                 </div>
                                 <div class="sm:col-span-2 lg:col-span-1 text-left sm:text-right">
                                     <div class="no-print">
-                                        <label for="detail-exchange-rate" class="block text-sm font-medium text-gray-700">Exchange Rate (KHR to 1 USD)</label>
-                                        <input type="number" id="detail-exchange-rate" value="4100" class="mt-1 block w-full max-w-xs ml-auto border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500" readonly>
+                                        <label for="detail-exchange-rate" class="block text-sm font-medium text-slate-700">Exchange Rate (KHR to 1 USD)</label>
+                                        <input type="number" id="detail-exchange-rate" value="4100" class="mt-1 block w-full max-w-xs ml-auto border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500" readonly>
                                     </div>
                                 </div>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full bg-white">
-                                    <thead class="bg-gray-100">
+                                    <thead class="bg-slate-100">
                                         <tr>
                                             <th class="p-3 text-left text-sm font-semibold">No.</th>
                                             <th class="p-3 text-left text-sm font-semibold">Product Name</th>
@@ -329,7 +329,7 @@
                                             <th class="p-3 text-right text-sm font-semibold">CheckUp</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="print-table-body" class="divide-y divide-gray-100"></tbody>
+                                    <tbody id="print-table-body" class="divide-y divide-slate-200"></tbody>
                                 </table>
                             </div>
                         </div>
@@ -345,133 +345,171 @@
                 <!-- Product Data Page Content -->
                 <div id="product-data-page" class="tab-content">
                     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
+                        <h1 class="text-3xl font-bold text-slate-900">
                             Product Data Management 
-                            <span id="product-total-count" class="text-lg font-medium text-gray-500 ml-2"></span>
+                            <span id="product-total-count" class="text-lg font-medium text-slate-500 ml-2"></span>
                         </h1>
                         <div class="w-full sm:w-auto flex flex-wrap gap-2">
-                            <input type="text" id="product-search-input" placeholder="Search by name or code..." class="w-full sm:w-auto flex-grow px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                            <input type="text" id="product-search-input" placeholder="Search by name or code..." class="w-full sm:w-auto flex-grow px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
                             <button id="add-product-btn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 whitespace-nowrap">Add Product</button>
                             <button id="export-products-btn" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 whitespace-nowrap">Export to Excel</button>
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6 border border-gray-200">
-                        <h2 class="text-lg sm:text-xl font-semibold mb-4 text-gray-800">Import / Export</h2>
+                    <div class="bg-slate-50 rounded-xl p-4 sm:p-6 mb-6 border border-slate-200">
+                        <h2 class="text-xl font-semibold mb-4 text-slate-800">Import / Export</h2>
                         <div class="flex flex-col sm:flex-row items-center gap-4">
-                            <input type="file" id="product-file-input" accept=".csv, .xls, .xlsx" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                            <input type="file" id="product-file-input" accept=".csv, .xls, .xlsx" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                             <button id="import-products-btn" class="w-full sm:w-auto bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 whitespace-nowrap">Import Products</button>
                         </div>
                         <div id="product-import-status" class="mt-4 text-sm"></div>
-                        <div class="mt-6 pt-4 border-t border-gray-200">
+                        <div class="mt-6 pt-4 border-t border-slate-200">
                              <button id="delete-all-products-btn" class="w-full sm:w-auto bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                                 Delete All Products
                             </button>
-                            <p class="text-xs text-gray-500 mt-2">Permanently delete all product data. This action cannot be undone.</p>
+                            <p class="text-xs text-slate-500 mt-2">Permanently delete all product data. This action cannot be undone.</p>
                         </div>
                     </div>
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-white responsive-table">
-                            <thead>
+                            <thead class="bg-slate-100">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Product Code</th>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Barcode</th>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Product Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Category</th>
-                                    <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase">Cost</th>
-                                    <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase">Price</th>
-                                    <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase">Actions</th>
+                                    <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Product Code</th>
+                                    <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Barcode</th>
+                                    <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Product Name</th>
+                                    <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Category</th>
+                                    <th class="p-3 text-right text-xs font-semibold text-slate-700 uppercase">Cost</th>
+                                    <th class="p-3 text-right text-xs font-semibold text-slate-700 uppercase">Price</th>
+                                    <th class="p-3 text-center text-xs font-semibold text-slate-700 uppercase">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="product-list-body" class="bg-white"></tbody>
+                            <tbody id="product-list-body" class="bg-white divide-y divide-slate-200"></tbody>
                         </table>
                     </div>
-                    <div id="product-pagination" class="mt-6 flex justify-center items-center space-x-2"></div>
+                    <div id="product-pagination-controls" class="mt-6 flex flex-col sm:flex-row justify-between items-center text-sm text-slate-600">
+                        <div>
+                            <label for="items-per-page" class="mr-2">Show:</label>
+                            <select id="items-per-page" class="border-slate-300 rounded-lg shadow-sm">
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                            <span class="ml-4" id="product-list-summary"></span>
+                        </div>
+                        <div class="flex items-center mt-4 sm:mt-0">
+                            <span id="page-info" class="mr-4"></span>
+                            <button id="prev-page-btn" class="px-3 py-1 border rounded-lg hover:bg-slate-100 disabled:opacity-50" disabled>&larr; Previous</button>
+                            <button id="next-page-btn" class="px-3 py-1 border rounded-lg hover:bg-slate-100 disabled:opacity-50 ml-2" disabled>Next &rarr;</button>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Setting Page Content -->
                 <div id="setting-page" class="tab-content">
-                     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Settings</h1>
-                     <div class="border-b border-gray-200 mb-4">
+                     <h1 class="text-3xl font-bold text-slate-900 mb-2">Settings</h1>
+                     <div class="border-b border-slate-200 mb-4">
                         <nav class="-mb-px flex space-x-8" aria-label="Tabs">
                             <button class="setting-tab active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="shop-list">Shop List</button>
-                            <button class="setting-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500" data-tab="vendor-list">Vendor List</button>
+                            <button class="setting-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-slate-500" data-tab="vendor-list">Vendor List</button>
+                            <button class="setting-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-slate-500" data-tab="employees">Employees</button>
                         </nav>
                     </div>
 
                     <div id="shop-list" class="setting-tab-content active">
-                         <p class="text-gray-500 mb-6">Add, view, or remove shops from your list.</p>
-                         <div class="bg-gray-50 rounded-xl p-6 mb-6 border border-gray-200 max-w-2xl mx-auto">
+                         <p class="text-slate-600 mb-6">Add, view, or remove shops from your list.</p>
+                         <div class="bg-slate-50 rounded-xl p-6 mb-6 border border-slate-200 max-w-2xl mx-auto">
                             <h2 class="text-xl font-semibold mb-4">Add New Shop</h2>
                             <div class="space-y-4">
                                 <div>
-                                    <label for="shop-name" class="block text-sm font-medium text-gray-700">Shop Name</label>
-                                    <input type="text" id="shop-name" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg" placeholder="Enter shop name...">
+                                    <label for="shop-name" class="block text-sm font-medium text-slate-700">Shop Name</label>
+                                    <input type="text" id="shop-name" class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg" placeholder="Enter shop name...">
                                 </div>
                                 <div>
-                                    <label for="shop-address" class="block text-sm font-medium text-gray-700">Address</label>
-                                    <input type="text" id="shop-address" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg" placeholder="Enter address...">
+                                    <label for="shop-address" class="block text-sm font-medium text-slate-700">Address</label>
+                                    <input type="text" id="shop-address" class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg" placeholder="Enter address...">
                                 </div>
                                 <div>
-                                    <label for="shop-contact" class="block text-sm font-medium text-gray-700">Contact Number</label>
-                                    <input type="text" id="shop-contact" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg" placeholder="Enter contact number...">
+                                    <label for="shop-contact" class="block text-sm font-medium text-slate-700">Contact Number</label>
+                                    <input type="text" id="shop-contact" class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg" placeholder="Enter contact number...">
                                 </div>
                                 <button id="add-shop-btn" class="w-full bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700">Add Shop</button>
                             </div>
                          </div>
                          <div class="overflow-x-auto max-w-2xl mx-auto">
-                            <table class="min-w-full bg-white divide-y divide-gray-100 rounded-lg shadow-sm border border-gray-100">
-                                <thead class="bg-gray-50">
+                            <table class="min-w-full bg-white rounded-lg shadow-sm border border-slate-100">
+                                <thead class="bg-slate-100">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Shop Name</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Address</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Contact</th>
-                                        <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase">Actions</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Shop Name</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Address</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Contact</th>
+                                        <th class="p-3 text-center text-xs font-semibold text-slate-700 uppercase">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="shop-list-body" class="bg-white divide-y divide-gray-100"></tbody>
+                                <tbody id="shop-list-body" class="bg-white divide-y divide-slate-200"></tbody>
                             </table>
                          </div>
                     </div>
                     <div id="vendor-list" class="setting-tab-content" style="display:none;">
-                        <p class="text-gray-500 mb-6">Add, view, or remove vendors from your list.</p>
-                        <div class="bg-gray-50 rounded-xl p-6 mb-6 border border-gray-200 max-w-2xl mx-auto">
+                        <p class="text-slate-600 mb-6">Add, view, or remove vendors from your list.</p>
+                        <div class="bg-slate-50 rounded-xl p-6 mb-6 border border-slate-200 max-w-2xl mx-auto">
                            <h2 class="text-xl font-semibold mb-4">Add New Vendor</h2>
                            <div class="space-y-4">
                                <div>
-                                   <label for="vendor-name" class="block text-sm font-medium text-gray-700">Vendor Name</label>
-                                   <input type="text" id="vendor-name" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg" placeholder="Enter vendor name...">
+                                   <label for="vendor-name" class="block text-sm font-medium text-slate-700">Vendor Name</label>
+                                   <input type="text" id="vendor-name" class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg" placeholder="Enter vendor name...">
                                </div>
                                <div>
-                                   <label for="vendor-contact" class="block text-sm font-medium text-gray-700">Contact</label>
-                                   <input type="text" id="vendor-contact" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg" placeholder="Enter contact...">
+                                   <label for="vendor-contact" class="block text-sm font-medium text-slate-700">Contact</label>
+                                   <input type="text" id="vendor-contact" class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg" placeholder="Enter contact...">
                                </div>
                                <div>
-                                   <label for="vendor-address" class="block text-sm font-medium text-gray-700">Address</label>
-                                   <input type="text" id="vendor-address" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg" placeholder="Enter address...">
+                                   <label for="vendor-address" class="block text-sm font-medium text-slate-700">Address</label>
+                                   <input type="text" id="vendor-address" class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg" placeholder="Enter address...">
                                </div>
                                <button id="add-vendor-btn" class="w-full bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700">Add Vendor</button>
                            </div>
                         </div>
-                        <div class="bg-gray-50 rounded-xl p-6 mb-6 border border-gray-200 max-w-2xl mx-auto">
+                        <div class="bg-slate-50 rounded-xl p-6 mb-6 border border-slate-200 max-w-2xl mx-auto">
                             <h2 class="text-xl font-semibold mb-4">Import Vendors from Excel</h2>
-                            <input type="file" id="vendor-file" accept=".csv, .xls, .xlsx" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                            <input type="file" id="vendor-file" accept=".csv, .xls, .xlsx" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                             <button id="import-vendors-btn" class="mt-4 w-full bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700">Import Vendors</button>
                             <div id="import-status" class="mt-4 text-sm"></div>
                         </div>
                         <div class="overflow-x-auto max-w-2xl mx-auto">
-                           <table class="min-w-full bg-white divide-y divide-gray-100 rounded-lg shadow-sm border border-gray-100">
-                               <thead class="bg-gray-50">
+                           <table class="min-w-full bg-white rounded-lg shadow-sm border border-slate-100">
+                               <thead class="bg-slate-100">
                                    <tr>
-                                       <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Vendor Name</th>
-                                       <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Contact</th>
-                                       <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Address</th>
-                                       <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase">Actions</th>
+                                       <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Vendor Name</th>
+                                       <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Contact</th>
+                                       <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Address</th>
+                                       <th class="p-3 text-center text-xs font-semibold text-slate-700 uppercase">Actions</th>
                                    </tr>
                                </thead>
-                               <tbody id="vendor-list-body" class="bg-white divide-y divide-gray-100"></tbody>
+                               <tbody id="vendor-list-body" class="bg-white divide-y divide-slate-200"></tbody>
                            </table>
+                        </div>
+                   </div>
+                   <div id="employees" class="setting-tab-content" style="display:none;">
+                        <div class="flex justify-between items-center mb-6">
+                            <p class="text-slate-600">Manage employee access and permissions.</p>
+                            <button id="add-employee-btn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700">Add Employee</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white responsive-table">
+                                <thead class="bg-slate-100">
+                                    <tr>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">UID</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Name</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Position</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Email</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Role</th>
+                                        <th class="p-3 text-left text-xs font-semibold text-slate-700 uppercase">Assigned Shops</th>
+                                        <th class="p-3 text-center text-xs font-semibold text-slate-700 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="employee-list-body" class="bg-white divide-y divide-slate-200"></tbody>
+                            </table>
                         </div>
                    </div>
                 </div>
@@ -539,9 +577,9 @@
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
                     <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 </div>
-                <h3 id="delete-modal-title" class="text-lg leading-6 font-medium text-gray-900">Delete Item?</h3>
+                <h3 id="delete-modal-title" class="text-lg leading-6 font-medium text-slate-900">Delete Item?</h3>
                 <div class="mt-2 px-7 py-3">
-                    <p id="delete-modal-text" class="text-sm text-gray-500">
+                    <p id="delete-modal-text" class="text-sm text-slate-500">
                         Are you sure you want to delete this item? This action cannot be undone.
                     </p>
                 </div>
@@ -549,7 +587,7 @@
                     <button id="confirm-delete-btn" class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
                         Delete
                     </button>
-                    <button id="cancel-delete-btn" class="px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-auto ml-2 shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    <button id="cancel-delete-btn" class="px-4 py-2 bg-slate-200 text-slate-800 text-base font-medium rounded-md w-auto ml-2 shadow-sm hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-300">
                         Cancel
                     </button>
                 </div>
@@ -561,36 +599,36 @@
     <div id="product-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
         <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
             <div class="mt-3">
-                <h3 class="text-lg leading-6 font-medium text-gray-900" id="product-modal-title">Add New Product</h3>
+                <h3 class="text-lg leading-6 font-medium text-slate-900" id="product-modal-title">Add New Product</h3>
                 <div class="mt-4 space-y-4">
                     <input type="hidden" id="product-id">
                     <div>
-                        <label for="modal-product-code" class="block text-sm font-medium text-gray-700">Product Code</label>
-                        <input type="text" id="modal-product-code" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm">
+                        <label for="modal-product-code" class="block text-sm font-medium text-slate-700">Product Code</label>
+                        <input type="text" id="modal-product-code" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm">
                     </div>
                     <div>
-                        <label for="modal-barcode" class="block text-sm font-medium text-gray-700">Barcode</label>
-                        <input type="text" id="modal-barcode" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm">
+                        <label for="modal-barcode" class="block text-sm font-medium text-slate-700">Barcode</label>
+                        <input type="text" id="modal-barcode" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm">
                     </div>
                     <div>
-                        <label for="modal-product-name" class="block text-sm font-medium text-gray-700">Product Name</label>
-                        <input type="text" id="modal-product-name" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm">
+                        <label for="modal-product-name" class="block text-sm font-medium text-slate-700">Product Name</label>
+                        <input type="text" id="modal-product-name" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm">
                     </div>
                     <div>
-                        <label for="modal-product-category" class="block text-sm font-medium text-gray-700">Category (Vendor)</label>
-                        <input type="text" id="modal-product-category" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm">
+                        <label for="modal-product-category" class="block text-sm font-medium text-slate-700">Category (Vendor)</label>
+                        <input type="text" id="modal-product-category" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm">
                     </div>
                     <div>
-                        <label for="modal-product-cost" class="block text-sm font-medium text-gray-700">Cost</label>
-                        <input type="number" id="modal-product-cost" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm">
+                        <label for="modal-product-cost" class="block text-sm font-medium text-slate-700">Cost</label>
+                        <input type="number" id="modal-product-cost" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm">
                     </div>
                     <div>
-                        <label for="modal-product-price" class="block text-sm font-medium text-gray-700">Price</label>
-                        <input type="number" id="modal-product-price" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm">
+                        <label for="modal-product-price" class="block text-sm font-medium text-slate-700">Price</label>
+                        <input type="number" id="modal-product-price" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm">
                     </div>
                 </div>
                 <div class="items-center px-4 py-3 mt-4 text-right">
-                    <button id="cancel-product-btn" class="px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-auto mr-2 shadow-sm hover:bg-gray-300">
+                    <button id="cancel-product-btn" class="px-4 py-2 bg-slate-200 text-slate-800 text-base font-medium rounded-md w-auto mr-2 shadow-sm hover:bg-slate-300">
                         Cancel
                     </button>
                     <button id="save-product-btn" class="px-4 py-2 bg-indigo-600 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-indigo-700">
@@ -605,24 +643,24 @@
     <div id="edit-po-item-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
         <div class="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
             <div class="mt-3">
-                <h3 class="text-lg leading-6 font-medium text-gray-900" id="edit-po-item-modal-title">Edit PO Item</h3>
+                <h3 class="text-lg leading-6 font-medium text-slate-900" id="edit-po-item-modal-title">Edit PO Item</h3>
                 <div class="mt-4 space-y-4">
                     <input type="hidden" id="edit-po-item-index">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Product Name</label>
-                        <input type="text" id="modal-edit-product-name" readonly class="mt-1 block w-full bg-gray-200 border-gray-300 rounded-lg shadow-sm cursor-not-allowed">
+                        <label class="block text-sm font-medium text-slate-700">Product Name</label>
+                        <input type="text" id="modal-edit-product-name" readonly class="mt-1 block w-full bg-slate-200 border-slate-300 rounded-lg shadow-sm cursor-not-allowed">
                     </div>
                     <div>
-                        <label for="modal-edit-quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
-                        <input type="number" id="modal-edit-quantity" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm">
+                        <label for="modal-edit-quantity" class="block text-sm font-medium text-slate-700">Quantity</label>
+                        <input type="number" id="modal-edit-quantity" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm">
                     </div>
                     <div>
-                        <label for="modal-edit-cost" class="block text-sm font-medium text-gray-700">Cost</label>
-                        <input type="number" id="modal-edit-cost" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm">
+                        <label for="modal-edit-cost" class="block text-sm font-medium text-slate-700">Cost</label>
+                        <input type="number" id="modal-edit-cost" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm">
                     </div>
                 </div>
                 <div class="items-center px-4 py-3 mt-4 text-right">
-                    <button id="cancel-edit-po-item-btn" class="px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-auto mr-2 shadow-sm hover:bg-gray-300">
+                    <button id="cancel-edit-po-item-btn" class="px-4 py-2 bg-slate-200 text-slate-800 text-base font-medium rounded-md w-auto mr-2 shadow-sm hover:bg-slate-300">
                         Cancel
                     </button>
                     <button id="save-edit-po-item-btn" class="px-4 py-2 bg-indigo-600 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-indigo-700">
@@ -637,10 +675,10 @@
     <div id="cost-history-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
         <div class="relative top-10 mx-auto p-5 border w-full max-w-3xl shadow-lg rounded-md bg-white">
             <div class="mt-3">
-                <h3 class="text-lg leading-6 font-medium text-gray-900" id="cost-history-modal-title">Cost History</h3>
+                <h3 class="text-lg leading-6 font-medium text-slate-900" id="cost-history-modal-title">Cost History</h3>
                 <div class="mt-4 overflow-y-auto" style="max-height: 60vh;">
                      <table class="min-w-full bg-white">
-                        <thead class="bg-gray-100 sticky top-0">
+                        <thead class="bg-slate-100 sticky top-0">
                             <tr>
                                 <th class="p-3 text-left text-sm font-semibold">Date</th>
                                 <th class="p-3 text-right text-sm font-semibold">Previous Cost (KHR)</th>
@@ -648,12 +686,75 @@
                                 <th class="p-3 text-left text-sm font-semibold">Source PO</th>
                             </tr>
                         </thead>
-                        <tbody id="cost-history-body" class="divide-y divide-gray-100"></tbody>
+                        <tbody id="cost-history-body" class="divide-y divide-slate-200"></tbody>
                     </table>
                 </div>
                 <div class="items-center px-4 py-3 mt-4 text-right">
-                    <button id="close-history-btn" class="px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-auto shadow-sm hover:bg-gray-300">
+                    <button id="close-history-btn" class="px-4 py-2 bg-slate-200 text-slate-800 text-base font-medium rounded-md w-auto shadow-sm hover:bg-slate-300">
                         Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Employee Modal -->
+    <div id="employee-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-10 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <h3 class="text-lg leading-6 font-medium text-slate-900 border-b border-slate-200 pb-4" id="employee-modal-title">Add New Employee</h3>
+                <div class="mt-4 space-y-4">
+                    <input type="hidden" id="employee-id">
+                    <div>
+                        <label for="employee-uid" class="block text-sm font-medium text-slate-700">User ID (UID)</label>
+                        <div class="mt-1 flex rounded-md shadow-sm">
+                            <input type="text" id="employee-uid" class="block w-full rounded-none rounded-l-md border-slate-300 bg-slate-100" placeholder="Unique ID for login...">
+                            <button type="button" id="generate-uid-btn" class="relative -ml-px inline-flex items-center space-x-2 rounded-r-md border border-slate-300 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">
+                                <span>Generate</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="employee-name" class="block text-sm font-medium text-slate-700">Name</label>
+                            <input type="text" id="employee-name" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm">
+                        </div>
+                        <div>
+                            <label for="employee-position" class="block text-sm font-medium text-slate-700">Position</label>
+                            <input type="text" id="employee-position" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm">
+                        </div>
+                        <div>
+                            <label for="employee-email" class="block text-sm font-medium text-slate-700">Email</label>
+                            <input type="email" id="employee-email" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm">
+                        </div>
+                        <div>
+                            <label for="employee-role" class="block text-sm font-medium text-slate-700">Role</label>
+                            <select id="employee-role" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm">
+                                <option>Staff</option>
+                                <option>Manager</option>
+                                <option>Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700">Assigned Shops</label>
+                        <div id="employee-shops-checkboxes" class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-4 border border-slate-200 p-4 rounded-lg h-32 overflow-y-auto">
+                            <!-- Checkboxes will be inserted here by JS -->
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700">Page Permissions</label>
+                        <div id="employee-permissions" class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-4 border border-slate-200 p-4 rounded-lg">
+                            <!-- Checkboxes will be inserted here by JS -->
+                        </div>
+                    </div>
+                </div>
+                <div class="items-center px-4 py-3 mt-4 text-right bg-slate-50 -mx-5 -mb-5 rounded-b-md">
+                    <button id="cancel-employee-btn" class="px-4 py-2 bg-slate-200 text-slate-800 text-base font-medium rounded-md w-auto mr-2 shadow-sm hover:bg-slate-300">
+                        Cancel
+                    </button>
+                    <button id="save-employee-btn" class="px-4 py-2 bg-indigo-600 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-indigo-700">
+                        Save Employee
                     </button>
                 </div>
             </div>
@@ -696,12 +797,13 @@
             let vendorSettings = {}; // To store currency for each vendor
             let allPurchaseOrders = []; // Cache for all POs
             let drafts = []; // Cache for drafts
+            let employees = []; // Cache for employees
             let currentPoId = null;
             let currentDraftId = null; // <-- To track the loaded draft
             let currentPoData = null;
             let itemToDelete = { id: null, type: null };
             let productCurrentPage = 1;
-            const productItemsPerPage = 100;
+            let productItemsPerPage = 50;
 
             // --- DOM Elements ---
             const productCodeInput = document.getElementById('product-code');
@@ -766,13 +868,17 @@
             const saveProductBtn = document.getElementById('save-product-btn');
             const productListBody = document.getElementById('product-list-body');
             const productSearchInput = document.getElementById('product-search-input');
-            const productPagination = document.getElementById('product-pagination');
             const exportProductsBtn = document.getElementById('export-products-btn');
             const importProductsBtn = document.getElementById('import-products-btn');
             const productFileInput = document.getElementById('product-file-input');
             const productImportStatus = document.getElementById('product-import-status');
             const deleteAllProductsBtn = document.getElementById('delete-all-products-btn');
             const productTotalCountEl = document.getElementById('product-total-count');
+            const itemsPerPageSelect = document.getElementById('items-per-page');
+            const productListSummary = document.getElementById('product-list-summary');
+            const pageInfo = document.getElementById('page-info');
+            const prevPageBtn = document.getElementById('prev-page-btn');
+            const nextPageBtn = document.getElementById('next-page-btn');
 
             const editPoItemModal = document.getElementById('edit-po-item-modal');
             const cancelEditPoItemBtn = document.getElementById('cancel-edit-po-item-btn');
@@ -782,6 +888,23 @@
             const costHistoryModalTitle = document.getElementById('cost-history-modal-title');
             const costHistoryBody = document.getElementById('cost-history-body');
             const closeHistoryBtn = document.getElementById('close-history-btn');
+
+            // Employee section DOM elements
+            const employeeModal = document.getElementById('employee-modal');
+            const addEmployeeBtn = document.getElementById('add-employee-btn');
+            const cancelEmployeeBtn = document.getElementById('cancel-employee-btn');
+            const saveEmployeeBtn = document.getElementById('save-employee-btn');
+            const employeeListBody = document.getElementById('employee-list-body');
+            const employeeModalTitle = document.getElementById('employee-modal-title');
+            const employeeIdInput = document.getElementById('employee-id');
+            const employeeUidInput = document.getElementById('employee-uid');
+            const generateUidBtn = document.getElementById('generate-uid-btn');
+            const employeeNameInput = document.getElementById('employee-name');
+            const employeePositionInput = document.getElementById('employee-position');
+            const employeeEmailInput = document.getElementById('employee-email');
+            const employeeRoleSelect = document.getElementById('employee-role');
+            const employeeShopsCheckboxesDiv = document.getElementById('employee-shops-checkboxes');
+            const employeePermissionsDiv = document.getElementById('employee-permissions');
 
 
             // --- Helper Functions ---
@@ -822,11 +945,11 @@
                 shopListBody.innerHTML = '';
                 shops.forEach((shop, index) => {
                     const row = `
-                        <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}" data-id="${shop.id}">
-                            <td data-label="Shop Name">${shop.name || ''}</td>
-                            <td data-label="Address">${shop.address || ''}</td>
-                            <td data-label="Contact">${shop.contact || ''}</td>
-                            <td data-label="Actions" class="text-center">
+                        <tr class="${index % 2 === 0 ? 'bg-slate-50' : 'bg-white'}" data-id="${shop.id}">
+                            <td data-label="Shop Name" class="p-3">${shop.name || ''}</td>
+                            <td data-label="Address" class="p-3">${shop.address || ''}</td>
+                            <td data-label="Contact" class="p-3">${shop.contact || ''}</td>
+                            <td data-label="Actions" class="p-3 text-center">
                                 <button class="delete-shop-btn text-red-600 hover:text-red-900">Delete</button>
                             </td>
                         </tr>
@@ -839,11 +962,11 @@
                 vendorListBody.innerHTML = '';
                 vendors.forEach((vendor, index) => {
                     const row = `
-                        <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}" data-id="${vendor.id}">
-                            <td data-label="Vendor Name">${vendor.name || ''}</td>
-                            <td data-label="Contact">${vendor.contact || ''}</td>
-                            <td data-label="Address">${vendor.address || ''}</td>
-                            <td data-label="Actions" class="text-center">
+                        <tr class="${index % 2 === 0 ? 'bg-slate-50' : 'bg-white'}" data-id="${vendor.id}">
+                            <td data-label="Vendor Name" class="p-3">${vendor.name || ''}</td>
+                            <td data-label="Contact" class="p-3">${vendor.contact || ''}</td>
+                            <td data-label="Address" class="p-3">${vendor.address || ''}</td>
+                            <td data-label="Actions" class="p-3 text-center">
                                 <button class="delete-vendor-btn text-red-600 hover:text-red-900">Delete</button>
                             </td>
                         </tr>
@@ -894,6 +1017,39 @@
                     renderVendorList();
                 });
             }
+            
+            function renderEmployeeList() {
+                if (!employeeListBody) return;
+                employeeListBody.innerHTML = '';
+                employees.forEach((emp, index) => {
+                    const assignedShopsHtml = (emp.assignedShops && emp.assignedShops.length > 0) 
+                        ? emp.assignedShops.map(s => `<span class="inline-block bg-slate-200 rounded-full px-2 py-1 text-xs font-semibold text-slate-700 mr-1 mb-1">${s}</span>`).join('')
+                        : 'N/A';
+
+                    const row = `
+                        <tr class="${index % 2 === 0 ? 'bg-slate-50' : 'bg-white'} hover:bg-slate-100" data-id="${emp.id}">
+                            <td data-label="UID" class="p-3 text-xs text-slate-500 truncate" style="max-width: 100px;">${emp.uid || 'N/A'}</td>
+                            <td data-label="Name" class="p-3 font-medium">${emp.name || ''}</td>
+                            <td data-label="Position" class="p-3">${emp.position || ''}</td>
+                            <td data-label="Email" class="p-3">${emp.email || ''}</td>
+                            <td data-label="Role" class="p-3">${emp.role || ''}</td>
+                            <td data-label="Assigned Shops" class="p-3">${assignedShopsHtml}</td>
+                            <td data-label="Actions" class="p-3 text-center space-x-2">
+                                <button class="edit-employee-btn text-indigo-600 hover:text-indigo-900 font-medium" data-id="${emp.id}">Edit</button>
+                                <button class="delete-employee-btn text-red-600 hover:text-red-900 font-medium" data-id="${emp.id}">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    employeeListBody.insertAdjacentHTML('beforeend', row);
+                });
+            }
+
+            function listenForEmployees() {
+                db.collection('employees').onSnapshot((snapshot) => {
+                    employees = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderEmployeeList();
+                });
+            }
 
             async function loadVendorSettings() {
                 const settingsCollection = db.collection('vendorSettings');
@@ -922,40 +1078,36 @@
                     const cost = parseFloat(findValue(product, ['Cost'])) || 0;
                     const price = parseFloat(findValue(product, ['Price', 'Sales Price'])) || 0;
                     const row = `
-                        <tr data-id="${product.id}" class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}">
-                            <td data-label="Product Code">${product["Product Code"]}</td>
-                            <td data-label="Barcode">${product.Barcode || ''}</td>
-                            <td data-label="Product Name">${product.Name}</td>
-                            <td data-label="Category">${product["Product Category"] || ''}</td>
-                            <td data-label="Cost" class="text-right">${cost.toFixed(2)}</td>
-                            <td data-label="Price" class="text-right">${price.toFixed(2)}</td>
-                            <td data-label="Actions" class="text-center space-x-2">
+                        <tr data-id="${product.id}" class="${index % 2 === 0 ? 'bg-slate-50' : 'bg-white'} hover:bg-slate-100">
+                            <td data-label="Product Code" class="p-3">${product["Product Code"]}</td>
+                            <td data-label="Barcode" class="p-3">${product.Barcode || ''}</td>
+                            <td data-label="Product Name" class="p-3">${product.Name}</td>
+                            <td data-label="Category" class="p-3">${product["Product Category"] || ''}</td>
+                            <td data-label="Cost" class="p-3 text-right">${cost.toFixed(2)}</td>
+                            <td data-label="Price" class="p-3 text-right">${price.toFixed(2)}</td>
+                            <td data-label="Actions" class="p-3 text-center space-x-2">
                                 <button class="edit-product-btn text-indigo-600 hover:text-indigo-900 font-medium" data-id="${product.id}">Edit</button>
-                                <button class="history-product-btn text-gray-500 hover:text-gray-800 font-medium" data-id="${product.id}" data-name="${product.Name}">History</button>
+                                <button class="history-product-btn text-slate-500 hover:text-slate-800 font-medium" data-id="${product.id}" data-name="${product.Name}">History</button>
                                 <button class="delete-product-btn text-red-600 hover:text-red-900 font-medium" data-id="${product.id}">Delete</button>
                             </td>
                         </tr>`;
                     productListBody.insertAdjacentHTML('beforeend', row);
                 });
 
-                renderProductPagination(filteredProducts.length);
+                renderProductPaginationControls(filteredProducts);
             }
 
-            function renderProductPagination(totalItems) {
-                if (!productPagination) return;
-                productPagination.innerHTML = '';
+            function renderProductPaginationControls(filteredProducts) {
+                const totalItems = filteredProducts.length;
                 const totalPages = Math.ceil(totalItems / productItemsPerPage);
+                const startIndex = (productCurrentPage - 1) * productItemsPerPage + 1;
+                const endIndex = Math.min(startIndex + productItemsPerPage - 1, totalItems);
 
-                for (let i = 1; i <= totalPages; i++) {
-                    const pageButton = document.createElement('button');
-                    pageButton.textContent = i;
-                    pageButton.className = `px-3 py-1 rounded-md text-sm font-medium ${i === productCurrentPage ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`;
-                    pageButton.addEventListener('click', () => {
-                        productCurrentPage = i;
-                        renderProductList();
-                    });
-                    productPagination.appendChild(pageButton);
-                }
+                productListSummary.textContent = `Showing ${startIndex}-${endIndex} of ${totalItems} products`;
+                pageInfo.textContent = `Page ${productCurrentPage} of ${totalPages}`;
+
+                prevPageBtn.disabled = productCurrentPage === 1;
+                nextPageBtn.disabled = productCurrentPage === totalPages || totalItems === 0;
             }
 
             async function loadAndCacheProducts() {
@@ -1029,18 +1181,18 @@
                     const subtotal = cost * qty;
                     const currencySymbol = item.currency === 'KHR' ? '៛' : '$';
                     const row = `
-                        <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}" data-index="${index}">
-                            <td data-label="No.">${index + 1}</td>
-                            <td data-label="Product Code">${item["Product Code"]}</td>
-                            <td data-label="Barcode">${item.Barcode || ''}</td>
-                            <td data-label="Product Name">${item.Name}</td>
-                            <td data-label="Vendor">${item["Product Category"] || ''}</td>
-                            <td data-label="Qty" class="text-right">${qty}</td>
-                            <td data-label="Cost (KHR)" class="text-right">${item.currency === 'KHR' ? cost.toFixed(2) : '-'}</td>
-                            <td data-label="Cost (USD)" class="text-right">${item.currency === 'USD' ? cost.toFixed(2) : '-'}</td>
-                            <td data-label="Sub-Total" class="text-right">${subtotal.toFixed(2)} ${currencySymbol}</td>
-                            <td data-label="CB4" class="text-right">${cost.toFixed(2)}</td>
-                            <td data-label="Actions" class="no-print text-right">
+                        <tr class="${index % 2 === 0 ? 'bg-slate-50' : 'bg-white'} hover:bg-slate-100" data-index="${index}">
+                            <td data-label="No." class="p-3">${index + 1}</td>
+                            <td data-label="Product Code" class="p-3">${item["Product Code"]}</td>
+                            <td data-label="Barcode" class="p-3">${item.Barcode || ''}</td>
+                            <td data-label="Product Name" class="p-3">${item.Name}</td>
+                            <td data-label="Vendor" class="p-3">${item["Product Category"] || ''}</td>
+                            <td data-label="Qty" class="p-3 text-right">${qty}</td>
+                            <td data-label="Cost (KHR)" class="p-3 text-right">${item.currency === 'KHR' ? cost.toFixed(2) : '-'}</td>
+                            <td data-label="Cost (USD)" class="p-3 text-right">${item.currency === 'USD' ? cost.toFixed(2) : '-'}</td>
+                            <td data-label="Sub-Total" class="p-3 text-right">${subtotal.toFixed(2)} ${currencySymbol}</td>
+                            <td data-label="CB4" class="p-3 text-right">${cost.toFixed(2)}</td>
+                            <td data-label="Actions" class="p-3 no-print text-right">
                                 <button class="edit-item text-indigo-600 hover:text-indigo-900 mr-2">Edit</button>
                                 <button class="delete-item text-red-600 hover:text-red-900">Del</button>
                             </td>
@@ -1138,13 +1290,13 @@
                 pos.forEach((po, index) => {
                     const requestDate = po.createdAt ? po.createdAt.toDate().toLocaleDateString() : 'Pending...';
                     const row = `
-                        <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}" data-id="${po.id}">
-                            <td data-label="No.">${index + 1}</td>
-                            <td data-label="PO Number" class="font-medium text-indigo-600">${po.poNumber}</td>
-                            <td data-label="Date">${requestDate}</td>
-                            <td data-label="Vendor">${po.vendorName}</td>
-                            <td data-label="Shop">${po.shopName}</td>
-                            <td data-label="Actions" class="text-right">
+                        <tr class="${index % 2 === 0 ? 'bg-slate-50' : 'bg-white'} hover:bg-slate-100" data-id="${po.id}">
+                            <td data-label="No." class="p-3">${index + 1}</td>
+                            <td data-label="PO Number" class="p-3 font-medium text-indigo-600">${po.poNumber}</td>
+                            <td data-label="Date" class="p-3">${requestDate}</td>
+                            <td data-label="Vendor" class="p-3">${po.vendorName}</td>
+                            <td data-label="Shop" class="p-3">${po.shopName}</td>
+                            <td data-label="Actions" class="p-3 text-right">
                                 <button class="edit-po-btn text-indigo-600 hover:text-indigo-900 font-medium mr-4" data-id="${po.id}">Edit</button>
                                 <button class="delete-po-btn text-red-600 hover:text-red-900 font-medium" data-id="${po.id}">Delete</button>
                             </td>
@@ -1168,12 +1320,12 @@
                     const draftPoNo = `${shopCode}-${vendorCode}-PO-DRAFT`;
 
                     const row = `
-                        <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}" data-id="${draft.id}">
-                            <td data-label="No.">${index + 1}</td>
-                            <td data-label="Date">${savedDate}</td>
-                            <td data-label="Shop">${shopName}</td>
-                            <td data-label="PO No.">${draftPoNo}</td>
-                            <td data-label="Actions" class="text-center">
+                        <tr class="${index % 2 === 0 ? 'bg-slate-50' : 'bg-white'} hover:bg-slate-100" data-id="${draft.id}">
+                            <td data-label="No." class="p-3">${index + 1}</td>
+                            <td data-label="Date" class="p-3">${savedDate}</td>
+                            <td data-label="Shop" class="p-3">${shopName}</td>
+                            <td data-label="PO No." class="p-3">${draftPoNo}</td>
+                            <td data-label="Actions" class="p-3 text-center">
                                 <button class="edit-draft-btn text-indigo-600 hover:text-indigo-900 font-medium mr-4" data-id="${draft.id}">Edit</button>
                                 <button class="delete-draft-btn text-red-600 hover:text-red-900 font-medium" data-id="${draft.id}">Delete</button>
                             </td>
@@ -1231,7 +1383,7 @@
                     const totalCostUsd = item.currency === 'USD' ? (parseFloat(item.Cost) * parseInt(item.quantity)).toFixed(2) : '-';
 
                     const rowHtml = `
-                        <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}" data-index="${index}" data-code="${item["Product Code"]}">
+                        <tr class="${index % 2 === 0 ? 'bg-slate-50' : 'bg-white'}" data-index="${index}" data-code="${item["Product Code"]}">
                             <td class="p-3">${index + 1}</td>
                             <td class="p-3">${item.Name}</td>
                             <td class="p-3 text-center" data-field="quantity">${item.quantity}</td>
@@ -1287,7 +1439,7 @@
                         const masterCost = parseFloat(originalProduct.Cost) || 0;
                         const checkUpValue = masterCost - unitCostKhr;
                         const checkUpSign = checkUpValue >= 0 ? '+' : '';
-                        const checkUpColor = Math.abs(checkUpValue) < 0.01 ? 'text-gray-500' : (checkUpValue > 0 ? 'text-green-600' : 'text-red-600');
+                        const checkUpColor = Math.abs(checkUpValue) < 0.01 ? 'text-slate-500' : (checkUpValue > 0 ? 'text-green-600' : 'text-red-600');
                         row.querySelector('[data-field="checkup"]').innerHTML = `<span class="${checkUpColor} font-semibold">${checkUpSign}${checkUpValue.toFixed(2)}</span>`;
                     }
                 });
@@ -1296,7 +1448,7 @@
             async function loadPurchaseOrder(poId) {
                 currentPoId = poId;
                 if (!poId) {
-                    document.getElementById('po-print-area').innerHTML = '<p class="text-center text-gray-500">Select a Purchase Order to view its details.</p>';
+                    document.getElementById('po-print-area').innerHTML = '<p class="text-center text-slate-500">Select a Purchase Order to view its details.</p>';
                     currentPoData = null;
                     return;
                 }
@@ -1328,6 +1480,10 @@
                     case 'all-products':
                          modalTitle.textContent = 'Delete ALL Products?';
                         modalText.textContent = 'Are you absolutely sure you want to delete ALL products? This action is permanent and cannot be undone.';
+                        break;
+                    case 'employee':
+                        modalTitle.textContent = 'Delete Employee?';
+                        modalText.textContent = 'Are you sure you want to delete this employee? This action cannot be undone.';
                         break;
                 }
 
@@ -1375,6 +1531,17 @@
                 }
             }
             
+            async function deleteEmployee() {
+                if (!itemToDelete.id) return;
+                try {
+                    await db.collection('employees').doc(itemToDelete.id).delete();
+                } catch (error) {
+                    console.error("Error deleting employee:", error);
+                } finally {
+                    hideDeleteConfirmation();
+                }
+            }
+            
             async function deleteAllProducts() {
                 productImportStatus.textContent = 'Deleting all products... This may take a moment.';
                 productImportStatus.className = 'mt-4 text-sm text-yellow-600';
@@ -1383,7 +1550,7 @@
                     const snapshot = await productsRef.get();
                     if (snapshot.empty) {
                         productImportStatus.textContent = 'There are no products to delete.';
-                        productImportStatus.className = 'mt-4 text-sm text-gray-600';
+                        productImportStatus.className = 'mt-4 text-sm text-slate-600';
                         hideDeleteConfirmation();
                         return;
                     }
@@ -1420,7 +1587,7 @@
             
             async function showCostHistory(productId, productName) {
                 costHistoryModalTitle.textContent = `Cost History for: ${productName}`;
-                costHistoryBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">Loading history...</td></tr>';
+                costHistoryBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500">Loading history...</td></tr>';
                 costHistoryModal.classList.remove('hidden');
 
                 try {
@@ -1428,7 +1595,7 @@
                     const snapshot = await historyRef.orderBy('changeDate', 'desc').get();
 
                     if (snapshot.empty) {
-                        costHistoryBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">No cost history found for this product.</td></tr>';
+                        costHistoryBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500">No cost history found for this product.</td></tr>';
                         return;
                     }
 
@@ -1437,7 +1604,7 @@
                         const data = doc.data();
                         const changeDate = data.changeDate ? data.changeDate.toDate().toLocaleString() : 'N/A';
                         historyHtml += `
-                            <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}">
+                            <tr class="${index % 2 === 0 ? 'bg-slate-50' : 'bg-white'}">
                                 <td class="p-3">${changeDate}</td>
                                 <td class="p-3 text-right">${(data.previousCost || 0).toFixed(2)}</td>
                                 <td class="p-3 text-right font-semibold">${(data.newCost || 0).toFixed(2)}</td>
@@ -1451,6 +1618,41 @@
                     console.error("Error fetching cost history:", error);
                     costHistoryBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-red-500">Could not load history.</td></tr>';
                 }
+            }
+            
+            function populateEmployeeModal(employee = {}) {
+                // Populate shops with checkboxes
+                employeeShopsCheckboxesDiv.innerHTML = '';
+                shops.forEach(shop => {
+                    const isChecked = employee.assignedShops && employee.assignedShops.includes(shop.name);
+                    const checkboxHtml = `
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" value="${shop.name}" class="rounded border-slate-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" ${isChecked ? 'checked' : ''}>
+                            <span class="text-sm text-slate-700">${shop.name}</span>
+                        </label>
+                    `;
+                    employeeShopsCheckboxesDiv.insertAdjacentHTML('beforeend', checkboxHtml);
+                });
+
+                // Populate permissions
+                employeePermissionsDiv.innerHTML = '';
+                const pages = [
+                    { id: 'po-request-form', name: 'PO Request' },
+                    { id: 'drafts-page', name: 'Drafts' },
+                    { id: 'purchase-order', name: 'POs Center' },
+                    { id: 'product-data-page', name: 'Product Data' },
+                    { id: 'setting-page', name: 'Settings' }
+                ];
+                pages.forEach(page => {
+                    const isChecked = employee.permissions && employee.permissions.includes(page.id);
+                    const checkboxHtml = `
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" value="${page.id}" class="rounded border-slate-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" ${isChecked ? 'checked' : ''}>
+                            <span class="text-sm text-slate-700">${page.name}</span>
+                        </label>
+                    `;
+                    employeePermissionsDiv.insertAdjacentHTML('beforeend', checkboxHtml);
+                });
             }
 
             // --- EVENT LISTENERS ---
@@ -1482,9 +1684,9 @@
                     const currency = vendorSettings[vendor] || 'KHR';
                     const currencySymbol = currency === 'KHR' ? '៛' : '$';
                     productPreview.innerHTML = `
-                        <p class="font-semibold text-gray-800">${product.Name}</p>
-                        <p class="text-sm text-gray-500">Vendor: <span class="font-medium text-gray-700">${vendor}</span></p>
-                        <p class="text-sm text-gray-500">Cost: <span class="font-medium text-gray-700">${cost.toFixed(2)} ${currencySymbol}</span></p>
+                        <p class="font-semibold text-slate-800">${product.Name}</p>
+                        <p class="text-sm text-slate-500">Vendor: <span class="font-medium text-slate-700">${vendor}</span></p>
+                        <p class="text-sm text-slate-500">Cost: <span class="font-medium text-slate-700">${cost.toFixed(2)} ${currencySymbol}</span></p>
                     `;
                     productPreview.classList.remove('hidden');
                 } else {
@@ -1606,21 +1808,39 @@
                 submitPrBtn.disabled = true;
                 submitPrBtn.textContent = 'Submitting...';
 
-                // 2. Generate PO Number client-side
+                // 2. Generate PO Number using a transaction
                 const shopName = requestShopDropdown.value;
                 const vendorName = requestVendorInput.value;
                 const shopCode = shopName.substring(0, 3).toUpperCase().replace(/\s/g, '');
                 const vendorCode = vendorName.substring(0, 4).toUpperCase().replace(/\s/g, '');
                 
-                const now = new Date();
-                const year = String(now.getFullYear()).slice(-2);
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const day = String(now.getDate()).padStart(2, '0');
-                const hours = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                const seconds = String(now.getSeconds()).padStart(2, '0');
-                const timestamp = `${year}${month}${day}-${hours}${minutes}${seconds}`;
-                const newPoNumber = `${shopCode}-${vendorCode}-PO-${timestamp}`;
+                const counterRef = db.collection('counters').doc('purchaseOrder');
+                let newPoNumber;
+                try {
+                    const newNumber = await db.runTransaction(async (transaction) => {
+                        const counterDoc = await transaction.get(counterRef);
+                        let newCount = 1;
+                        if (counterDoc.exists) {
+                            newCount = (counterDoc.data()?.lastPoNumber || 0) + 1;
+                        }
+                        transaction.set(counterRef, { lastPoNumber: newCount }, { merge: true });
+                        return newCount;
+                    });
+                    const paddedNumber = String(newNumber).padStart(5, '0');
+                    newPoNumber = `${shopCode}-${vendorCode}-PO-${paddedNumber}`;
+                } catch (error) {
+                    console.error("Transaction failed: ", error);
+                    let errorMessage = "Could not generate PO number. An unknown error occurred.";
+                    if (error.message && error.message.toLowerCase().includes('quota exceeded')) {
+                        errorMessage = "<strong>Submission Failed:</strong> The database's daily usage quota has been exceeded. Please try again tomorrow.";
+                    }
+                    submissionStatusEl.innerHTML = `<p class="text-red-600 font-medium">${errorMessage}</p>`;
+                    
+                    // Re-enable button on failure
+                    submitPrBtn.disabled = false;
+                    submitPrBtn.textContent = 'Submit PR';
+                    return;
+                }
 
 
                 const newPO = {
@@ -1797,7 +2017,7 @@
             updateGoodsBtn.addEventListener('click', () => {
                 if (!currentPoData) return;
                 detailExchangeRateInput.readOnly = false;
-                detailExchangeRateInput.classList.remove('bg-gray-200', 'cursor-not-allowed');
+                detailExchangeRateInput.classList.remove('bg-slate-200', 'cursor-not-allowed');
 
                 printTableBody.querySelectorAll('tr').forEach(row => {
                     const qtyEl = row.querySelector('[data-field="quantity"]');
@@ -1879,7 +2099,7 @@
                 }
                 
                 detailExchangeRateInput.readOnly = true;
-                detailExchangeRateInput.classList.add('bg-gray-200', 'cursor-not-allowed');
+                detailExchangeRateInput.classList.add('bg-slate-200', 'cursor-not-allowed');
                 printTableBody.querySelectorAll('[contenteditable="true"]').forEach(cell => {
                     cell.contentEditable = false;
                     cell.classList.remove('bg-yellow-100', 'focus:outline-blue-400');
@@ -1901,6 +2121,9 @@
                         break;
                     case 'all-products':
                         deleteAllProducts();
+                        break;
+                    case 'employee':
+                        deleteEmployee();
                         break;
                 }
             });
@@ -1928,6 +2151,7 @@
                 loadAndCacheProducts();
                 listenForShops();
                 listenForVendors();
+                listenForEmployees(); // <-- Add listener for employees
                 db.collection('purchaseOrders').orderBy("createdAt", "desc").onSnapshot((snapshot) => {
                     allPurchaseOrders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     applyAndRenderFilters();
@@ -2116,6 +2340,32 @@
                 renderProductList();
             });
 
+            itemsPerPageSelect.addEventListener('change', () => {
+                productItemsPerPage = parseInt(itemsPerPageSelect.value);
+                productCurrentPage = 1;
+                renderProductList();
+            });
+
+            prevPageBtn.addEventListener('click', () => {
+                if (productCurrentPage > 1) {
+                    productCurrentPage--;
+                    renderProductList();
+                }
+            });
+
+            nextPageBtn.addEventListener('click', () => {
+                const searchTerm = productSearchInput.value.toLowerCase();
+                const filteredProducts = allProducts.filter(p => 
+                    (p.Name || '').toLowerCase().includes(searchTerm) || 
+                    (p["Product Code"] || '').toLowerCase().includes(searchTerm)
+                );
+                const totalPages = Math.ceil(filteredProducts.length / productItemsPerPage);
+                if (productCurrentPage < totalPages) {
+                    productCurrentPage++;
+                    renderProductList();
+                }
+            });
+
             exportProductsBtn.addEventListener('click', () => {
                 const searchTerm = productSearchInput.value.toLowerCase();
                 const filteredProducts = allProducts.filter(p => 
@@ -2144,7 +2394,7 @@
                 reader.onload = async (e) => {
                     try {
                         productImportStatus.textContent = 'Reading file...';
-                        productImportStatus.className = 'mt-4 text-sm text-gray-600';
+                        productImportStatus.className = 'mt-4 text-sm text-slate-600';
                         const data = new Uint8Array(e.target.result);
                         const workbook = XLSX.read(data, { type: 'array' });
                         const firstSheetName = workbook.SheetNames[0];
@@ -2220,6 +2470,90 @@
             deleteAllProductsBtn.addEventListener('click', () => {
                 showDeleteConfirmation(null, 'all-products');
             });
+            
+            // Employee Section Listeners
+            addEmployeeBtn.addEventListener('click', () => {
+                employeeModalTitle.textContent = 'Add New Employee';
+                employeeIdInput.value = '';
+                employeeUidInput.value = '';
+                employeeNameInput.value = '';
+                employeePositionInput.value = '';
+                employeeEmailInput.value = '';
+                employeeRoleSelect.value = 'Staff';
+                populateEmployeeModal();
+                employeeModal.classList.remove('hidden');
+            });
+            
+            generateUidBtn.addEventListener('click', () => {
+                // This is a placeholder for a real Firebase Auth UID.
+                // In a real app, you'd get this after a user signs up.
+                employeeUidInput.value = `temp_${new Date().getTime()}_${Math.random().toString(36).substr(2, 9)}`;
+            });
+
+            cancelEmployeeBtn.addEventListener('click', () => {
+                employeeModal.classList.add('hidden');
+            });
+
+            saveEmployeeBtn.addEventListener('click', async () => {
+                const id = employeeIdInput.value;
+                const uid = employeeUidInput.value.trim();
+                const name = employeeNameInput.value.trim();
+                const email = employeeEmailInput.value.trim();
+
+                if (!name || !email || !uid) {
+                    alert("Employee UID, Name, and Email are required.");
+                    return;
+                }
+
+                const selectedShops = Array.from(employeeShopsCheckboxesDiv.querySelectorAll('input:checked')).map(input => input.value);
+                const selectedPermissions = Array.from(employeePermissionsDiv.querySelectorAll('input:checked')).map(input => input.value);
+
+                const employeeData = {
+                    uid,
+                    name,
+                    email,
+                    position: employeePositionInput.value.trim(),
+                    role: employeeRoleSelect.value,
+                    assignedShops: selectedShops,
+                    permissions: selectedPermissions
+                };
+
+                try {
+                    if (id) {
+                        await db.collection('employees').doc(id).update(employeeData);
+                    } else {
+                        await db.collection('employees').add(employeeData);
+                    }
+                    employeeModal.classList.add('hidden');
+                } catch (error) {
+                    console.error("Error saving employee:", error);
+                    alert("Could not save employee data.");
+                }
+            });
+
+            employeeListBody.addEventListener('click', (e) => {
+                const editBtn = e.target.closest('.edit-employee-btn');
+                const deleteBtn = e.target.closest('.delete-employee-btn');
+
+                if (editBtn) {
+                    const id = editBtn.dataset.id;
+                    const employee = employees.find(emp => emp.id === id);
+                    if (employee) {
+                        employeeModalTitle.textContent = 'Edit Employee';
+                        employeeIdInput.value = employee.id;
+                        employeeUidInput.value = employee.uid || '';
+                        employeeNameInput.value = employee.name || '';
+                        employeePositionInput.value = employee.position || '';
+                        employeeEmailInput.value = employee.email || '';
+                        employeeRoleSelect.value = employee.role || 'Staff';
+                        populateEmployeeModal(employee);
+                        employeeModal.classList.remove('hidden');
+                    }
+                } else if (deleteBtn) {
+                    showDeleteConfirmation(deleteBtn.dataset.id, 'employee');
+                }
+            });
+
 
             // PDF Buttons
             detailSavePdfBtn.addEventListener('click', () => {
