@@ -135,6 +135,9 @@
                     <button class="tab active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="po-request-form">
                         Purchase Order Page
                     </button>
+                    <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="drafts-page">
+                        Drafts
+                    </button>
                     <button class="tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="purchase-order">
                         POs Center
                     </button>
@@ -172,10 +175,6 @@
                                     <label for="request-po-date" class="block text-sm font-medium text-gray-700">PO Date</label>
                                     <input type="text" id="request-po-date" readonly class="mt-1 block w-full bg-gray-200 border-gray-300 rounded-lg shadow-sm cursor-not-allowed">
                                 </div>
-                                <div class="sm:col-span-2">
-                                    <label for="exchange-rate" class="block text-sm font-medium text-gray-700">Exchange Rate (KHR to 1 USD)</label>
-                                    <input type="number" id="exchange-rate" value="4100" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                </div>
                             </div>
                             
                             <div class="mt-8 pt-6 border-t border-gray-200 no-print">
@@ -195,7 +194,10 @@
                                                 <input type="number" id="quantity" value="1" min="1" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
                                             </div>
                                         </div>
-                                        <button id="add-to-po" class="w-full md:w-auto bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700 h-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-7">Add to PO</button>
+                                        <div class="flex items-center space-x-2 mt-7">
+                                            <button id="add-to-po" class="w-full bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700 h-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add</button>
+                                            <button id="cancel-add-product" type="button" class="w-full bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-lg hover:bg-gray-300 h-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">Cancel</button>
+                                        </div>
                                     </div>
                                     <p id="error-message" class="text-red-500 text-sm mt-2 hidden"></p>
                                 </div>
@@ -210,6 +212,7 @@
                                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Product Code</th>
                                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Barcode</th>
                                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Product Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Vendor</th>
                                         <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Qty</th>
                                         <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Cost (KHR)</th>
                                         <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Cost (USD)</th>
@@ -222,11 +225,33 @@
                             </table>
                         </div>
                     </div>
-                     <div class="mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 no-print">
-                        <button id="request-save-pdf-btn" class="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Save as PDF</button>
-                        <button id="create-po-btn" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save Purchase Order</button>
+                     <div id="submission-status" class="text-right mt-4 h-6"></div>
+                     <div class="mt-2 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 no-print">
+                        <button id="save-draft-btn" class="bg-gray-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-600 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Save as Draft</button>
+                        <button id="submit-pr-btn" class="bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Submit PR</button>
+                        <button id="cancel-po-request-btn" type="button" class="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Cancel Request</button>
                     </div>
                 </div>
+                
+                <!-- Drafts Page Content -->
+                <div id="drafts-page" class="tab-content">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Saved Drafts</h1>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white responsive-table">
+                            <thead>
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">No.</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Shop</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">PO No.</th>
+                                    <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="drafts-list-body" class="bg-white"></tbody>
+                        </table>
+                    </div>
+                </div>
+
 
                 <!-- POs Center Content -->
                 <div id="purchase-order" class="tab-content">
@@ -275,14 +300,20 @@
                         <button id="back-to-list-btn" class="mb-6 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">&larr; Back to PO List</button>
                         <div id="po-print-area" class="border border-gray-200 p-4 sm:p-6 rounded-lg">
                             <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4" id="po-number-display"></h2>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                                 <div>
                                     <p><strong>Vendor:</strong> <span id="print-vendor-name"></span></p>
                                     <p><strong>Request by:</strong> <span id="print-shop-name"></span></p>
                                 </div>
-                                <div class="text-left sm:text-right">
+                                <div class="text-left sm:text-right lg:text-left">
                                     <p><strong>PO Number:</strong> <span id="print-po-number"></span></p>
                                     <p><strong>Date:</strong> <span id="print-date"></span></p>
+                                </div>
+                                <div class="sm:col-span-2 lg:col-span-1 text-left sm:text-right">
+                                    <div class="no-print">
+                                        <label for="detail-exchange-rate" class="block text-sm font-medium text-gray-700">Exchange Rate (KHR to 1 USD)</label>
+                                        <input type="number" id="detail-exchange-rate" value="4100" class="mt-1 block w-full max-w-xs ml-auto border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500" readonly>
+                                    </div>
                                 </div>
                             </div>
                             <div class="overflow-x-auto">
@@ -468,26 +499,21 @@
             <thead>
                 <tr style="background-color: #e5e7eb;">
                     <th style="width: 5%;">No.</th>
-                    <th style="width: 15%;">Product Code</th>
-                    <th style="width: 15%;">Barcode</th>
-                    <th style="width: 25%;">Product Name</th>
-                    <th style="width: 8%;">QTY</th>
-                    <th style="width: 10%;">Cost-៛</th>
-                    <th style="width: 10%;">Cost-$</th>
-                    <th style="width: 12%;">CB4</th>
+                    <th>Product Code</th>
+                    <th>Barcode</th>
+                    <th>Product Name</th>
+                    <th>Qty</th>
+                    <th>Cost (KHR)</th>
+                    <th>Cost (USD)</th>
+                    <th>Sub-Total</th>
+                    <th>CB4</th>
                 </tr>
             </thead>
             <tbody id="pdf-table-body">
                 <!-- Rows will be injected here -->
             </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4" style="text-align: right; font-weight: bold;">Sub-Total</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+            <tfoot id="pdf-table-footer">
+                <!-- Footer will be injected here -->
             </tfoot>
         </table>
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 96px;">
@@ -607,6 +633,33 @@
         </div>
     </div>
 
+    <!-- Cost History Modal -->
+    <div id="cost-history-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-10 mx-auto p-5 border w-full max-w-3xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <h3 class="text-lg leading-6 font-medium text-gray-900" id="cost-history-modal-title">Cost History</h3>
+                <div class="mt-4 overflow-y-auto" style="max-height: 60vh;">
+                     <table class="min-w-full bg-white">
+                        <thead class="bg-gray-100 sticky top-0">
+                            <tr>
+                                <th class="p-3 text-left text-sm font-semibold">Date</th>
+                                <th class="p-3 text-right text-sm font-semibold">Previous Cost (KHR)</th>
+                                <th class="p-3 text-right text-sm font-semibold">New Cost (KHR)</th>
+                                <th class="p-3 text-left text-sm font-semibold">Source PO</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cost-history-body" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+                <div class="items-center px-4 py-3 mt-4 text-right">
+                    <button id="close-history-btn" class="px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-auto shadow-sm hover:bg-gray-300">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         // --- Main App Logic (runs after DOM is loaded) ---
@@ -639,9 +692,12 @@
             let poItems = [];
             let allProducts = []; // Cache for all products
             let shops = []; // Cache for shops
+            let vendors = []; // Cache for vendors
             let vendorSettings = {}; // To store currency for each vendor
             let allPurchaseOrders = []; // Cache for all POs
+            let drafts = []; // Cache for drafts
             let currentPoId = null;
+            let currentDraftId = null; // <-- To track the loaded draft
             let currentPoData = null;
             let itemToDelete = { id: null, type: null };
             let productCurrentPage = 1;
@@ -651,6 +707,7 @@
             const productCodeInput = document.getElementById('product-code');
             const quantityInput = document.getElementById('quantity');
             const addToPoButton = document.getElementById('add-to-po');
+            const cancelAddProductBtn = document.getElementById('cancel-add-product');
             const poTableBody = document.getElementById('po-table-body');
             const errorMessageEl = document.getElementById('error-message');
             const printTableBody = document.getElementById('print-table-body');
@@ -664,26 +721,35 @@
             const shopContactInput = document.getElementById('shop-contact');
             const addShopBtn = document.getElementById('add-shop-btn');
             const shopListBody = document.getElementById('shop-list-body');
-            const createPoBtn = document.getElementById('create-po-btn');
+            const submitPrBtn = document.getElementById('submit-pr-btn');
+            const saveDraftBtn = document.getElementById('save-draft-btn');
+            const cancelPoRequestBtn = document.getElementById('cancel-po-request-btn');
             const requestShopDropdown = document.getElementById('request-shop-dropdown');
-            const exchangeRateInput = document.getElementById('exchange-rate');
-            const vendorListContainer = document.getElementById('vendor-list-container');
-            const saveVendorSettingsBtn = document.getElementById('save-vendor-settings-btn');
             const poNumberDisplay = document.getElementById('po-number-display');
             const updateGoodsBtn = document.getElementById('update-goods-btn');
             const saveUpdatesBtn = document.getElementById('save-updates-btn');
             const requestVendorInput = document.getElementById('request-vendor');
             const requestPoNoInput = document.getElementById('request-po-no');
             const requestPoDateInput = document.getElementById('request-po-date');
-            const requestSavePdfBtn = document.getElementById('request-save-pdf-btn');
             const detailSavePdfBtn = document.getElementById('detail-save-pdf-btn');
             const deletePoDetailBtn = document.getElementById('delete-po-detail-btn');
             const productPreview = document.getElementById('product-preview');
+            const detailExchangeRateInput = document.getElementById('detail-exchange-rate');
+            const submissionStatusEl = document.getElementById('submission-status');
+            const vendorNameInput = document.getElementById('vendor-name');
+            const vendorContactInput = document.getElementById('vendor-contact');
+            const vendorAddressInput = document.getElementById('vendor-address');
+            const addVendorBtn = document.getElementById('add-vendor-btn');
+            const vendorListBody = document.getElementById('vendor-list-body');
+            const importVendorsBtn = document.getElementById('import-vendors-btn');
+            const vendorFileInput = document.getElementById('vendor-file');
+            const importStatusEl = document.getElementById('import-status');
 
             const poListView = document.getElementById('po-list-view');
             const poDetailView = document.getElementById('po-detail-view');
             const poListBody = document.getElementById('po-list-body');
             const backToListBtn = document.getElementById('back-to-list-btn');
+            const draftsListBody = document.getElementById('drafts-list-body');
 
             const filterShop = document.getElementById('filter-shop');
             const filterDate = document.getElementById('filter-date');
@@ -711,6 +777,11 @@
             const editPoItemModal = document.getElementById('edit-po-item-modal');
             const cancelEditPoItemBtn = document.getElementById('cancel-edit-po-item-btn');
             const saveEditPoItemBtn = document.getElementById('save-edit-po-item-btn');
+            
+            const costHistoryModal = document.getElementById('cost-history-modal');
+            const costHistoryModalTitle = document.getElementById('cost-history-modal-title');
+            const costHistoryBody = document.getElementById('cost-history-body');
+            const closeHistoryBtn = document.getElementById('close-history-btn');
 
 
             // --- Helper Functions ---
@@ -731,6 +802,10 @@
                 }
                 return undefined;
             }
+            
+            function clearStatus() {
+                submissionStatusEl.innerHTML = '';
+            }
 
             // --- FUNCTION DEFINITIONS ---
 
@@ -745,9 +820,9 @@
             
             function renderShopList() {
                 shopListBody.innerHTML = '';
-                shops.forEach(shop => {
+                shops.forEach((shop, index) => {
                     const row = `
-                        <tr data-id="${shop.id}">
+                        <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}" data-id="${shop.id}">
                             <td data-label="Shop Name">${shop.name || ''}</td>
                             <td data-label="Address">${shop.address || ''}</td>
                             <td data-label="Contact">${shop.contact || ''}</td>
@@ -757,6 +832,23 @@
                         </tr>
                     `;
                     shopListBody.insertAdjacentHTML('beforeend', row);
+                });
+            }
+
+            function renderVendorList() {
+                vendorListBody.innerHTML = '';
+                vendors.forEach((vendor, index) => {
+                    const row = `
+                        <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}" data-id="${vendor.id}">
+                            <td data-label="Vendor Name">${vendor.name || ''}</td>
+                            <td data-label="Contact">${vendor.contact || ''}</td>
+                            <td data-label="Address">${vendor.address || ''}</td>
+                            <td data-label="Actions" class="text-center">
+                                <button class="delete-vendor-btn text-red-600 hover:text-red-900">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    vendorListBody.insertAdjacentHTML('beforeend', row);
                 });
             }
 
@@ -789,11 +881,17 @@
             }
 
             function listenForShops() {
-                const shopsCollection = db.collection(`shops`);
-                shopsCollection.onSnapshot((snapshot) => {
+                db.collection(`shops`).onSnapshot((snapshot) => {
                     shops = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     renderShopList(); // For settings page
                     populateShopDropdowns(); // For request form and filter
+                });
+            }
+
+            function listenForVendors() {
+                db.collection('vendors').onSnapshot((snapshot) => {
+                    vendors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderVendorList();
                 });
             }
 
@@ -831,8 +929,9 @@
                             <td data-label="Category">${product["Product Category"] || ''}</td>
                             <td data-label="Cost" class="text-right">${cost.toFixed(2)}</td>
                             <td data-label="Price" class="text-right">${price.toFixed(2)}</td>
-                            <td data-label="Actions" class="text-right">
-                                <button class="edit-product-btn text-indigo-600 hover:text-indigo-900 font-medium mr-4" data-id="${product.id}">Edit</button>
+                            <td data-label="Actions" class="text-center space-x-2">
+                                <button class="edit-product-btn text-indigo-600 hover:text-indigo-900 font-medium" data-id="${product.id}">Edit</button>
+                                <button class="history-product-btn text-gray-500 hover:text-gray-800 font-medium" data-id="${product.id}" data-name="${product.Name}">History</button>
                                 <button class="delete-product-btn text-red-600 hover:text-red-900 font-medium" data-id="${product.id}">Delete</button>
                             </td>
                         </tr>`;
@@ -930,11 +1029,12 @@
                     const subtotal = cost * qty;
                     const currencySymbol = item.currency === 'KHR' ? '៛' : '$';
                     const row = `
-                        <tr data-index="${index}">
+                        <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}" data-index="${index}">
                             <td data-label="No.">${index + 1}</td>
                             <td data-label="Product Code">${item["Product Code"]}</td>
                             <td data-label="Barcode">${item.Barcode || ''}</td>
                             <td data-label="Product Name">${item.Name}</td>
+                            <td data-label="Vendor">${item["Product Category"] || ''}</td>
                             <td data-label="Qty" class="text-right">${qty}</td>
                             <td data-label="Cost (KHR)" class="text-right">${item.currency === 'KHR' ? cost.toFixed(2) : '-'}</td>
                             <td data-label="Cost (USD)" class="text-right">${item.currency === 'USD' ? cost.toFixed(2) : '-'}</td>
@@ -950,6 +1050,7 @@
             }
             
             async function handleAddToPO() {
+                clearStatus();
                 const code = productCodeInput.value.trim();
                 const quantity = parseInt(quantityInput.value);
                 if (!code || isNaN(quantity) || quantity <= 0) {
@@ -999,7 +1100,7 @@
                         errorMessageEl.classList.remove('hidden');
                     } finally {
                         addToPoButton.disabled = false;
-                        addToPoButton.textContent = 'Add to PO';
+                        addToPoButton.textContent = 'Add';
                     }
                 }
 
@@ -1037,7 +1138,7 @@
                 pos.forEach((po, index) => {
                     const requestDate = po.createdAt ? po.createdAt.toDate().toLocaleDateString() : 'Pending...';
                     const row = `
-                        <tr data-id="${po.id}">
+                        <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}" data-id="${po.id}">
                             <td data-label="No.">${index + 1}</td>
                             <td data-label="PO Number" class="font-medium text-indigo-600">${po.poNumber}</td>
                             <td data-label="Date">${requestDate}</td>
@@ -1049,6 +1150,36 @@
                             </td>
                         </tr>`;
                     poListBody.insertAdjacentHTML('beforeend', row);
+                });
+            }
+            
+            function renderDraftsList() {
+                if (!draftsListBody) return;
+                draftsListBody.innerHTML = '';
+                // Sort drafts by saved date, newest first
+                const sortedDrafts = drafts.sort((a, b) => (b.savedAt?.toDate() || 0) - (a.savedAt?.toDate() || 0));
+
+                sortedDrafts.forEach((draft, index) => {
+                    const savedDate = draft.savedAt ? draft.savedAt.toDate().toLocaleDateString() : 'N/A';
+                    const shopName = draft.shopName || "N/A";
+                    const vendorName = draft.vendorName || "N/A";
+                    const shopCode = shopName.substring(0, 3).toUpperCase().replace(/\s/g, '');
+                    const vendorCode = vendorName.substring(0, 4).toUpperCase().replace(/\s/g, '');
+                    const draftPoNo = `${shopCode}-${vendorCode}-PO-DRAFT`;
+
+                    const row = `
+                        <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}" data-id="${draft.id}">
+                            <td data-label="No.">${index + 1}</td>
+                            <td data-label="Date">${savedDate}</td>
+                            <td data-label="Shop">${shopName}</td>
+                            <td data-label="PO No.">${draftPoNo}</td>
+                            <td data-label="Actions" class="text-center">
+                                <button class="edit-draft-btn text-indigo-600 hover:text-indigo-900 font-medium mr-4" data-id="${draft.id}">Edit</button>
+                                <button class="delete-draft-btn text-red-600 hover:text-red-900 font-medium" data-id="${draft.id}">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    draftsListBody.insertAdjacentHTML('beforeend', row);
                 });
             }
 
@@ -1100,7 +1231,7 @@
                     const totalCostUsd = item.currency === 'USD' ? (parseFloat(item.Cost) * parseInt(item.quantity)).toFixed(2) : '-';
 
                     const rowHtml = `
-                        <tr data-index="${index}" data-code="${item["Product Code"]}">
+                        <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}" data-index="${index}" data-code="${item["Product Code"]}">
                             <td class="p-3">${index + 1}</td>
                             <td class="p-3">${item.Name}</td>
                             <td class="p-3 text-center" data-field="quantity">${item.quantity}</td>
@@ -1119,12 +1250,13 @@
                 printShopNameEl.textContent = poData.shopName;
                 printPoNumberEl.textContent = poData.poNumber;
                 poNumberDisplay.textContent = `Viewing PO: ${poData.poNumber}`;
+                detailExchangeRateInput.value = poData.exchangeRate || 4100;
             }
 
             function recalculateDetailView() {
                 if (!currentPoData) return;
                 
-                const exchangeRate = currentPoData.exchangeRate || 4100;
+                const exchangeRate = parseFloat(detailExchangeRateInput.value) || 4100;
 
                 printTableBody.querySelectorAll('tr').forEach(row => {
                     const index = parseInt(row.dataset.index);
@@ -1135,15 +1267,19 @@
                     const totalCostUsdEl = row.querySelector('[data-field="totalCostUsd"]');
 
                     const qty = parseInt(qtyEl ? qtyEl.textContent : '0') || 0;
-                    const totalCostKhr = parseFloat(totalCostKhrEl ? totalCostKhrEl.textContent : '0') || 0;
-                    const totalCostUsd = parseFloat(totalCostUsdEl ? totalCostUsdEl.textContent : '0') || 0;
+                    const totalCostKhr = parseFloat(totalCostKhrEl ? totalCostKhrEl.textContent.replace(/[^\d.-]/g, '') : '0') || 0;
+                    const totalCostUsd = parseFloat(totalCostUsdEl ? totalCostUsdEl.textContent.replace(/[^\d.-]/g, '') : '0') || 0;
                     
                     let unitCostKhr = 0;
-                    if (item.currency === 'KHR') {
-                        unitCostKhr = qty > 0 ? totalCostKhr / qty : 0;
-                    } else {
-                        unitCostKhr = qty > 0 ? (totalCostUsd * exchangeRate) / qty : 0;
+
+                    if (qty > 0) {
+                        if (totalCostKhr > 0) {
+                             unitCostKhr = totalCostKhr / qty;
+                        } else if (totalCostUsd > 0) {
+                            unitCostKhr = (totalCostUsd * exchangeRate) / qty;
+                        }
                     }
+                    
                     row.querySelector('[data-field="costPerUnit"]').textContent = unitCostKhr.toFixed(2);
 
                     const originalProduct = allProducts.find(p => p["Product Code"] === item["Product Code"]);
@@ -1185,6 +1321,10 @@
                         modalTitle.textContent = 'Delete Purchase Order?';
                         modalText.textContent = 'Are you sure you want to delete this PO? This action cannot be undone.';
                         break;
+                    case 'draft':
+                        modalTitle.textContent = 'Delete Draft?';
+                        modalText.textContent = 'Are you sure you want to delete this draft? This action cannot be undone.';
+                        break;
                     case 'all-products':
                          modalTitle.textContent = 'Delete ALL Products?';
                         modalText.textContent = 'Are you absolutely sure you want to delete ALL products? This action is permanent and cannot be undone.';
@@ -1219,6 +1359,17 @@
                     await db.collection('products').doc(itemToDelete.id).delete();
                 } catch (error) {
                     console.error("Error deleting product:", error);
+                } finally {
+                    hideDeleteConfirmation();
+                }
+            }
+            
+            async function deleteDraft() {
+                if (!itemToDelete.id) return;
+                try {
+                    await db.collection('drafts').doc(itemToDelete.id).delete();
+                } catch (error) {
+                    console.error("Error deleting draft:", error);
                 } finally {
                     hideDeleteConfirmation();
                 }
@@ -1267,6 +1418,41 @@
                 }
             }
             
+            async function showCostHistory(productId, productName) {
+                costHistoryModalTitle.textContent = `Cost History for: ${productName}`;
+                costHistoryBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">Loading history...</td></tr>';
+                costHistoryModal.classList.remove('hidden');
+
+                try {
+                    const historyRef = db.collection('products').doc(productId).collection('costHistory');
+                    const snapshot = await historyRef.orderBy('changeDate', 'desc').get();
+
+                    if (snapshot.empty) {
+                        costHistoryBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">No cost history found for this product.</td></tr>';
+                        return;
+                    }
+
+                    let historyHtml = '';
+                    snapshot.forEach((doc, index) => {
+                        const data = doc.data();
+                        const changeDate = data.changeDate ? data.changeDate.toDate().toLocaleString() : 'N/A';
+                        historyHtml += `
+                            <tr class="${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}">
+                                <td class="p-3">${changeDate}</td>
+                                <td class="p-3 text-right">${(data.previousCost || 0).toFixed(2)}</td>
+                                <td class="p-3 text-right font-semibold">${(data.newCost || 0).toFixed(2)}</td>
+                                <td class="p-3">${data.poNumber || 'N/A'}</td>
+                            </tr>
+                        `;
+                    });
+                    costHistoryBody.innerHTML = historyHtml;
+
+                } catch (error) {
+                    console.error("Error fetching cost history:", error);
+                    costHistoryBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-red-500">Could not load history.</td></tr>';
+                }
+            }
+
             // --- EVENT LISTENERS ---
 
             productCodeInput.addEventListener('input', () => {
@@ -1314,6 +1500,15 @@
             });
 
             addToPoButton.addEventListener('click', handleAddToPO);
+            
+            cancelAddProductBtn.addEventListener('click', () => {
+                productCodeInput.value = '';
+                quantityInput.value = '1';
+                productPreview.classList.add('hidden');
+                errorMessageEl.classList.add('hidden');
+                productCodeInput.focus();
+            });
+
             requestShopDropdown.addEventListener('change', updateRequestHeader);
             poTableBody.addEventListener('click', (e) => {
                 if (e.target.classList.contains('delete-item')) {
@@ -1359,52 +1554,214 @@
                 editPoItemModal.classList.add('hidden');
             });
 
+            saveDraftBtn.addEventListener('click', async () => {
+                clearStatus();
+                if (poItems.length === 0) {
+                    alert("Cannot save an empty PO as a draft.");
+                    return;
+                }
+                updateRequestHeader();
 
-            createPoBtn.addEventListener('click', async () => {
+                const draftData = {
+                    vendorName: requestVendorInput.value,
+                    shopName: requestShopDropdown.value,
+                    items: poItems,
+                    savedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                try {
+                    if (currentDraftId) {
+                        // Update existing draft
+                        await db.collection('drafts').doc(currentDraftId).update(draftData);
+                        submissionStatusEl.innerHTML = `<p class="text-green-600 font-medium">Draft updated successfully!</p>`;
+                    } else {
+                        // Add new draft
+                        await db.collection('drafts').add(draftData);
+                        submissionStatusEl.innerHTML = `<p class="text-green-600 font-medium">New draft saved successfully!</p>`;
+                    }
+                    // Clear the form and state after saving
+                    poItems = [];
+                    currentDraftId = null;
+                    document.getElementById('draft-indicator')?.remove();
+                    renderRequestPOTable();
+                } catch (error) {
+                    console.error("Error saving draft:", error);
+                    submissionStatusEl.innerHTML = `<p class="text-red-600 font-medium">Could not save the draft.</p>`;
+                }
+            });
+
+            submitPrBtn.addEventListener('click', async () => {
+                clearStatus();
+                // 1. Validate form
                 if (poItems.length === 0) {
                     alert("Please add items to the request form first.");
                     return;
                 }
-                updateRequestHeader(); // Ensure header is up to date
+                if (!requestShopDropdown.value) {
+                    alert("Please select a shop.");
+                    return;
+                }
 
+                // Disable button to prevent double-clicks
+                submitPrBtn.disabled = true;
+                submitPrBtn.textContent = 'Submitting...';
+
+                // 2. Generate PO Number using a transaction
+                const shopName = requestShopDropdown.value;
+                const vendorName = requestVendorInput.value;
+                const shopCode = shopName.substring(0, 3).toUpperCase().replace(/\s/g, '');
+                const vendorCode = vendorName.substring(0, 4).toUpperCase().replace(/\s/g, '');
+                
                 const counterRef = db.collection('counters').doc('purchaseOrder');
                 let newPoNumber;
                 try {
-                    newPoNumber = await db.runTransaction(async (transaction) => {
+                    const newNumber = await db.runTransaction(async (transaction) => {
                         const counterDoc = await transaction.get(counterRef);
-                        const lastNumber = counterDoc.data()?.lastPoNumber || 0;
-                        const newNumber = lastNumber + 1;
-                        transaction.set(counterRef, { lastPoNumber: newNumber }, { merge: true });
-                        const paddedNumber = String(newNumber).padStart(5, '0');
-                        return requestPoNoInput.value.replace('PENDING', paddedNumber);
+                        let newCount = 1;
+                        if (counterDoc.exists) {
+                            newCount = (counterDoc.data()?.lastPoNumber || 0) + 1;
+                        }
+                        transaction.set(counterRef, { lastPoNumber: newCount }, { merge: true });
+                        return newCount;
                     });
+                    const paddedNumber = String(newNumber).padStart(5, '0');
+                    newPoNumber = `${shopCode}-${vendorCode}-PO-${paddedNumber}`;
                 } catch (error) {
                     console.error("Transaction failed: ", error);
-                    alert("Could not generate PO number."); return;
+                    let errorMessage = "Could not generate PO number. An unknown error occurred.";
+                    if (error.message && error.message.toLowerCase().includes('quota exceeded')) {
+                        errorMessage = "<strong>Submission Failed:</strong> The database's daily usage quota has been exceeded. Please try again tomorrow.";
+                    }
+                    submissionStatusEl.innerHTML = `<p class="text-red-600 font-medium">${errorMessage}</p>`;
+                    
+                    // Re-enable button on failure
+                    submitPrBtn.disabled = false;
+                    submitPrBtn.textContent = 'Submit PR';
+                    return;
                 }
+
 
                 const newPO = {
                     poNumber: newPoNumber,
-                    vendorName: requestVendorInput.value,
-                    shopName: requestShopDropdown.value,
+                    vendorName: vendorName,
+                    shopName: shopName,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    exchangeRate: parseFloat(exchangeRateInput.value) || 4100,
+                    exchangeRate: 4100,
                     items: poItems,
                     status: 'Requested'
                 };
 
                 try {
                     await db.collection('purchaseOrders').add(newPO);
-                    alert(`Purchase Order ${newPoNumber} has been saved!`);
+                } catch (error) {
+                    console.error("Error saving PO:", error);
+                    submissionStatusEl.innerHTML = `<p class="text-red-600 font-medium">Could not save the PO.</p>`;
+                    // Re-enable button on failure
+                    submitPrBtn.disabled = false;
+                    submitPrBtn.textContent = 'Submit PR';
+                    return;
+                }
+
+                // 3. Generate and Download PDF using the newPoNumber
+                const element = document.getElementById('pdf-template-area');
+                const selectedShop = shops.find(s => s.name === shopName) || {};
+
+                document.getElementById('pdf-vendor').textContent = vendorName;
+                document.getElementById('pdf-shop').textContent = shopName;
+                document.getElementById('pdf-address').textContent = selectedShop.address || '';
+                document.getElementById('pdf-po-no').textContent = newPoNumber; // Use the final PO number
+                document.getElementById('pdf-po-date').textContent = new Date().toLocaleDateString();
+                document.getElementById('pdf-contact').textContent = selectedShop.contact || '';
+
+                const pdfTableBody = document.getElementById('pdf-table-body');
+                const pdfTableFooter = document.getElementById('pdf-table-footer');
+                pdfTableBody.innerHTML = '';
+                pdfTableFooter.innerHTML = '';
+                let totalRows = 15;
+
+                poItems.forEach((item, index) => {
+                    const cost = parseFloat(item.Cost) || 0;
+                    const qty = parseInt(item.quantity) || 0;
+                    
+                    const costKhrDisplay = '&nbsp;';
+                    const costUsdDisplay = item.currency === 'USD' ? cost.toFixed(2) : '&nbsp;';
+                    const subTotalDisplay = '&nbsp;';
+                    const cb4Value = cost.toFixed(2);
+                    
+                    const row = `
+                        <tr>
+                            <td style="text-align: center;">${index + 1}</td>
+                            <td>${item["Product Code"]}</td>
+                            <td>${item.Barcode || ''}</td>
+                            <td>${item.Name}</td>
+                            <td style="text-align: center;">${qty}</td>
+                            <td style="text-align: right;">${costKhrDisplay}</td>
+                            <td style="text-align: right;">${costUsdDisplay}</td>
+                            <td style="text-align: right;">${subTotalDisplay}</td>
+                            <td style="text-align: right;">${cb4Value}</td>
+                        </tr>`;
+                    pdfTableBody.insertAdjacentHTML('beforeend', row);
+                });
+
+                for(let i = poItems.length; i < totalRows; i++) {
+                    const emptyRow = `<tr><td style="height: 2.2em;"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
+                    pdfTableBody.insertAdjacentHTML('beforeend', emptyRow);
+                }
+                
+                pdfTableFooter.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: right; font-weight: bold;">Total</td>
+                        <td style="text-align: right; font-weight: bold;">&nbsp;</td>
+                    </tr>
+                `;
+
+                element.style.position = 'absolute';
+                element.style.left = '0px';
+                element.style.top = '0px';
+                element.style.opacity = '1';
+                element.style.zIndex = '1000';
+
+                const { jsPDF } = window.jspdf;
+                html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
+                    element.style.position = 'fixed';
+                    element.style.left = '-9999px';
+                    element.style.opacity = '0';
+                    element.style.zIndex = '-10';
+
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: 'a4' });
+                    pdf.addImage(imgData, 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+                    pdf.save(`${newPoNumber}.pdf`);
+
+                    submissionStatusEl.innerHTML = `<p class="text-green-600 font-medium">PO ${newPoNumber} submitted and downloaded!</p>`;
+                     // If the submitted PO came from a draft, delete that draft
+                    if (currentDraftId) {
+                        db.collection('drafts').doc(currentDraftId).delete();
+                    }
+                    
                     poItems = [];
+                    currentDraftId = null; 
+                    document.getElementById('draft-indicator')?.remove();
                     renderRequestPOTable();
                     requestVendorInput.value = '';
                     requestPoNoInput.value = '';
-                } catch (error) {
-                    console.error("Error saving PO:", error);
-                    alert("Could not save the PO.");
-                }
+                    
+                    submitPrBtn.disabled = false;
+                    submitPrBtn.textContent = 'Submit PR';
+                }).catch(err => {
+                    console.error("PDF generation failed:", err);
+                    submissionStatusEl.innerHTML = `<p class="text-yellow-600 font-medium">PO was saved, but PDF download failed.</p>`;
+                    poItems = [];
+                    currentDraftId = null;
+                    document.getElementById('draft-indicator')?.remove();
+                    renderRequestPOTable();
+                    requestVendorInput.value = '';
+                    requestPoNoInput.value = '';
+                    submitPrBtn.disabled = false;
+                    submitPrBtn.textContent = 'Submit PR';
+                });
             });
+
 
             poListBody.addEventListener('click', (e) => {
                 const editBtn = e.target.closest('.edit-po-btn');
@@ -1416,11 +1773,50 @@
                     showDeleteConfirmation(deleteBtn.dataset.id, 'po');
                 }
             });
+            
+            draftsListBody.addEventListener('click', async (e) => {
+                const editBtn = e.target.closest('.edit-draft-btn');
+                const deleteBtn = e.target.closest('.delete-draft-btn');
+
+                if (editBtn) {
+                    clearStatus();
+                    const draftId = editBtn.dataset.id;
+                    const draft = drafts.find(d => d.id === draftId);
+                    if (draft) {
+                        poItems = draft.items || [];
+                        requestShopDropdown.value = draft.shopName || '';
+                        currentDraftId = draftId; // Set the current draft ID
+                        renderRequestPOTable(); // This will also update the vendor input
+
+                        // Add a visual indicator that a draft is being edited
+                        const indicator = document.createElement('p');
+                        indicator.id = 'draft-indicator';
+                        indicator.className = 'text-sm text-blue-600 font-semibold mb-4';
+                        indicator.textContent = `Editing draft for "${draft.vendorName}". Saving will update this draft.`;
+                        
+                        // Remove any existing indicator first
+                        document.getElementById('draft-indicator')?.remove();
+                        // Add it after the main H1 title
+                        document.querySelector('#po-request-form > div > h1').insertAdjacentElement('afterend', indicator);
+
+                        // Switch to the PO request form tab
+                        document.querySelector('.tab[data-tab="po-request-form"]').click();
+                    }
+                }
+
+                if (deleteBtn) {
+                    const draftId = deleteBtn.dataset.id;
+                    showDeleteConfirmation(draftId, 'draft');
+                }
+            });
 
             backToListBtn.addEventListener('click', showPoList);
 
             updateGoodsBtn.addEventListener('click', () => {
                 if (!currentPoData) return;
+                detailExchangeRateInput.readOnly = false;
+                detailExchangeRateInput.classList.remove('bg-gray-200', 'cursor-not-allowed');
+
                 printTableBody.querySelectorAll('tr').forEach(row => {
                     const qtyEl = row.querySelector('[data-field="quantity"]');
                     const totalCostKhrEl = row.querySelector('[data-field="totalCostKhr"]');
@@ -1445,58 +1841,66 @@
                 const poDocRef = db.collection('purchaseOrders').doc(currentPoId);
                 const updatedItems = JSON.parse(JSON.stringify(currentPoData.items));
                 let hasChanges = false;
+                
+                const newExchangeRate = parseFloat(detailExchangeRateInput.value) || 4100;
+                if (currentPoData.exchangeRate !== newExchangeRate) {
+                    hasChanges = true;
+                }
+
+                const costUpdateBatch = db.batch();
+                let costUpdatesCount = 0;
 
                 printTableBody.querySelectorAll('tr').forEach(row => {
                     const index = parseInt(row.dataset.index);
                     const item = updatedItems[index];
                     const qty = parseInt(row.querySelector('[data-field="quantity"]').textContent);
-                    let newUnitCost = parseFloat(item.Cost); // Default to old value
-
-                    if (item.currency?.toUpperCase() === 'KHR') {
-                        const totalCostKhrText = row.querySelector('[data-field="totalCostKhr"]').textContent;
-                        if (totalCostKhrText !== '-') {
-                            const totalCostKhr = parseFloat(totalCostKhrText);
-                            if (!isNaN(totalCostKhr) && qty > 0) {
-                                newUnitCost = totalCostKhr / qty;
-                            }
-                        }
-                    } else if (item.currency?.toUpperCase() === 'USD') {
-                        const totalCostUsdText = row.querySelector('[data-field="totalCostUsd"]').textContent;
-                        if (totalCostUsdText !== '-') {
-                            const totalCostUsd = parseFloat(totalCostUsdText);
-                            if (!isNaN(totalCostUsd) && qty > 0) {
-                                newUnitCost = totalCostUsd / qty;
-                            }
-                        }
-                    }
+                    const newUnitCostKhr = parseFloat(row.querySelector('[data-field="costPerUnit"]').textContent);
 
                     if (item.quantity !== qty) {
                         item.quantity = qty;
                         hasChanges = true;
                     }
 
-                    // Check if newUnitCost is a valid number and has changed significantly
-                    if (!isNaN(newUnitCost) && Math.abs(item.Cost - newUnitCost) > 0.001) {
-                        item.Cost = newUnitCost;
-                        hasChanges = true;
+                    const originalProduct = allProducts.find(p => p["Product Code"] === item["Product Code"]);
+                    if (originalProduct) {
+                        const masterCost = parseFloat(originalProduct.Cost) || 0;
+                        // Check if newUnitCost is a valid number and has changed significantly
+                        if (!isNaN(newUnitCostKhr) && Math.abs(masterCost - newUnitCostKhr) > 0.01) {
+                            const productRef = db.collection('products').doc(originalProduct.id);
+                            const historyRef = productRef.collection('costHistory').doc();
+                            
+                            costUpdateBatch.set(historyRef, {
+                                previousCost: masterCost,
+                                newCost: newUnitCostKhr,
+                                changeDate: firebase.firestore.FieldValue.serverTimestamp(),
+                                poNumber: currentPoData.poNumber,
+                                shopName: currentPoData.shopName
+                            });
+                            costUpdateBatch.update(productRef, { "Cost": newUnitCostKhr });
+                            costUpdatesCount++;
+                        }
                     }
                 });
 
-                if (hasChanges) {
-                    try {
-                        await poDocRef.update({ items: updatedItems });
-                        alert("PO updated successfully!");
-                        await loadPurchaseOrder(currentPoId); // Reload
-                    } catch (error) {
-                        console.error("Error updating PO:", error);
-                        alert("Failed to update PO.");
+                try {
+                    if (hasChanges) {
+                        await poDocRef.update({ items: updatedItems, exchangeRate: newExchangeRate });
                     }
+                    if (costUpdatesCount > 0) {
+                        await costUpdateBatch.commit();
+                    }
+                    alert(`PO updated successfully! ${costUpdatesCount} product cost(s) were updated.`);
+                    await loadPurchaseOrder(currentPoId); // Reload
+                } catch (error) {
+                    console.error("Error updating PO and product costs:", error);
+                    alert("Failed to save updates.");
                 }
                 
+                detailExchangeRateInput.readOnly = true;
+                detailExchangeRateInput.classList.add('bg-gray-200', 'cursor-not-allowed');
                 printTableBody.querySelectorAll('[contenteditable="true"]').forEach(cell => {
                     cell.contentEditable = false;
                     cell.classList.remove('bg-yellow-100', 'focus:outline-blue-400');
-                    // Event listeners are removed automatically when the table is re-rendered by loadPurchaseOrder
                 });
                 updateGoodsBtn.classList.remove('hidden');
                 saveUpdatesBtn.classList.add('hidden');
@@ -1509,6 +1913,9 @@
                         break;
                     case 'product':
                         deleteProduct();
+                        break;
+                    case 'draft':
+                        deleteDraft();
                         break;
                     case 'all-products':
                         deleteAllProducts();
@@ -1538,9 +1945,14 @@
                 if (!isFirebaseInitialized) return;
                 loadAndCacheProducts();
                 listenForShops();
+                listenForVendors();
                 db.collection('purchaseOrders').orderBy("createdAt", "desc").onSnapshot((snapshot) => {
                     allPurchaseOrders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     applyAndRenderFilters();
+                });
+                db.collection('drafts').onSnapshot((snapshot) => {
+                    drafts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderDraftsList();
                 });
             });
 
@@ -1599,23 +2011,30 @@
                     }
                 }
             });
-            
-            saveVendorSettingsBtn?.addEventListener('click', async () => {
-                const selects = document.querySelectorAll('.vendor-currency-select');
-                const batch = db.batch();
-                selects.forEach(select => {
-                    const vendor = select.dataset.vendor;
-                    const currency = select.value;
-                    const docRef = db.collection("vendorSettings").doc(vendor);
-                    batch.set(docRef, { currency: currency });
-                });
+
+            addVendorBtn.addEventListener('click', async () => {
+                const name = vendorNameInput.value.trim();
+                const contact = vendorContactInput.value.trim();
+                const address = vendorAddressInput.value.trim();
+                if (!name) return;
                 try {
-                    await batch.commit();
-                    alert('Vendor settings saved!');
-                    await loadVendorSettings();
+                    await db.collection('vendors').add({ name, contact, address });
+                    vendorNameInput.value = '';
+                    vendorContactInput.value = '';
+                    vendorAddressInput.value = '';
                 } catch (error) {
-                    console.error("Error saving vendor settings:", error);
-                    alert('Error saving settings.');
+                    console.error("Error adding vendor:", error);
+                }
+            });
+
+            vendorListBody.addEventListener('click', async (e) => {
+                if (e.target.classList.contains('delete-vendor-btn')) {
+                    const id = e.target.closest('tr').dataset.id;
+                    try {
+                        await db.collection('vendors').doc(id).delete();
+                    } catch (error) {
+                        console.error("Error deleting vendor:", error);
+                    }
                 }
             });
             
@@ -1683,6 +2102,7 @@
             productListBody.addEventListener('click', (e) => {
                 const editBtn = e.target.closest('.edit-product-btn');
                 const deleteBtn = e.target.closest('.delete-product-btn');
+                const historyBtn = e.target.closest('.history-product-btn');
 
                 if (editBtn) {
                     const id = editBtn.dataset.id;
@@ -1700,7 +2120,13 @@
                     }
                 } else if (deleteBtn) {
                     showDeleteConfirmation(deleteBtn.dataset.id, 'product');
+                } else if (historyBtn) {
+                    showCostHistory(historyBtn.dataset.id, historyBtn.dataset.name);
                 }
+            });
+            
+            closeHistoryBtn.addEventListener('click', () => {
+                costHistoryModal.classList.add('hidden');
             });
             
             productSearchInput.addEventListener('input', () => {
@@ -1814,71 +2240,6 @@
             });
 
             // PDF Buttons
-            requestSavePdfBtn.addEventListener('click', () => {
-                const element = document.getElementById('pdf-template-area');
-                const selectedShopName = requestShopDropdown.value;
-                const selectedShop = shops.find(s => s.name === selectedShopName) || {};
-
-                document.getElementById('pdf-vendor').textContent = requestVendorInput.value;
-                document.getElementById('pdf-shop').textContent = selectedShopName;
-                document.getElementById('pdf-address').textContent = selectedShop.address || '';
-                document.getElementById('pdf-po-no').textContent = requestPoNoInput.value.replace('-PENDING', '');
-                document.getElementById('pdf-po-date').textContent = requestPoDateInput.value;
-                document.getElementById('pdf-contact').textContent = selectedShop.contact || '';
-
-                const pdfTableBody = document.getElementById('pdf-table-body');
-                pdfTableBody.innerHTML = '';
-                let totalRows = 15;
-                poItems.forEach((item, index) => {
-                    const cost = parseFloat(item.Cost) || 0;
-                    const costKhrDisplay = '&nbsp;'; // Hide KHR cost value as requested
-                    const costUsdDisplay = item.currency === 'USD' ? cost.toFixed(2) : '&nbsp;';
-                    const row = `
-                        <tr>
-                            <td style="text-align: center;">${index + 1}</td>
-                            <td>${item["Product Code"]}</td>
-                            <td>${item.Barcode || ''}</td>
-                            <td>${item.Name}</td>
-                            <td style="text-align: center;">${item.quantity}</td>
-                            <td style="text-align: right;">${costKhrDisplay}</td>
-                            <td style="text-align: right;">${costUsdDisplay}</td>
-                            <td style="text-align: right;">${cost.toFixed(2)}</td>
-                        </tr>`;
-                    pdfTableBody.insertAdjacentHTML('beforeend', row);
-                });
-
-                for(let i = poItems.length; i < totalRows; i++) {
-                    const emptyRow = `<tr>
-                        <td style="height: 2.2em;"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    </tr>`;
-                     pdfTableBody.insertAdjacentHTML('beforeend', emptyRow);
-                }
-                
-                // Temporarily make the element visible for rendering
-                element.style.position = 'absolute';
-                element.style.left = '0px';
-                element.style.top = '0px';
-                element.style.opacity = '1';
-                element.style.zIndex = '1000';
-
-
-                const { jsPDF } = window.jspdf;
-                html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
-                    // Hide element again after capture
-                    element.style.position = 'fixed';
-                    element.style.left = '-9999px';
-                    element.style.opacity = '0';
-                    element.style.zIndex = '-10';
-
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: 'a4' });
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = pdf.internal.pageSize.getHeight();
-                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                    pdf.save(`${requestPoNoInput.value || 'request'}.pdf`);
-                });
-            });
-            
             detailSavePdfBtn.addEventListener('click', () => {
                 const { jsPDF } = window.jspdf;
                 const element = document.getElementById('po-print-area');
@@ -1892,6 +2253,14 @@
                     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight / ratio);
                     pdf.save(`${printPoNumberEl.textContent || 'details'}.pdf`);
                 });
+            });
+
+            cancelPoRequestBtn.addEventListener('click', () => {
+                poItems = [];
+                currentDraftId = null;
+                document.getElementById('draft-indicator')?.remove();
+                renderRequestPOTable();
+                clearStatus();
             });
 
         });
