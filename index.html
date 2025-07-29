@@ -1606,39 +1606,21 @@
                 submitPrBtn.disabled = true;
                 submitPrBtn.textContent = 'Submitting...';
 
-                // 2. Generate PO Number using a transaction
+                // 2. Generate PO Number client-side
                 const shopName = requestShopDropdown.value;
                 const vendorName = requestVendorInput.value;
                 const shopCode = shopName.substring(0, 3).toUpperCase().replace(/\s/g, '');
                 const vendorCode = vendorName.substring(0, 4).toUpperCase().replace(/\s/g, '');
                 
-                const counterRef = db.collection('counters').doc('purchaseOrder');
-                let newPoNumber;
-                try {
-                    const newNumber = await db.runTransaction(async (transaction) => {
-                        const counterDoc = await transaction.get(counterRef);
-                        let newCount = 1;
-                        if (counterDoc.exists) {
-                            newCount = (counterDoc.data()?.lastPoNumber || 0) + 1;
-                        }
-                        transaction.set(counterRef, { lastPoNumber: newCount }, { merge: true });
-                        return newCount;
-                    });
-                    const paddedNumber = String(newNumber).padStart(5, '0');
-                    newPoNumber = `${shopCode}-${vendorCode}-PO-${paddedNumber}`;
-                } catch (error) {
-                    console.error("Transaction failed: ", error);
-                    let errorMessage = "Could not generate PO number. An unknown error occurred.";
-                    if (error.message && error.message.toLowerCase().includes('quota exceeded')) {
-                        errorMessage = "<strong>Submission Failed:</strong> The database's daily usage quota has been exceeded. Please try again tomorrow.";
-                    }
-                    submissionStatusEl.innerHTML = `<p class="text-red-600 font-medium">${errorMessage}</p>`;
-                    
-                    // Re-enable button on failure
-                    submitPrBtn.disabled = false;
-                    submitPrBtn.textContent = 'Submit PR';
-                    return;
-                }
+                const now = new Date();
+                const year = String(now.getFullYear()).slice(-2);
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                const timestamp = `${year}${month}${day}-${hours}${minutes}${seconds}`;
+                const newPoNumber = `${shopCode}-${vendorCode}-PO-${timestamp}`;
 
 
                 const newPO = {
