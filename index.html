@@ -239,14 +239,18 @@
                                 <div class="mt-8 pt-6 border-t border-slate-200 no-print">
                                     <h2 class="text-xl font-semibold mb-4 text-slate-800">Add Product to PO</h2>
                                     <div id="lookup-form">
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-                                            <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
+                                            <div class="md:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
                                                 <div class="relative">
                                                     <label for="product-code" class="block text-sm font-medium text-slate-700 mb-1">Product Code/Barcode</label>
                                                     <input type="text" id="product-code" class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter code...">
                                                     <div id="product-preview" class="hidden absolute z-10 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-lg p-3">
                                                         <!-- Live preview content goes here -->
                                                     </div>
+                                                </div>
+                                                <div>
+                                                    <label for="product-name-lookup" class="block text-sm font-medium text-slate-700 mb-1">Product Name</label>
+                                                    <input type="text" id="product-name-lookup" readonly class="w-full px-4 py-2 bg-slate-200 border border-slate-300 rounded-lg cursor-not-allowed">
                                                 </div>
                                                 <div>
                                                     <label for="quantity" class="block text-sm font-medium text-slate-700 mb-1">Quantity</label>
@@ -884,6 +888,7 @@
             const appContainer = document.getElementById('app-container');
             const logoutButton = document.getElementById('logout-button');
             const productCodeInput = document.getElementById('product-code');
+            const productNameLookupInput = document.getElementById('product-name-lookup');
             const quantityInput = document.getElementById('quantity');
             const addToPoButton = document.getElementById('add-to-po');
             const cancelAddProductBtn = document.getElementById('cancel-add-product');
@@ -1511,6 +1516,7 @@
                     }
                     renderRequestPOTable();
                     productCodeInput.value = '';
+                    productNameLookupInput.value = '';
                     quantityInput.value = '1';
                     productPreview.classList.add('hidden'); // Hide preview after adding
                     productCodeInput.focus();
@@ -1631,8 +1637,8 @@
                             <td class="p-3">${index + 1}</td>
                             <td class="p-3">${item.Name}</td>
                             <td class="p-3 text-center" data-field="quantity">${item.quantity}</td>
-                            <td class="p-3 text-right" data-field="totalCostKhr">${totalCostKhr}</td>
-                            <td class="p-3 text-right" data-field="totalCostUsd">${totalCostUsd}</td>
+                            <td data-label="Total Cost (KHR)" class="p-3 text-right" data-field="totalCostKhr">${totalCostKhr}</td>
+                            <td data-label="Total Cost (USD)" class="p-3 text-right" data-field="totalCostUsd">${totalCostUsd}</td>
                             <td class="p-3 text-right" data-field="costPerUnit">0.00</td>
                             <td class="p-3 text-right" data-field="checkup">N/A</td>
                         </tr>`;
@@ -1934,6 +1940,7 @@
                 const code = productCodeInput.value.trim().toLowerCase();
                 if (code.length < 2) {
                     productPreview.classList.add('hidden');
+                    productNameLookupInput.value = '';
                     return;
                 }
 
@@ -1961,8 +1968,10 @@
                         <p class="text-sm text-slate-500">Vendor: <span class="font-medium text-slate-700">${vendor}</span></p>
                         <p class="text-sm text-slate-500">Cost: <span class="font-medium text-slate-700">${cost.toFixed(2)} ${currencySymbol}</span></p>
                     `;
+                    productNameLookupInput.value = product.Name || '';
                     productPreview.classList.remove('hidden');
                 } else {
+                    productNameLookupInput.value = '';
                     productPreview.classList.add('hidden');
                 }
             });
@@ -1978,6 +1987,7 @@
             
             cancelAddProductBtn.addEventListener('click', () => {
                 productCodeInput.value = '';
+                productNameLookupInput.value = '';
                 quantityInput.value = '1';
                 productPreview.classList.add('hidden');
                 errorMessageEl.classList.add('hidden');
@@ -2087,40 +2097,23 @@
                 submitPrBtn.disabled = true;
                 submitPrBtn.textContent = 'Submitting...';
 
-                // 2. Generate PO Number using a transaction
+                // 2. Generate PO Number
                 const shopName = requestShopDropdown.value;
                 const vendorName = requestVendorDropdown.value;
                 const shopCode = shopName.substring(0, 3).toUpperCase().replace(/\s/g, '');
                 const vendorCode = vendorName.substring(0, 4).toUpperCase().replace(/\s/g, '');
                 
-                const counterRef = db.collection('counters').doc('purchaseOrder');
-                let newPoNumber;
-                try {
-                    const newNumber = await db.runTransaction(async (transaction) => {
-                        const counterDoc = await transaction.get(counterRef);
-                        let newCount = 1;
-                        if (counterDoc.exists) {
-                            newCount = (counterDoc.data()?.lastPoNumber || 0) + 1;
-                        }
-                        transaction.set(counterRef, { lastPoNumber: newCount }, { merge: true });
-                        return newCount;
-                    });
-                    const paddedNumber = String(newNumber).padStart(5, '0');
-                    newPoNumber = `${shopCode}-${vendorCode}-PO-${paddedNumber}`;
-                } catch (error) {
-                    console.error("Transaction failed: ", error);
-                    let errorMessage = "Could not generate PO number. An unknown error occurred.";
-                    if (error.message && error.message.toLowerCase().includes('quota exceeded')) {
-                        errorMessage = "<strong>Submission Failed:</strong> The database's daily usage quota has been exceeded. Please try again tomorrow.";
-                    }
-                    submissionStatusEl.innerHTML = `<p class="text-red-600 font-medium">${errorMessage}</p>`;
-                    
-                    // Re-enable button on failure
-                    submitPrBtn.disabled = false;
-                    submitPrBtn.textContent = 'Submit PR';
-                    return;
-                }
-
+                const now = new Date();
+                const day = String(now.getDate()).padStart(2, '0');
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const year = String(now.getFullYear()).slice(-2);
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                
+                const dateString = `${year}${month}${day}`; // Corrected order
+                const timeString = `${hours}${minutes}${seconds}`;
+                const newPoNumber = `${shopCode}-${vendorCode}-PO-${dateString}-${timeString}`;
 
                 const newPO = {
                     poNumber: newPoNumber,
