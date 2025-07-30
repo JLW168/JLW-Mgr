@@ -218,9 +218,12 @@
                             <div class="bg-slate-50 rounded-xl p-4 sm:p-6 mb-6 border border-slate-200">
                                 <h2 class="text-xl font-semibold mb-4 text-slate-800">PO Request Data</h2>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                                    <div>
-                                        <label for="request-vendor-dropdown" class="block text-sm font-medium text-slate-700">Vendor</label>
-                                        <select id="request-vendor-dropdown" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
+                                    <div class="relative">
+                                        <label for="request-vendor-search" class="block text-sm font-medium text-slate-700">Vendor</label>
+                                        <input type="text" id="request-vendor-search" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Search and select a vendor...">
+                                        <div id="request-vendor-list" class="hidden absolute z-20 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                            <!-- Vendor options will be populated here -->
+                                        </div>
                                     </div>
                                     <div>
                                         <label for="request-shop-dropdown" class="block text-sm font-medium text-slate-700">Request By</label>
@@ -909,7 +912,8 @@
             const saveDraftBtn = document.getElementById('save-draft-btn');
             const cancelPoRequestBtn = document.getElementById('cancel-po-request-btn');
             const requestShopDropdown = document.getElementById('request-shop-dropdown');
-            const requestVendorDropdown = document.getElementById('request-vendor-dropdown');
+            const requestVendorSearchInput = document.getElementById('request-vendor-search');
+            const requestVendorList = document.getElementById('request-vendor-list');
             const poNumberDisplay = document.getElementById('po-number-display');
             const updateGoodsBtn = document.getElementById('update-goods-btn');
             const saveUpdatesBtn = document.getElementById('save-updates-btn');
@@ -1230,21 +1234,21 @@
                 }
             }
             
-            function populateVendorDropdowns() {
-                if (!requestVendorDropdown) return;
-                const selectedValue = requestVendorDropdown.value;
-
-                requestVendorDropdown.innerHTML = '<option value="">Select a vendor</option>';
-
-                vendors.forEach(vendor => {
-                    const option = document.createElement('option');
-                    option.value = vendor.name;
-                    option.textContent = vendor.name;
-                    requestVendorDropdown.appendChild(option);
-                });
-
-                if (Array.from(requestVendorDropdown.options).some(opt => opt.value === selectedValue)) {
-                    requestVendorDropdown.value = selectedValue;
+            function populateVendorSearchList(filterText = '') {
+                requestVendorList.innerHTML = '';
+                const filteredVendors = vendors.filter(v => v.name.toLowerCase().includes(filterText.toLowerCase()));
+                
+                if (filteredVendors.length === 0) {
+                    requestVendorList.innerHTML = `<div class="p-2 text-sm text-slate-500">No vendors found</div>`;
+                } else {
+                    filteredVendors.forEach(vendor => {
+                        const item = document.createElement('a');
+                        item.href = '#';
+                        item.className = 'block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-100';
+                        item.textContent = vendor.name;
+                        item.dataset.name = vendor.name;
+                        requestVendorList.appendChild(item);
+                    });
                 }
             }
 
@@ -1260,7 +1264,7 @@
                 db.collection('vendors').onSnapshot((snapshot) => {
                     vendors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     renderVendorList();
-                    populateVendorDropdowns();
+                    populateVendorSearchList();
                 });
             }
             
@@ -1416,10 +1420,10 @@
                     primaryVendor = Object.keys(vendorCounts).reduce((a, b) => vendorCounts[a] > vendorCounts[b] ? a : b);
                 }
                 
-                if (Array.from(requestVendorDropdown.options).some(opt => opt.value === primaryVendor)) {
-                    requestVendorDropdown.value = primaryVendor;
+                if (vendors.some(v => v.name === primaryVendor)) {
+                    requestVendorSearchInput.value = primaryVendor;
                 } else if (poItems.length === 0) {
-                    requestVendorDropdown.value = "";
+                    requestVendorSearchInput.value = "";
                 }
 
                 updateRequestHeader();
@@ -1528,7 +1532,7 @@
 
             function updateRequestHeader() {
                 const shopName = requestShopDropdown.value || "N/A";
-                const vendor = requestVendorDropdown.value || "N/A";
+                const vendor = requestVendorSearchInput.value || "N/A";
                 const shopCode = shopName.substring(0, 3).toUpperCase().replace(/\s/g, '');
                 const vendorCode = vendor.substring(0, 4).toUpperCase().replace(/\s/g, '');
                 requestPoNoInput.value = `${shopCode}-${vendorCode}-PO-PENDING`;
@@ -1995,7 +1999,31 @@
             });
 
             requestShopDropdown.addEventListener('change', updateRequestHeader);
-            requestVendorDropdown.addEventListener('change', updateRequestHeader);
+            requestVendorSearchInput.addEventListener('input', () => {
+                populateVendorSearchList(requestVendorSearchInput.value);
+                updateRequestHeader();
+            });
+            requestVendorSearchInput.addEventListener('focus', () => {
+                populateVendorSearchList(requestVendorSearchInput.value);
+                requestVendorList.classList.remove('hidden');
+            });
+            
+            requestVendorList.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = e.target.closest('a');
+                if (target) {
+                    requestVendorSearchInput.value = target.dataset.name;
+                    requestVendorList.classList.add('hidden');
+                    updateRequestHeader();
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!requestVendorSearchInput.contains(e.target) && !requestVendorList.contains(e.target)) {
+                    requestVendorList.classList.add('hidden');
+                }
+            });
+
             
             poTableBody.addEventListener('click', (e) => {
                 if (e.target.classList.contains('delete-item')) {
@@ -2050,7 +2078,7 @@
                 updateRequestHeader();
 
                 const draftData = {
-                    vendorName: requestVendorDropdown.value,
+                    vendorName: requestVendorSearchInput.value,
                     shopName: requestShopDropdown.value,
                     items: poItems,
                     savedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -2088,7 +2116,7 @@
                     alert("Please select a shop.");
                     return;
                 }
-                if (!requestVendorDropdown.value) {
+                if (!requestVendorSearchInput.value) {
                     alert("Please select a vendor.");
                     return;
                 }
@@ -2099,7 +2127,7 @@
 
                 // 2. Generate PO Number
                 const shopName = requestShopDropdown.value;
-                const vendorName = requestVendorDropdown.value;
+                const vendorName = requestVendorSearchInput.value;
                 const shopCode = shopName.substring(0, 3).toUpperCase().replace(/\s/g, '');
                 const vendorCode = vendorName.substring(0, 4).toUpperCase().replace(/\s/g, '');
                 
@@ -2255,7 +2283,7 @@
                     if (draft) {
                         poItems = draft.items || [];
                         requestShopDropdown.value = draft.shopName || '';
-                        requestVendorDropdown.value = draft.vendorName || '';
+                        requestVendorSearchInput.value = draft.vendorName || '';
                         currentDraftId = draftId; // Set the current draft ID
                         renderRequestPOTable(); // This will also update the vendor input
 
