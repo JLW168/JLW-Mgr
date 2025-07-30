@@ -1033,15 +1033,34 @@
                 loadAndCacheProducts();
                 listenForShops();
                 listenForVendors();
-                listenForEmployees();
-                db.collection('purchaseOrders').orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+                
+                if (currentUserProfile.role === 'Admin') {
+                    listenForEmployees();
+                }
+
+                let poQuery = db.collection('purchaseOrders').orderBy("createdAt", "desc");
+                let draftsQuery = db.collection('drafts').orderBy("savedAt", "desc");
+
+                if (currentUserProfile.role !== 'Admin') {
+                    if (currentUserProfile.assignedShops && currentUserProfile.assignedShops.length > 0) {
+                        poQuery = poQuery.where('shopName', 'in', currentUserProfile.assignedShops.slice(0, 10));
+                        draftsQuery = draftsQuery.where('shopName', 'in', currentUserProfile.assignedShops.slice(0, 10));
+                    } else {
+                        // If not an admin and no shops assigned, they see nothing.
+                        poQuery = poQuery.where('shopName', '==', '__NON_EXISTENT_SHOP__');
+                        draftsQuery = draftsQuery.where('shopName', '==', '__NON_EXISTENT_SHOP__');
+                    }
+                }
+
+                poQuery.onSnapshot((snapshot) => {
                     allPurchaseOrders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     applyAndRenderFilters();
-                });
-                db.collection('drafts').onSnapshot((snapshot) => {
+                }, err => console.error("PO listener failed:", err));
+
+                draftsQuery.onSnapshot((snapshot) => {
                     drafts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     renderDraftsList();
-                });
+                }, err => console.error("Drafts listener failed:", err));
             }
 
             function applyUserPermissions() {
