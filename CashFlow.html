@@ -2234,6 +2234,7 @@
         };
         // --- END: Purchase Order Page ---
 
+        
              // --- START: Expense Report Page ---
         const ExpenseReportPage = () => {
             const { userData, businessExpenses, familyExpenses, shops, businessCategories, familyCategories, appSettings } = useData();
@@ -2244,7 +2245,7 @@
             const [deletingExpense, setDeletingExpense] = useState(null);
             const [viewingExpense, setViewingExpense] = useState(null);
             const [isDeleting, setIsDeleting] = useState(false);
-            const [filters, setFilters] = useState({ shop: 'all', month: '', category: 'all' });
+            const [filters, setFilters] = useState({ shop: 'all', month: '', category: 'all', expenseType: 'all' });
             const isMounted = useRef(true);
 
             useEffect(() => {
@@ -2272,15 +2273,16 @@
                 return combinedList.filter(exp => {
                     const shopMatch = filters.shop === 'all' || exp.type !== 'Business' || exp.shop === filters.shop;
                     const categoryMatch = filters.category === 'all' || exp.category === filters.category;
+                    const typeMatch = filters.expenseType === 'all' || exp.type === filters.expenseType;
                     
-                    if (!filters.month) return shopMatch && categoryMatch;
+                    if (!filters.month) return shopMatch && categoryMatch && typeMatch;
                     
                     if (!exp.date) return false;
                     const [year, month] = filters.month.split('-');
                     const expDate = exp.date.toDate();
                     const monthMatch = expDate.getFullYear() === parseInt(year) && (expDate.getMonth() + 1) === parseInt(month);
                     
-                    return shopMatch && categoryMatch && monthMatch;
+                    return shopMatch && categoryMatch && monthMatch && typeMatch;
                 }).sort((a, b) => (b.date?.toDate()?.getTime() || 0) - (a.date?.toDate()?.getTime() || 0));
             }, [businessExpenses, familyExpenses, userData, filters]);
 
@@ -2473,7 +2475,7 @@
                             <h2 className="text-xl font-bold text-slate-700">Expense History</h2>
                             <Button onClick={handleExport} variant="secondary" icon="Download">Export to Excel</Button>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 bg-slate-50 rounded-lg">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 p-4 bg-slate-50 rounded-lg">
                             <FormSelect label="Filter by Shop" name="shop" value={filters.shop} onChange={handleFilterChange} options={[{ value: 'all', label: 'All Shops' }, ...shops.map(s => ({ value: s.name, label: s.name }))]} />
                             <FormInput label="Filter by Month" type="month" name="month" value={filters.month} onChange={handleFilterChange} />
                             <FormSelect 
@@ -2484,6 +2486,17 @@
                                 options={[
                                     { value: 'all', label: 'All Categories' }, 
                                     ...allCategories.map(c => ({ value: c, label: c }))
+                                ]} 
+                            />
+                            <FormSelect 
+                                label="Filter by Type" 
+                                name="expenseType" 
+                                value={filters.expenseType} 
+                                onChange={handleFilterChange} 
+                                options={[
+                                    { value: 'all', label: 'All Types' }, 
+                                    { value: 'Business', label: 'Business' },
+                                    { value: 'Family', label: 'Family' }
                                 ]} 
                             />
                         </div>
@@ -2523,6 +2536,7 @@
         };
         // --- END: Expense Report Page ---  
 
+        
         // --- START: CashFlow Report Page ---
         const CashFlowReportPage = () => {
             const [activeTab, setActiveTab] = useState('shareholderNet');
