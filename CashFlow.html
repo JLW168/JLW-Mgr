@@ -2234,7 +2234,7 @@
         };
         // --- END: Purchase Order Page ---
 
-        // --- START: Expense Report Page ---
+             // --- START: Expense Report Page ---
         const ExpenseReportPage = () => {
             const { userData, businessExpenses, familyExpenses, shops, businessCategories, familyCategories, appSettings } = useData();
             const { showNotification } = useNotification();
@@ -2244,7 +2244,7 @@
             const [deletingExpense, setDeletingExpense] = useState(null);
             const [viewingExpense, setViewingExpense] = useState(null);
             const [isDeleting, setIsDeleting] = useState(false);
-            const [filters, setFilters] = useState({ shop: 'all', month: '' });
+            const [filters, setFilters] = useState({ shop: 'all', month: '', category: 'all' });
             const isMounted = useRef(true);
 
             useEffect(() => {
@@ -2256,6 +2256,12 @@
                 const { name, value } = e.target;
                 setFilters(prev => ({ ...prev, [name]: value }));
             };
+            
+            const allCategories = useMemo(() => {
+                const business = businessCategories.map(c => c.name);
+                const family = familyCategories.map(c => c.name);
+                return [...new Set([...business, ...family])];
+            }, [businessCategories, familyCategories]);
 
             const filteredExpenses = useMemo(() => {
                 let combinedList = [
@@ -2265,14 +2271,16 @@
 
                 return combinedList.filter(exp => {
                     const shopMatch = filters.shop === 'all' || exp.type !== 'Business' || exp.shop === filters.shop;
-                    if (!filters.month) return shopMatch;
+                    const categoryMatch = filters.category === 'all' || exp.category === filters.category;
+                    
+                    if (!filters.month) return shopMatch && categoryMatch;
                     
                     if (!exp.date) return false;
                     const [year, month] = filters.month.split('-');
                     const expDate = exp.date.toDate();
                     const monthMatch = expDate.getFullYear() === parseInt(year) && (expDate.getMonth() + 1) === parseInt(month);
                     
-                    return shopMatch && monthMatch;
+                    return shopMatch && categoryMatch && monthMatch;
                 }).sort((a, b) => (b.date?.toDate()?.getTime() || 0) - (a.date?.toDate()?.getTime() || 0));
             }, [businessExpenses, familyExpenses, userData, filters]);
 
@@ -2468,6 +2476,16 @@
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 bg-slate-50 rounded-lg">
                             <FormSelect label="Filter by Shop" name="shop" value={filters.shop} onChange={handleFilterChange} options={[{ value: 'all', label: 'All Shops' }, ...shops.map(s => ({ value: s.name, label: s.name }))]} />
                             <FormInput label="Filter by Month" type="month" name="month" value={filters.month} onChange={handleFilterChange} />
+                            <FormSelect 
+                                label="Filter by Category" 
+                                name="category" 
+                                value={filters.category} 
+                                onChange={handleFilterChange} 
+                                options={[
+                                    { value: 'all', label: 'All Categories' }, 
+                                    ...allCategories.map(c => ({ value: c, label: c }))
+                                ]} 
+                            />
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm text-left">
@@ -2503,7 +2521,7 @@
                 </div>
             );
         };
-        // --- END: Expense Report Page ---
+        // --- END: Expense Report Page ---  
 
         // --- START: CashFlow Report Page ---
         const CashFlowReportPage = () => {
