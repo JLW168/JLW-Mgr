@@ -2628,9 +2628,11 @@
             }, [filters.month, reports, businessExpenses, familyExpenses, shops, purchaseOrders, internalTransfers, appSettings]);
         };
 
+       // =================================================================================
+        // #region SHAREHOLDER NET TAB
+        // =================================================================================
         const ShareholderNetTab = ({ filters }) => {
             const data = useMonthlyData(filters);
-
             const { shareholderData, totals } = useMemo(() => {
                 const shareholderData = {};
                 const allShareholders = [...new Set(data.shops.flatMap(s => (s.shareholders || []).map(sh => sh.name)))];
@@ -2650,12 +2652,14 @@
                     const currentGCA = openingGCA + salesContributionAllTime - totalPOsAllTime - transfersInAllTime + transfersOutAllTime;
 
                     const netSaleForMonth = data.filteredReports.filter(cd => cd.shop === shop.name).reduce((sum, cd) => sum + (cd.grandTotalKhr || 0), 0);
+                    const bizExpenseForMonth = data.filteredBusinessExpenses.filter(e => e.shop === shop.name).reduce((sum, e) => sum + (e.totalAmountKhr || 0), 0);
                     const netProfitForMonth = netSaleForMonth * (saleMargin / 100);
+                    const totalNetIncomeForMonth = netProfitForMonth - bizExpenseForMonth;
                     
                     (shop.shareholders || []).forEach(sh => {
                         if(shareholderData[sh.name]) {
                             shareholderData[sh.name].totalGCA += currentGCA * (sh.percentage / 100);
-                            shareholderData[sh.name].totalNetIncome += netProfitForMonth * (sh.percentage / 100);
+                            shareholderData[sh.name].totalNetIncome += totalNetIncomeForMonth * (sh.percentage / 100);
                         }
                     });
                 });
@@ -2724,6 +2728,7 @@
                 </Card>
             );
         };
+        // #endregion
 
         const CashflowHistoryTab = ({ filters }) => {
             const data = useMonthlyData(filters);
@@ -3723,4 +3728,5 @@
 
 </body>
 </html>
+
 
