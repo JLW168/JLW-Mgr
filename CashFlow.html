@@ -2814,11 +2814,21 @@
         };
         // #endregion
 
-        const IitPaymentTab = ({ filters }) => {
+      // =================================================================================
+        // #region IIT PAYMENT TAB
+        // =================================================================================
+        const IitPaymentTab = ({ filters, isCapturing }) => {
             const data = useMonthlyData(filters);
+            const {shops} = useData();
+            const [payeeFilter, setPayeeFilter] = useState('All');
 
             const iitPaymentData = useMemo(() => {
-                return Object.values(data.filteredInternalTransfers.reduce((acc, transfer) => {
+                let filteredTransfers = data.filteredInternalTransfers;
+                if (payeeFilter !== 'All') {
+                    filteredTransfers = filteredTransfers.filter(t => t.toShop === payeeFilter);
+                }
+
+                return Object.values(filteredTransfers.reduce((acc, transfer) => {
                     const key = `${transfer.toShop}-${transfer.fromShop}`;
                     if (!acc[key]) {
                         acc[key] = { payee: transfer.toShop, receiver: transfer.fromShop, totalAmount: 0 };
@@ -2826,11 +2836,27 @@
                     acc[key].totalAmount += transfer.totalAmount || 0;
                     return acc;
                 }, {}));
-            }, [data]);
+            }, [data, payeeFilter]);
+
+            const subtotal = useMemo(() => {
+                return iitPaymentData.reduce((sum, item) => sum + item.totalAmount, 0);
+            }, [iitPaymentData]);
 
             return (
                 <Card>
                     <h3 className="text-lg font-bold mb-4">IIT Payment Report</h3>
+                     <div className="mb-4">
+                        {isCapturing ? (
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">Filter by Shop Payee</label>
+                                <div className="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm sm:text-sm">
+                                    {payeeFilter}
+                                </div>
+                            </div>
+                        ) : (
+                            <FormSelect label="Filter by Shop Payee" name="payee" value={payeeFilter} onChange={(e) => setPayeeFilter(e.target.value)} options={[{value: 'All', label: 'All Shops'}, ...shops.map(s => ({value: s.name, label: s.name}))]} />
+                        )}
+                    </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead className="bg-gray-100">
@@ -2847,11 +2873,19 @@
                                     </tr>
                                 ))}
                             </tbody>
+                            <tfoot className="bg-gray-200 font-bold">
+                                <tr>
+                                    <td colSpan="3" className="p-2 text-right">Sub-Total</td>
+                                    <td className="p-2 text-right font-mono">{subtotal.toLocaleString()}</td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </Card>
             );
         };
+        // #endregion
+
         // --- END: CashFlow Report Page ---
 
         // --- START: Personal CashFlow Management ---
@@ -3728,6 +3762,7 @@
 
 </body>
 </html>
+
 
 
 
