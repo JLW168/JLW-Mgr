@@ -2730,9 +2730,11 @@
         };
         // #endregion
 
+        // =================================================================================
+        // #region CASHFLOW HISTORY TAB
+        // =================================================================================
         const CashflowHistoryTab = ({ filters }) => {
             const data = useMonthlyData(filters);
-
             const { shopCalculations, totals } = useMemo(() => {
                 const shopCalculations = data.shops.map(shop => {
                     const openingGCA = shop.gca || 0;
@@ -2755,14 +2757,10 @@
 
                     return { name: shop.name, currentGCA, netSale: netSaleForMonth, netProfit: netProfitForMonth, totalPO: totalPOForMonth, totalTransIn: totalTransInForMonth, totalTransOut: totalTransOutForMonth, totalBizExpense: bizExpenseForMonth, totalNetIncome: totalNetIncomeForMonth };
                 });
-
                 const totals = shopCalculations.reduce((acc, shop) => {
-                    Object.keys(shop).forEach(key => {
-                        if (key !== 'name') acc[key] = (acc[key] || 0) + shop[key];
-                    });
+                    Object.keys(shop).forEach(key => { if (key !== 'name') acc[key] = (acc[key] || 0) + shop[key]; });
                     return acc;
                 }, {});
-
                 return { shopCalculations, totals };
             }, [data]);
 
@@ -2782,16 +2780,17 @@
                              </thead>
                              <tbody>
                                 {shopCalculations.map((shop, index) => (
-                                    <tr key={shop.name} className="border-b">
-                                        <td className="p-2">{index+1}</td><td className="p-2 font-semibold">{shop.name}</td>
+                                    <tr key={shop.name} className={`border-b ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                        <td className="p-2">{index+1}</td>
+                                        <td className="p-2 font-semibold">{shop.name}</td>
                                         <td className="p-2 text-right font-mono">{shop.currentGCA.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                                         <td className="p-2 text-right font-mono">{shop.netSale.toLocaleString()}</td>
-                                        <td className="p-2 text-right font-mono">{shop.netProfit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                        <td className="p-2 text-right font-mono">{shop.totalPO.toLocaleString()}</td>
+                                        <td className="p-2 text-right font-mono text-green-600">{shop.netProfit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                        <td className="p-2 text-right font-mono text-red-600">{shop.totalPO.toLocaleString()}</td>
                                         <td className="p-2 text-right font-mono">{shop.totalTransIn.toLocaleString()}</td>
                                         <td className="p-2 text-right font-mono">{shop.totalTransOut.toLocaleString()}</td>
-                                        <td className="p-2 text-right font-mono">{shop.totalBizExpense.toLocaleString()}</td>
-                                        <td className="p-2 text-right font-mono font-bold">{shop.totalNetIncome.toLocaleString()}</td>
+                                        <td className="p-2 text-right font-mono text-red-600">{shop.totalBizExpense.toLocaleString()}</td>
+                                        <td className="p-2 text-right font-mono font-bold text-indigo-600 bg-green-50">{shop.totalNetIncome.toLocaleString()}</td>
                                     </tr>
                                 ))}
                              </tbody>
@@ -2805,7 +2804,7 @@
                                     <td className="p-2 text-right font-mono">{totals.totalTransIn?.toLocaleString()}</td>
                                     <td className="p-2 text-right font-mono">{totals.totalTransOut?.toLocaleString()}</td>
                                     <td className="p-2 text-right font-mono">{totals.totalBizExpense?.toLocaleString()}</td>
-                                    <td className="p-2 text-right font-mono">{totals.totalNetIncome?.toLocaleString()}</td>
+                                    <td className="p-2 text-right font-mono text-indigo-600">{totals.totalNetIncome?.toLocaleString()}</td>
                                 </tr>
                              </tfoot>
                         </table>
@@ -2813,6 +2812,7 @@
                 </Card>
             );
         };
+        // #endregion
 
         const IitPaymentTab = ({ filters }) => {
             const data = useMonthlyData(filters);
@@ -3728,5 +3728,6 @@
 
 </body>
 </html>
+
 
 
